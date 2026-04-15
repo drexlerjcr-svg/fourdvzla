@@ -3,612 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FourDVzla</title>
+    <title>Digital Store - Catálogo Masivo Glass</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='9' cy='21' r='1'></circle><circle cx='20' cy='21' r='1'></circle><path d='M1 1h4l2.68 12.83a2 2 0 0 0 2 1.67h9.23a2 2 0 0 0 2-1.67L23 6H6'></path></svg>" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
+        
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --charrito-orange: #f37021;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Fondo principal oscuro */
-            color: #e2e8f0; /* Color de texto principal */
-            transition: all 0.3s ease-in-out;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%);
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
         }
 
-        body.no-scroll {
-            overflow: hidden;
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
         }
 
-        .product-card, .course-card {
-            display: flex;
-            flex-direction: column;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
         }
-        .card-img {
-            aspect-ratio: 1/1;
-            object-fit: cover;
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+            border-color: var(--charrito-orange);
         }
-        /* Estilos para ocultar/mostrar las páginas principales */
-        .page-container {
-            display: none;
+
+        .text-orange { color: var(--charrito-orange); }
+        .bg-orange { background-color: var(--charrito-orange); }
+
+        .sidebar-transition { transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); }
+        .admin-tab.active { border-bottom: 2px solid var(--charrito-orange); color: white; background: rgba(255,255,255,0.05); }
+        .sub-tab.active { background: var(--charrito-orange); color: white; }
+        
+        input, select, textarea {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            outline: none;
         }
-        .page-container.active {
-            display: block;
-        }
-        /* Estilos para el overlay del carrito */
-        .cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 50;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            overflow-y: auto;
-        }
-        .cart-overlay.active {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-        }
-        .cart-overlay-content {
-            width: 100%;
-            max-width: 900px;
-            margin-top: 4rem;
-            margin-bottom: 2rem;
-        }
-        .filter-button.active {
-            background-color: #ec4899; /* pink-500 */
-            color: #fff;
-            box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.5), 0 2px 4px -1px rgba(236, 72, 153, 0.5);
-            transform: translateY(-2px);
-        }
-        .button-disabled {
-            background-color: #4a5568 !important; /* gray-700 */
-            cursor: not-allowed;
-        }
+
+        .hidden { display: none !important; }
+        
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--charrito-orange); border-radius: 10px; }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-200">
+<body>
 
-    <div id="notification-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-            <p id="notification-message" class="text-gray-200 font-medium"></p>
-            <button onclick="document.getElementById('notification-modal').classList.add('hidden')" class="mt-4 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors">Cerrar</button>
+    <!-- NAVBAR -->
+    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-2xl">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="showSection('home')">
+            <img id="site-logo" src="https://via.placeholder.com/100?text=LOGO" class="w-10 h-10 rounded-full border border-white/20">
+            <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-orange">Store</span></h1>
         </div>
-    </div>
-
-    <nav class="sticky top-0 z-40 bg-gray-800 shadow-lg rounded-b-xl p-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-        <div class="text-2xl font-bold text-pink-500" style="text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899;">FourDVzla</div>
         <div class="flex items-center space-x-4">
-            <button onclick="navigateTo('home-page')" class="text-gray-400 hover:text-pink-500 transition-colors">Inicio</button>
-            <button onclick="navigateTo('catalog-page')" class="text-gray-400 hover:text-pink-500 transition-colors">Catálogo</button>
-            <button onclick="showCart()" class="text-gray-400 hover:text-pink-500 transition-colors flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.182 1.953.945 2.572L15 21h-2a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2z" />
-                </svg>
-                <span id="cart-count" class="ml-1 text-xs font-bold bg-pink-500 text-white rounded-full w-5 h-5 flex items-center justify-center">0</span>
+            <button onclick="toggleCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
+                <i class="fas fa-shopping-basket text-lg"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">0</span>
             </button>
+            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl"><i class="fas fa-cog"></i></button>
         </div>
     </nav>
 
-    <div id="main-content">
-        <div id="home-page" class="page-container active">
-            <main class="container mx-auto px-4 py-16">
-                <section class="mt-8 relative rounded-xl overflow-hidden shadow-xl p-8 bg-gray-800">
-                    <div class="relative z-10 flex flex-col items-center justify-center text-center">
-                        <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-2">
-                            Da vida a tu creatividad
-                        </h2>
-                        <div class="text-lg md:text-xl font-medium text-white max-w-2xl mx-auto">
-                            <p class="mb-4">
-                                En FourDVzla, convertimos la masa flexible en arte. Somos un emprendimiento venezolano dedicado a ofrecerte productos únicos y de alta calidad, hechos a mano con amor y dedicación.
-                            </p>
-                            <p class="font-extrabold text-pink-500" style="text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899;">
-                                ¡Y te invitamos a unirte a nuestra comunidad de creadores a través de nuestros cursos!
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="mt-16">
-                    <h2 class="text-3xl font-bold text-gray-100 text-center">Productos Destacados</h2>
-                    <div id="featured-products-container" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        </div>
-                </section>
-            </main>
+    <!-- SECCIÓN: HOME (CATÁLOGO MASIVO) -->
+    <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter">Catálogo <span class="text-orange">Digital</span></h2>
+            <p class="text-white/30 uppercase text-[8px] tracking-[0.6em] mt-1">Explora nuestra colección completa</p>
         </div>
-
-        <div id="catalog-page" class="page-container">
-            <main class="container mx-auto p-4">
-                 <aside class="mb-8 bg-gray-800 rounded-xl shadow-md p-6">
-                    <h3 class="text-xl font-bold text-gray-100 mb-4">Filtrar por</h3>
-                    <div class="flex flex-wrap gap-2 sm:gap-4">
-                        <button id="filter-all" onclick="filterCatalog('all', this)" class="filter-button active flex-1 py-2 px-4 bg-gray-700 text-gray-200 rounded-lg font-semibold transition-colors hover:bg-pink-500 hover:text-white">Todos</button>
-                        <button id="filter-products" onclick="filterCatalog('producto', this)" class="filter-button flex-1 py-2 px-4 bg-gray-700 text-gray-200 rounded-lg font-semibold transition-colors hover:bg-pink-500 hover:text-white">Productos</button>
-                        <button id="filter-courses" onclick="filterCatalog('curso', this)" class="filter-button flex-1 py-2 px-4 bg-gray-700 text-gray-200 rounded-lg font-semibold transition-colors hover:bg-pink-500 hover:text-white">Cursos</button>
-                    </div>
-                </aside>
-
-                <section class="w-full">
-                    <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        </div>
-                </section>
-            </main>
+        
+        <!-- Grid Ajustado para ser más pequeño y amigable -->
+        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Productos cargados dinámicamente -->
         </div>
-    </div>
+    </section>
 
-    <div id="cart-page" class="cart-overlay hidden">
-        <div class="cart-overlay-content p-4 lg:p-8">
-            <header class="bg-gray-800 shadow-md p-4 sticky top-0 z-40 rounded-t-xl flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-100">Tu Carrito de Compras</h1>
-                <button onclick="hideCart()" class="text-gray-400 hover:text-pink-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </header>
-            <main class="bg-gray-800 rounded-b-xl shadow-md p-6">
-                <div class="flex flex-col lg:flex-row lg:space-x-8">
-                    <div class="w-full lg:w-2/3">
-                        <div id="cart-items-list" class="space-y-6">
-                            </div>
-                    </div>
-
-                    <div class="w-full lg:w-1/3 p-6 bg-gray-900 rounded-xl mt-6 lg:mt-0">
-                        <h2 class="text-2xl font-bold text-gray-100 mb-4">Resumen del Pedido</h2>
-                        <div class="flex justify-between items-center text-gray-400 mb-2">
-                            <span>Subtotal:</span>
-                            <span id="cart-subtotal" class="font-medium text-gray-200">$0.00</span>
-                        </div>
-                        <div class="mt-4 text-center text-gray-400 text-sm italic">
-                            El costo de envío se coordina con el vendedor (Cursos no aplica)
-                        </div>
-                        <div class="border-t border-gray-700 pt-4 flex justify-between items-center font-bold text-gray-100">
-                            <span>Total:</span>
-                            <span id="cart-total" class="text-2xl text-pink-500">$0.00</span>
-                        </div>
-                        <button id="checkout-button" onclick="showCheckout()" class="mt-6 w-full py-3 text-white font-bold rounded-lg shadow-lg transition-colors">
-                            Pagar
-                        </button>
-                    </div>
-                </div>
-            </main>
+    <!-- SECCIÓN: LOGIN ADMIN -->
+    <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6">
+        <div class="glass p-10 rounded-[40px] w-full max-w-md text-center">
+            <h2 class="text-2xl font-black mb-8 uppercase italic tracking-widest">Admin Login</h2>
+            <form id="login-form" class="space-y-4">
+                <input type="email" id="admin-email" placeholder="Correo" class="w-full p-4 rounded-2xl" required>
+                <input type="password" id="admin-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl" required>
+                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl hover:scale-105 transition uppercase tracking-widest">Entrar</button>
+            </form>
         </div>
-    </div>
+    </section>
 
-    <div id="checkout-page" class="cart-overlay hidden">
-        <div class="cart-overlay-content p-4 lg:p-8">
-            <div class="max-w-lg mx-auto w-full">
-                <header class="bg-gray-800 shadow-md p-4 sticky top-0 z-40 rounded-t-xl flex justify-between items-center">
-                    <button onclick="hideCheckout()" class="text-pink-500 font-bold text-lg hover:text-pink-600 transition-colors flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        Volver al carrito
-                    </button>
-                    <h1 class="text-2xl font-bold text-gray-100">Información de Envío</h1>
-                </header>
-                <main class="bg-gray-800 rounded-b-xl shadow-md p-6">
-                    <form id="checkout-form" class="space-y-4">
-                        <div>
-                            <label for="name" class="block text-gray-400 font-semibold mb-1">Nombre y Apellido</label>
-                            <input type="text" id="name" name="name" class="w-full p-2 bg-gray-700 text-gray-100 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-                            <p id="name-error" class="text-red-500 text-sm mt-1 hidden">Este campo es obligatorio.</p>
-                        </div>
-                        <div>
-                            <label for="phone" class="block text-gray-400 font-semibold mb-1">Teléfono de contacto (WhatsApp)</label>
-                            <input type="tel" id="phone" name="phone" class="w-full p-2 bg-gray-700 text-gray-100 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-                            <p id="phone-error" class="text-red-500 text-sm mt-1 hidden">Este campo es obligatorio.</p>
-                        </div>
-                        <div>
-                            <label for="address" class="block text-gray-400 font-semibold mb-1">Dirección</label>
-                            <textarea id="address" name="address" rows="3" class="w-full p-2 bg-gray-700 text-gray-100 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
-                            <p id="address-error" class="text-red-500 text-sm mt-1 hidden">Este campo es obligatorio.</p>
-                        </div>
-                        <button type="submit" class="w-full py-3 bg-pink-500 text-white font-bold rounded-lg shadow-lg hover:bg-pink-600 transition-colors">
-                            Confirmar Compra
-                        </button>
+    <!-- SECCIÓN: PANEL ADMIN -->
+    <section id="section-admin-panel" class="section hidden p-4">
+        <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden">
+            <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
+                <h2 class="text-lg font-black italic uppercase">Gestión Administrativa</h2>
+                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold transition uppercase">Cerrar Sesión</button>
+            </div>
+            
+            <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
+                <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
+                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
+                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Diseño</button>
+            </div>
+
+            <div class="p-6">
+                <div id="tab-products" class="tab-content">
+                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+                        <input type="text" id="p-name" placeholder="Nombre del Producto" class="p-3 rounded-xl" required>
+                        <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
+                        <textarea id="p-desc" placeholder="Descripción Completa del Producto..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
+                        <input type="text" id="p-img" placeholder="URL de la Imagen" class="p-3 rounded-xl col-span-full" required>
+                        <button class="bg-orange text-white font-black rounded-xl py-3 col-span-full uppercase text-xs tracking-widest">Añadir al Catálogo</button>
                     </form>
-                </main>
+                    <div id="admin-products-list" class="grid gap-2"></div>
+                </div>
+
+                <div id="tab-orders" class="tab-content hidden space-y-6">
+                    <div class="flex justify-center gap-2 mb-6">
+                        <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">En Revisión</button>
+                        <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">Confirmados</button>
+                        <button onclick="filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">Rechazados</button>
+                    </div>
+                    <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div id="tab-config" class="tab-content hidden text-center space-y-4">
+                    <input type="text" id="new-logo-url" placeholder="URL del Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
+                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
+                </div>
             </div>
+        </div>
+    </section>
+
+    <!-- CARRITO SIDEBAR -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
+        <div class="p-6 bg-black/30 flex justify-between items-center">
+            <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Compra</h2>
+            <button onclick="toggleCart()" class="text-4xl hover:text-orange transition">&times;</button>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto p-6 space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold uppercase text-[9px] opacity-40 tracking-widest italic">Artículos Seleccionados</h3>
+                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button>
+            </div>
+            
+            <div id="cart-items" class="space-y-3"></div>
+            
+            <!-- PAGO MÓVIL BANESCO -->
+            <div class="glass-card p-5 rounded-[25px] border-orange/30 border text-center">
+                <p class="text-orange font-black uppercase text-[9px] mb-2 tracking-widest italic">Datos Pago Móvil</p>
+                <div class="text-[12px] opacity-80 leading-relaxed">
+                    <p>Banco: <b>Banesco</b></p>
+                    <p>Cédula: <b>24981262</b></p>
+                    <p>Teléfono: <b>04143309639</b></p>
+                </div>
+            </div>
+
+            <div class="space-y-3 border-t border-white/10 pt-6">
+                <input type="text" id="cust-name" placeholder="Nombre Completo" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="email" id="cust-email" placeholder="Correo electrónico" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="text" id="cust-ref" placeholder="N° Referencia Pago Móvil" class="p-4 rounded-xl outline-none w-full text-sm font-bold text-orange">
+                
+                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center">
+                    <label class="text-[9px] font-black text-white/30 uppercase block mb-2 italic tracking-tighter">Subir Foto del Comprobante</label>
+                    <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 mx-auto">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 bg-black/30 space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="font-bold opacity-30 uppercase text-[10px]">Total Compra:</span>
+                <span id="cart-total" class="text-3xl font-black text-orange tracking-tighter">$0.00</span>
+            </div>
+            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-4 rounded-2xl shadow-xl hover:scale-105 transition uppercase tracking-widest text-md italic">
+                Finalizar Pedido
+            </button>
         </div>
     </div>
 
-    <div id="whatsapp-modal" class="cart-overlay hidden">
-        <main class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-            <div class="bg-gray-800 rounded-xl shadow-xl p-8 max-w-sm w-full">
-                <h1 class="text-3xl font-bold text-pink-500 mb-4">¡Solo falta un último pasó!</h1>
-                <p class="text-gray-300">
-                    Por favor, proceda a WhatsApp y envíe los detalles de tu pedido para que podamos gestionarlo.
-                </p>
-                <button onclick="sendWhatsAppMessage()" class="mt-6 w-full py-3 bg-pink-500 text-white font-bold rounded-lg hover:bg-pink-600 transition-colors">
-                    Enviar Pedido a WhatsApp
-                </button>
-                <button onclick="hideWhatsAppModal()" class="mt-2 text-sm text-gray-400 hover:text-gray-200 transition-colors">
-                    Volver
-                </button>
-            </div>
-        </main>
+    <!-- OVERLAYS -->
+    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()">
+        <img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
     </div>
+    <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="toggleCart()"></div>
 
-    <div id="confirmation-page" class="cart-overlay hidden">
-        <main class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-            <div class="bg-gray-800 rounded-xl shadow-xl p-8 max-w-md w-full">
-                <h1 class="text-4xl font-extrabold text-pink-500 mb-4">¡Compra confirmada!</h1>
-                <p class="text-lg text-gray-400">¡Gracias por tu compra en FourDVzla! Tu pedido ha sido procesado con éxito. Nos comunicaremos contigo para coordinar la entrega.</p>
-                <button onclick="hideConfirmation()" class="mt-8 px-6 py-3 bg-pink-500 text-white font-bold rounded-lg hover:bg-pink-600 transition-colors">
-                    Volver al Inicio
-                </button>
-            </div>
-        </main>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    <footer class="bg-gray-800 text-gray-400 text-center text-sm py-4 mt-16 rounded-t-xl shadow-inner">
-        <p>© 2025 FourDVzla. Todos los derechos reservados.</p>
-    </footer>
+        const firebaseConfig = { 
+            apiKey : "AIzaSyClcdmMyvSfkJZicrRXZEmWT8CWHy5ApcI" , 
+            authDomain : "digitalstore-b109b.firebaseapp.com" , 
+            projectId : "digitalstore-b109b" , 
+            storageBucket : "digitalstore-b109b.firebasestorage.app" , 
+            messagingSenderId : "654989683570" , 
+            appId : "1:654989683570:web:fe9dafa4716855a63d0beb" 
+        };
 
-    <script>
-        // Datos de productos y cursos
-        const products = [
-            { id: 1, name: "Kuromi", price: 20.50, category: "producto", type: "llavero", featured: true, image: 'https://i.ibb.co/pvh19LMt/Kuromi.png', stock: 10 },
-            { id: 2, name: "Goku", price: 10.50, category: "producto", type: "llavero", featured: true, image: 'https://i.ibb.co/KjGS3YcY/Goku.png', stock: 10 },
-            { id: 3, name: "Stitch", price: 25.00, category: "producto", type: "figura", featured: true, image: 'https://i.ibb.co/NdvR2PV2/Stitch.png', stock: 10 },
-            { id: 4, name: "Curso Básico: Figuras", price: 35.00, category: "curso", type: "curso", featured: true, image: 'https://i.ibb.co/tTzPb6GK/Curso-Basico.png' },
-            { id: 5, name: "Accesorio para Celular", price: 12.00, category: "producto", type: "accesorio", featured: false, image: 'https://placehold.co/400x400/1f2937/dbeafe?text=Accesorio+Movil', stock: 0 },
-            { id: 6, name: "Curso Avanzado: Llaveros", price: 40.00, category: "curso", type: "curso", featured: false, image: 'https://placehold.co/400x400/1f2937/c7d2fe?text=Curso+Avanzado', stock: 0 },
-        ];
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        // Estado de la aplicación
-        let cart = JSON.parse(localStorage.getItem('fourdvzla_cart')) || [];
-        let currentPage = 'home-page';
-        let whatsappUrl = ''; // Variable para almacenar la URL de WhatsApp
-        let activeFilter = 'all'; // Nueva variable para controlar el filtro activo
+        let cart = [];
+        let allOrders = [];
+        let currentStatusFilter = 'revision';
 
-        // Función para mostrar mensajes de notificación
-        function showNotification(message) {
-            const modal = document.getElementById('notification-modal');
-            const msgEl = document.getElementById('notification-message');
-            msgEl.textContent = message;
-            modal.classList.remove('hidden');
-        }
+        // NAVEGACIÓN
+        window.showSection = (id) => {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`section-${id}`).classList.remove('hidden');
+        };
+        window.toggleCart = () => {
+            document.getElementById('cart-sidebar').classList.toggle('translate-x-full');
+            document.getElementById('cart-overlay').classList.toggle('hidden');
+        };
+        window.switchTab = (id) => {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.remove('hidden');
+            if(event) event.currentTarget.classList.add('active');
+        };
+        window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
 
-        // --- Funciones de Renderizado ---
-        function updateCartCount() {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').textContent = count;
-        }
+        // AUTH
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value);
+                showSection('admin-panel');
+            } catch (err) { alert("Acceso No Autorizado."); }
+        };
+        window.logout = () => signOut(auth).then(() => showSection('home'));
 
-        function renderHomePage() {
-            const container = document.getElementById('featured-products-container');
-            container.innerHTML = '';
-            const featuredProducts = products.filter(p => p.featured).slice(0, 4);
-            featuredProducts.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all hover:scale-105 flex flex-col';
-                card.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover card-img">
-                    <div class="p-4 text-center flex-grow flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-gray-100 text-lg">${product.name}</h3>
-                            <p class="text-pink-500 font-semibold mt-1">$${product.price.toFixed(2)}</p>
+        // PRODUCTOS - DISEÑO COMPACTO Y DESCRIPCIÓN COMPLETA
+        onSnapshot(collection(db, "productos"), (snap) => {
+            const grid = document.getElementById('products-grid');
+            const adminList = document.getElementById('admin-products-list');
+            grid.innerHTML = ''; adminList.innerHTML = '';
+            snap.forEach(d => {
+                const p = d.data();
+                grid.innerHTML += `
+                    <div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full">
+                        <img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 shadow-sm">
+                        <div class="px-1 flex-grow">
+                            <h3 class="font-black text-[9px] uppercase italic text-orange leading-tight mb-1">${p.nombre}</h3>
+                            <p class="text-[8px] opacity-50 font-medium leading-normal mb-3 whitespace-pre-line">${p.descripcion}</p>
                         </div>
-                        <button onclick="navigateTo('catalog-page')" class="mt-4 w-full py-2 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600 transition-colors">Ir al catalogo</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            updateCartCount();
-        }
-
-        function renderCatalogPage() {
-            const container = document.getElementById('catalog-grid');
-            container.innerHTML = '';
-
-            const filteredProducts = products.filter(p => {
-                if (activeFilter === 'all') {
-                    // Si el filtro es 'all', muestra todos los artículos.
-                    return true;
-                }
-                // Si el filtro es 'producto' o 'curso', filtra por categoría Y por stock.
-                // Verifica si el artículo tiene la propiedad 'stock' y si es mayor a 0.
-                // Si no tiene la propiedad 'stock' (como los cursos), se asume que siempre hay stock.
-                return p.category === activeFilter && (!('stock' in p) || p.stock > 0);
-            });
-
-            filteredProducts.forEach(product => {
-                const isCourse = product.category === 'curso';
-                const hasStock = 'stock' in product;
-                const isOutOfStock = hasStock && product.stock <= 0;
-
-                const buttonText = isCourse ? 'Inscribirse' : (isOutOfStock ? 'Agotado' : 'Añadir al carrito');
-                const buttonClass = isOutOfStock ? 'button-disabled' : (isCourse ? 'bg-indigo-500 hover:bg-indigo-600' : 'bg-pink-500 hover:bg-pink-600');
-
-                const stockDisplay = hasStock ? `<p class="text-sm text-gray-400 mt-2">Stock: ${product.stock}</p>` : '';
-
-                const card = document.createElement('div');
-                card.className = 'bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all hover:scale-105 flex flex-col';
-                card.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover card-img">
-                    <div class="p-4 text-center flex-grow flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-gray-100 text-lg">${product.name}</h3>
-                            <p class="text-pink-500 font-semibold mt-1">$${product.price.toFixed(2)}</p>
-                            ${stockDisplay}
+                        <div class="mt-auto flex justify-between items-center bg-white/5 p-2 rounded-2xl">
+                            <span class="text-lg font-black text-white ml-1">$${p.precio}</span>
+                            <button onclick="addToCart('${p.nombre}', ${p.precio})" class="bg-orange text-white px-3 py-1.5 rounded-full font-bold text-[8px] uppercase tracking-tighter hover:scale-105 transition">Comprar</button>
                         </div>
-                        <button onclick="addToCart(${product.id})" class="mt-4 w-full py-2 ${buttonClass} text-white font-semibold rounded-lg transition-colors" ${isOutOfStock ? 'disabled' : ''}>
-                            ${buttonText}
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
+                    </div>`;
+                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold tracking-widest"><span>${p.nombre}</span> <button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
             });
-            updateCartCount();
-        }
-
-        function renderCartPage() {
-            const container = document.getElementById('cart-items-list');
-            const subtotalEl = document.getElementById('cart-subtotal');
-            const totalEl = document.getElementById('cart-total');
-            const checkoutButton = document.getElementById('checkout-button');
-            container.innerHTML = '';
-            let subtotal = 0;
-
-            if (cart.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-500">Tu carrito está vacío.</p>`;
-                // Deshabilitar y estilizar el botón de pago
-                checkoutButton.disabled = true;
-                checkoutButton.classList.remove('bg-pink-500', 'hover:bg-pink-600');
-                checkoutButton.classList.add('bg-gray-600', 'cursor-not-allowed');
-                checkoutButton.textContent = 'Tu carrito está vacío';
-            } else {
-                cart.forEach(item => {
-                    subtotal += item.price * item.quantity;
-                    const itemEl = document.createElement('div');
-                    itemEl.className = 'flex items-center space-x-4 p-4 border border-gray-700 rounded-xl';
-                    itemEl.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-md object-cover">
-                        <div class="flex-grow">
-                            <h4 class="font-semibold text-gray-100">${item.name}</h4>
-                            <p class="text-sm text-gray-400">$${item.price.toFixed(2)} c/u</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button onclick="updateQuantity(${item.id}, -1)" class="w-8 h-8 rounded-full bg-gray-700 text-gray-400 flex items-center justify-center font-bold">-</button>
-                            <span class="text-gray-200">${item.quantity}</span>
-                            <button onclick="updateQuantity(${item.id}, 1)" class="w-8 h-8 rounded-full bg-gray-700 text-gray-400 flex items-center justify-center font-bold">+</button>
-                        </div>
-                        <div class="font-bold text-gray-100">$${(item.price * item.quantity).toFixed(2)}</div>
-                    `;
-                    container.appendChild(itemEl);
-                });
-                // Habilitar y estilizar el botón de pago
-                checkoutButton.disabled = false;
-                checkoutButton.classList.remove('bg-gray-600', 'cursor-not-allowed');
-                checkoutButton.classList.add('bg-pink-500', 'hover:bg-pink-600');
-                checkoutButton.textContent = 'Pagar';
-            }
-
-            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-            totalEl.textContent = `$${subtotal.toFixed(2)}`;
-            updateCartCount();
-        }
-
-        // --- Lógica del Carrito con inventario ---
-        function addToCart(productId) {
-            // Se busca el producto en la fuente de datos (products)
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            // Se verifica si hay stock antes de añadir al carrito
-            if (!('stock' in product) || product.stock > 0) {
-                const existingItem = cart.find(item => item.id === productId);
-                if (existingItem) {
-                    existingItem.quantity++;
-                } else {
-                    cart.push({ ...product, quantity: 1 });
-                }
-
-                // Se decrementa el stock del producto si es un producto físico
-                if ('stock' in product) {
-                    product.stock--;
-                }
-
-                localStorage.setItem('fourdvzla_cart', JSON.stringify(cart));
-                updateCartCount();
-                showNotification(`${product.name} ha sido añadido al carrito.`);
-
-                // Llama a la función de renderizado sin pasar un parámetro para que use el filtro activo
-                renderCatalogPage();
-
-            } else {
-                showNotification(`¡Lo sentimos! ${product.name} está agotado.`);
-            }
-        }
-
-        function updateQuantity(productId, change) {
-            const itemIndex = cart.findIndex(item => item.id === productId);
-            const product = products.find(p => p.id === productId);
-
-            if (itemIndex > -1 && product) {
-                if (change === 1) {
-                    if (!('stock' in product) || product.stock > 0) {
-                        cart[itemIndex].quantity += 1;
-                        if ('stock' in product) {
-                            product.stock -= 1;
-                        }
-                    } else {
-                        showNotification(`No hay más stock disponible de ${product.name}.`);
-                        return;
-                    }
-                } else if (change === -1) {
-                    cart[itemIndex].quantity -= 1;
-                    if ('stock' in product) {
-                        product.stock += 1;
-                    }
-                    if (cart[itemIndex].quantity <= 0) {
-                        cart.splice(itemIndex, 1);
-                    }
-                }
-
-                localStorage.setItem('fourdvzla_cart', JSON.stringify(cart));
-                renderCartPage();
-                // Llama a la función de renderizado para actualizar el stock
-                renderCatalogPage();
-            }
-        }
-
-        // --- Navegación entre páginas principales ---
-        function navigateTo(pageId) {
-            document.querySelectorAll('.page-container').forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            currentPage = pageId;
-
-            // Renderizar el contenido de la página si es necesario
-            if (pageId === 'home-page') {
-                renderHomePage();
-            } else if (pageId === 'catalog-page') {
-                // Navega al catálogo y renderiza con el filtro 'all' por defecto
-                const allButton = document.getElementById('filter-all');
-                if (allButton) {
-                    filterCatalog('all', allButton);
-                }
-            }
-            window.scrollTo(0, 0); // Volver al inicio de la página
-        }
-
-        // --- Funciones para los overlays (carrito, checkout, confirmación) ---
-        function showCart() {
-            renderCartPage();
-            document.getElementById('cart-page').classList.add('active');
-            document.body.classList.add('no-scroll');
-        }
-
-        function hideCart() {
-            document.getElementById('cart-page').classList.remove('active');
-            document.body.classList.remove('no-scroll');
-        }
-
-        function showCheckout() {
-            if (cart.length === 0) {
-                showNotification("El carrito está vacío. Añade productos para continuar.");
-                return;
-            }
-            document.getElementById('cart-page').classList.remove('active');
-            document.getElementById('checkout-page').classList.add('active');
-        }
-
-        function hideCheckout() {
-            document.getElementById('checkout-page').classList.remove('active');
-            showCart(); // Esta función ya añade la clase 'no-scroll'
-        }
-
-        function showWhatsAppModal() {
-            document.getElementById('whatsapp-modal').classList.add('active');
-        }
-
-        function hideWhatsAppModal() {
-            document.getElementById('whatsapp-modal').classList.remove('active');
-            showCheckout();
-        }
-
-        function showConfirmation() {
-            document.getElementById('whatsapp-modal').classList.remove('active');
-            document.getElementById('checkout-page').classList.remove('active');
-            document.getElementById('confirmation-page').classList.add('active');
-        }
-
-        function hideConfirmation() {
-            document.getElementById('confirmation-page').classList.remove('active');
-            navigateTo('home-page');
-            document.body.classList.remove('no-scroll');
-        }
-
-        // --- Lógica de Filtrado---
-        function filterCatalog(category, clickedButton) {
-            // Elimina la clase 'active' de todos los botones de filtro
-            document.querySelectorAll('.filter-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            // Añade la clase 'active' al botón clickeado
-            clickedButton.classList.add('active');
-
-            activeFilter = category;
-            renderCatalogPage();
-        }
-
-        function sendWhatsAppMessage() {
-            if (whatsappUrl) {
-                window.open(whatsappUrl, '_blank');
-                // Se limpia el carrito y el localStorage después de enviar el pedido
-                cart = [];
-                localStorage.removeItem('fourdvzla_cart');
-                updateCartCount();
-                showConfirmation();
-            }
-        }
-
-        // --- Lógica del Formulario de Checkout ---
-        document.getElementById('checkout-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            let isValid = true;
-            const formElements = ['name', 'phone', 'address'];
-
-            formElements.forEach(id => {
-                const input = document.getElementById(id);
-                const error = document.getElementById(id + '-error');
-                if (input.value.trim() === '') {
-                    error.classList.remove('hidden');
-                    input.classList.add('border-red-500');
-                    isValid = false;
-                } else {
-                    error.classList.add('hidden');
-                    input.classList.remove('border-red-500');
-                }
-            });
-
-            if (isValid) {
-                // Obtener los datos del formulario
-                const name = document.getElementById('name').value;
-                const phone = document.getElementById('phone').value;
-                const address = document.getElementById('address').value;
-
-                // Construir el mensaje para WhatsApp
-                let message = `¡Nuevo pedido de FourDVzla!\n\n`;
-                message += `*Cliente*: ${name}\n`;
-                message += `*Teléfono*: ${phone}\n`;
-                message += `*Dirección*: ${address}\n\n`;
-                message += `*Detalles del pedido*:\n`;
-
-                let total = 0;
-                cart.forEach(item => {
-                    message += `- ${item.name} (${item.quantity} und.) - $${(item.price * item.quantity).toFixed(2)}\n`;
-                    total += item.price * item.quantity;
-                });
-
-                message += `\n*Total*: $${total.toFixed(2)}`;
-
-                // Número de WhatsApp al que se enviará el mensaje
-                const whatsappNumber = "584141208485";
-                whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-
-                // Ocultar la página de checkout y mostrar el nuevo modal de WhatsApp
-                document.getElementById('checkout-page').classList.remove('active');
-                showWhatsAppModal();
-            }
         });
 
-        // --- Inicialización al cargar la página ---
-        window.onload = function() {
-            renderHomePage();
-            // Llama a navigateTo para renderizar el catálogo con el filtro "Todos" activado por defecto
-            navigateTo('home-page');
+        document.getElementById('product-form').onsubmit = async (e) => {
+            e.preventDefault();
+            await addDoc(collection(db, "productos"), {
+                nombre: document.getElementById('p-name').value,
+                precio: parseFloat(document.getElementById('p-price').value),
+                descripcion: document.getElementById('p-desc').value,
+                imagen: document.getElementById('p-img').value
+            });
+            e.target.reset();
         };
+
+        window.deleteProduct = (id) => confirm("¿Eliminar producto?") && deleteDoc(doc(db, "productos", id));
+        window.addToCart = (nombre, precio) => { cart.push({nombre, precio}); updateCartUI(); toggleCart(); };
+        window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
+        window.clearCart = () => { cart = []; updateCartUI(); };
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const total = cart.reduce((s,i) => s + i.precio, 0);
+            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Vacio</p>' : 
+                cart.map((item, i) => `
+                <div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-2 border-orange">
+                    <div><p class="font-bold text-[9px] uppercase">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div>
+                    <button onclick="removeFromCart(${i})" class="text-red-400 p-2"><i class="fas fa-times text-xs"></i></button>
+                </div>`).join('');
+            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        // COMPRESIÓN IMAGEN
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800;
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                    };
+                };
+            });
+        }
+
+        window.processPayment = async () => {
+            const name = document.getElementById('cust-name').value;
+            const cedula = document.getElementById('cust-cedula').value;
+            const email = document.getElementById('cust-email').value;
+            const wha = document.getElementById('cust-wha').value;
+            const ref = document.getElementById('cust-ref').value;
+            const fileInput = document.getElementById('cust-file');
+            const file = fileInput.files[0];
+
+            if(cart.length === 0 || !name || !email || !wha || !ref || !file) return alert("Completa todos los datos obligatorios.");
+
+            const btn = document.getElementById('btn-confirm');
+            btn.disabled = true; btn.innerText = "ENVIANDO REPORTE...";
+
+            try {
+                const imgBase64 = await compressImage(file);
+                await addDoc(collection(db, "pedidos"), {
+                    cliente: name, cedula, email, whatsapp: wha, referencia: ref, 
+                    fotoComprobante: imgBase64, items: cart, 
+                    total: cart.reduce((s,i) => s + i.precio, 0),
+                    fecha: new Date().toLocaleString(), 
+                    estatus: "revision"
+                });
+                alert("¡Pedido realizado con éxito!");
+                cart = []; updateCartUI(); toggleCart();
+                document.getElementById('cust-name').value = "";
+                document.getElementById('cust-cedula').value = "";
+                document.getElementById('cust-email').value = "";
+                document.getElementById('cust-wha').value = "";
+                document.getElementById('cust-ref').value = "";
+                fileInput.value = "";
+            } catch (e) { alert("Error al enviar."); }
+            finally { btn.disabled = false; btn.innerText = "Finalizar Pedido"; }
+        };
+
+        // GESTIÓN VENTAS ADMIN
+        onSnapshot(collection(db, "pedidos"), (snap) => {
+            allOrders = [];
+            snap.forEach(d => allOrders.push({ id: d.id, ...d.data() }));
+            renderFilteredSales();
+        });
+
+        window.filterSales = (status) => {
+            currentStatusFilter = status;
+            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-f-${status}`).classList.add('active');
+            renderFilteredSales();
+        };
+
+        function renderFilteredSales() {
+            const container = document.getElementById('sales-container');
+            const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
+            container.innerHTML = filtered.length === 0 ? '<p class="col-span-full text-center opacity-20 py-20 italic text-xs uppercase tracking-widest">Sin Ventas</p>' : 
+            filtered.map(o => `
+                <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'}">
+                    <div class="flex justify-between items-start">
+                        <span class="text-[12px] font-black uppercase text-orange italic">Venta #${o.id.slice(0,5)}</span>
+                        <p class="text-[8px] opacity-30 uppercase">${o.fecha}</p>
+                    </div>
+                    <div class="text-[12px] font-bold space-y-1">
+                        <p>CLIENTE: <span class="font-normal opacity-70">${o.cliente}</span></p>
+                        <p>WHA: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
+                        <p>EMAIL: <span class="font-normal opacity-70">${o.email}</span></p>
+                        <p>REF: <span class="font-black text-orange">${o.referencia}</span></p>
+                    </div>
+                    <div class="bg-black/40 p-2 rounded-xl text-[8px] opacity-50 italic">Items: ${o.items.map(i => i.nombre).join(', ')}</div>
+                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl cursor-zoom-in border border-white/5">
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button onclick="updateOrderStatus('${o.id}', 'confirmado')" class="bg-green-500/20 text-green-400 text-[8px] font-black py-2 rounded-lg uppercase border border-green-500/10 hover:bg-green-500 hover:text-white transition">Confirmar</button>
+                        <button onclick="updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-500/20 text-red-400 text-[8px] font-black py-2 rounded-lg uppercase border border-red-500/10 hover:bg-red-500 hover:text-white transition">Rechazar</button>
+                        <button onclick="deleteOrder('${o.id}')" class="bg-white/5 text-white text-[8px] py-2 rounded-lg uppercase border border-white/5 col-span-2 hover:bg-white/10 transition">Borrar</button>
+                    </div>
+                    <p class="text-xl font-black text-right tracking-tighter italic">$${o.total}</p>
+                </div>
+            `).join('');
+        }
+
+        window.updateOrderStatus = async (id, newStatus) => {
+            try { await updateDoc(doc(db, "pedidos", id), { estatus: newStatus }); } catch (e) { alert("Error"); }
+        };
+        window.deleteOrder = (id) => confirm("¿Borrar definitivamente?") && deleteDoc(doc(db, "pedidos", id));
+        window.openImageOverlay = (src) => { document.getElementById('overlay-img').src = src; document.getElementById('image-overlay').classList.remove('hidden'); };
+        window.closeImageOverlay = () => document.getElementById('image-overlay').classList.add('hidden');
+
+        // LOGO
+        window.updateLogo = async () => {
+            const url = document.getElementById('new-logo-url').value;
+            await setDoc(doc(db, "settings", "site"), { logoUrl: url });
+            alert("Cambios guardados");
+        };
+        onSnapshot(doc(db, "settings", "site"), d => { if(d.exists()) document.getElementById('site-logo').src = d.data().logoUrl; });
+
     </script>
 </body>
 </html>
-
-
-
-
-
-
