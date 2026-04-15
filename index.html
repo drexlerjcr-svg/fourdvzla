@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Store</title>
+    <title>Digital Store - Catálogo Masivo Glass</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -245,7 +245,7 @@
         };
         window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
 
-        // AUUUUUTH
+        // AUTH
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             try {
@@ -254,8 +254,8 @@
             } catch (err) { alert("Acceso No Autorizado."); }
         };
         window.logout = () => signOut(auth).then(() => showSection('home'));
-E
-        // PRODUCTOS - DISEÑOOO COMPACTO Y DESCRIPCION COMPLETA
+
+        // PRODUCTOS - DISEÑO COMPACTO Y DESCRIPCIÓN COMPLETA
         onSnapshot(collection(db, "productos"), (snap) => {
             const grid = document.getElementById('products-grid');
             const adminList = document.getElementById('admin-products-list');
@@ -364,7 +364,7 @@ E
             finally { btn.disabled = false; btn.innerText = "Finalizar Pedido"; }
         };
 
-        // GESTION VENTAASSS ADMINNN
+        // GESTIÓN VENTAS ADMIN
         onSnapshot(collection(db, "pedidos"), (snap) => {
             allOrders = [];
             snap.forEach(d => allOrders.push({ id: d.id, ...d.data() }));
@@ -413,7 +413,7 @@ E
         window.openImageOverlay = (src) => { document.getElementById('overlay-img').src = src; document.getElementById('image-overlay').classList.remove('hidden'); };
         window.closeImageOverlay = () => document.getElementById('image-overlay').classList.add('hidden');
 
-        // LOGOOOO
+        // LOGO
         window.updateLogo = async () => {
             const url = document.getElementById('new-logo-url').value;
             await setDoc(doc(db, "settings", "site"), { logoUrl: url });
