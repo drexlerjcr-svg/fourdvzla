@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Store - Catálogo Masivo Glass</title>
+    <title>Digital Store - Liquid Glass Corrected</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
         
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.07);
-            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --charrito-orange: #f37021;
         }
 
@@ -25,8 +25,8 @@
 
         .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
         }
 
@@ -39,7 +39,7 @@
 
         .glass-card:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.02);
+            transform: translateY(-3px);
             border-color: var(--charrito-orange);
         }
 
@@ -59,22 +59,22 @@
 
         .hidden { display: none !important; }
         
-        /* Scrollbar personalizada */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--charrito-orange); border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <!-- NAVBAR -->
-    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-2xl">
+    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2 cursor-pointer" onclick="showSection('home')">
             <img id="site-logo" src="https://via.placeholder.com/100?text=LOGO" class="w-10 h-10 rounded-full border border-white/20">
             <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-orange">Store</span></h1>
         </div>
         <div class="flex items-center space-x-4">
-            <button onclick="toggleCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
+            <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
                 <i class="fas fa-shopping-basket text-lg"></i>
                 <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">0</span>
             </button>
@@ -86,53 +86,52 @@
     <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-8">
         <div class="text-center mb-10">
             <h2 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter">Catálogo <span class="text-orange">Digital</span></h2>
-            <p class="text-white/30 uppercase text-[8px] tracking-[0.6em] mt-1">Explora nuestra colección completa</p>
+            <p class="text-white/30 uppercase text-[8px] tracking-[0.6em] mt-1">Explora nuestra colección premium</p>
         </div>
-        
-        <!-- Grid Ajustado para ser más pequeño y amigable -->
-        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            <!-- Productos cargados dinámicamente -->
-        </div>
+        <!-- Grid compacto para muchos productos -->
+        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
     </section>
 
     <!-- SECCIÓN: LOGIN ADMIN -->
-    <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6">
-        <div class="glass p-10 rounded-[40px] w-full max-w-md text-center">
-            <h2 class="text-2xl font-black mb-8 uppercase italic tracking-widest">Admin Login</h2>
+    <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center">
+        <div class="glass p-10 rounded-[40px] w-full max-w-md">
+            <h2 class="text-2xl font-black mb-8 uppercase italic tracking-widest text-orange">Admin Login</h2>
             <form id="login-form" class="space-y-4">
-                <input type="email" id="admin-email" placeholder="Correo" class="w-full p-4 rounded-2xl" required>
+                <input type="email" id="admin-email" placeholder="Usuario" class="w-full p-4 rounded-2xl" required>
                 <input type="password" id="admin-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl" required>
-                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl hover:scale-105 transition uppercase tracking-widest">Entrar</button>
+                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase">Entrar</button>
             </form>
         </div>
     </section>
 
     <!-- SECCIÓN: PANEL ADMIN -->
     <section id="section-admin-panel" class="section hidden p-4">
-        <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden">
+        <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
             <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
-                <h2 class="text-lg font-black italic uppercase">Gestión Administrativa</h2>
-                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold transition uppercase">Cerrar Sesión</button>
+                <h2 class="text-lg font-black italic uppercase italic">Administración General</h2>
+                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Salir</button>
             </div>
             
             <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
                 <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
-                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
-                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Diseño</button>
+                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas / Estatus</button>
+                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Ajustes</button>
             </div>
 
             <div class="p-6">
+                <!-- Tab Productos -->
                 <div id="tab-products" class="tab-content">
                     <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
                         <input type="text" id="p-name" placeholder="Nombre del Producto" class="p-3 rounded-xl" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
-                        <textarea id="p-desc" placeholder="Descripción Completa del Producto..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
+                        <textarea id="p-desc" placeholder="Descripción detallada..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
                         <input type="text" id="p-img" placeholder="URL de la Imagen" class="p-3 rounded-xl col-span-full" required>
-                        <button class="bg-orange text-white font-black rounded-xl py-3 col-span-full uppercase text-xs tracking-widest">Añadir al Catálogo</button>
+                        <button class="bg-orange text-white font-black rounded-xl py-3 col-span-full uppercase text-xs tracking-widest">Publicar en Tienda</button>
                     </form>
                     <div id="admin-products-list" class="grid gap-2"></div>
                 </div>
 
+                <!-- Tab Ventas -->
                 <div id="tab-orders" class="tab-content hidden space-y-6">
                     <div class="flex justify-center gap-2 mb-6">
                         <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">En Revisión</button>
@@ -144,7 +143,7 @@
 
                 <div id="tab-config" class="tab-content hidden text-center space-y-4">
                     <input type="text" id="new-logo-url" placeholder="URL del Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
-                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
+                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-tighter">Guardar Imagen Corporativa</button>
                 </div>
             </div>
         </div>
@@ -152,23 +151,23 @@
 
     <!-- CARRITO SIDEBAR -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        <div class="p-6 bg-black/30 flex justify-between items-center">
-            <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Compra</h2>
-            <button onclick="toggleCart()" class="text-4xl hover:text-orange transition">&times;</button>
+        <div class="p-6 bg-black/40 flex justify-between items-center">
+            <h2 class="text-xl font-black italic uppercase italic tracking-tighter">Caja Registradora</h2>
+            <button onclick="closeCart()" class="text-5xl hover:text-orange transition leading-none">&times;</button>
         </div>
         
         <div class="flex-grow overflow-y-auto p-6 space-y-6">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold uppercase text-[9px] opacity-40 tracking-widest italic">Artículos Seleccionados</h3>
-                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button>
+                <h3 class="font-bold uppercase text-[9px] opacity-40 tracking-widest italic">Tus Artículos</h3>
+                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar Todo</button>
             </div>
             
             <div id="cart-items" class="space-y-3"></div>
             
             <!-- PAGO MÓVIL BANESCO -->
-            <div class="glass-card p-5 rounded-[25px] border-orange/30 border text-center">
-                <p class="text-orange font-black uppercase text-[9px] mb-2 tracking-widest italic">Datos Pago Móvil</p>
-                <div class="text-[12px] opacity-80 leading-relaxed">
+            <div class="glass-card p-5 rounded-[25px] border-orange/40 border text-center shadow-inner">
+                <p class="text-orange font-black uppercase text-[10px] mb-2 tracking-widest italic">Información de Pago Móvil</p>
+                <div class="text-[12px] opacity-90 leading-relaxed font-bold">
                     <p>Banco: <b>Banesco</b></p>
                     <p>Cédula: <b>24981262</b></p>
                     <p>Teléfono: <b>04143309639</b></p>
@@ -176,26 +175,26 @@
             </div>
 
             <div class="space-y-3 border-t border-white/10 pt-6">
-                <input type="text" id="cust-name" placeholder="Nombre Completo" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="text" id="cust-name" placeholder="Nombre y Apellido" class="p-4 rounded-xl outline-none w-full text-sm">
                 <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="email" id="cust-email" placeholder="Correo electrónico" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="text" id="cust-ref" placeholder="N° Referencia Pago Móvil" class="p-4 rounded-xl outline-none w-full text-sm font-bold text-orange">
+                <input type="email" id="cust-email" placeholder="Correo para Envío" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp del Cliente" class="p-4 rounded-xl outline-none w-full text-sm">
+                <input type="text" id="cust-ref" placeholder="N° Referencia del Pago" class="p-4 rounded-xl outline-none w-full text-sm font-bold text-orange">
                 
                 <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center">
-                    <label class="text-[9px] font-black text-white/30 uppercase block mb-2 italic tracking-tighter">Subir Foto del Comprobante</label>
+                    <label class="text-[9px] font-black text-white/40 uppercase block mb-2 italic tracking-tighter">Adjuntar Comprobante de Pago</label>
                     <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 mx-auto">
                 </div>
             </div>
         </div>
 
-        <div class="p-6 bg-black/30 space-y-4">
+        <div class="p-6 bg-black/40 space-y-4">
             <div class="flex justify-between items-center">
-                <span class="font-bold opacity-30 uppercase text-[10px]">Total Compra:</span>
+                <span class="font-bold opacity-30 uppercase text-[10px]">Total de la Compra:</span>
                 <span id="cart-total" class="text-3xl font-black text-orange tracking-tighter">$0.00</span>
             </div>
-            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-4 rounded-2xl shadow-xl hover:scale-105 transition uppercase tracking-widest text-md italic">
-                Finalizar Pedido
+            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-4 rounded-2xl shadow-xl hover:scale-105 transition uppercase tracking-widest italic text-lg">
+                Reportar Pago
             </button>
         </div>
     </div>
@@ -204,7 +203,7 @@
     <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()">
         <img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
     </div>
-    <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="toggleCart()"></div>
+    <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="closeCart()"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -228,50 +227,68 @@
         let allOrders = [];
         let currentStatusFilter = 'revision';
 
-        // NAVEGACIÓN
+        // NAVEGACIÓN CORREGIDA
         window.showSection = (id) => {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`section-${id}`).classList.remove('hidden');
         };
-        window.toggleCart = () => {
-            document.getElementById('cart-sidebar').classList.toggle('translate-x-full');
-            document.getElementById('cart-overlay').classList.toggle('hidden');
+
+        window.openCart = () => {
+            document.getElementById('cart-sidebar').classList.remove('translate-x-full');
+            document.getElementById('cart-overlay').classList.remove('hidden');
         };
+
+        window.closeCart = () => {
+            document.getElementById('cart-sidebar').classList.add('translate-x-full');
+            document.getElementById('cart-overlay').classList.add('hidden');
+        };
+
+        window.toggleCart = () => {
+             // Esta función ya no es necesaria, usamos open/close independientes
+             const sidebar = document.getElementById('cart-sidebar');
+             if(sidebar.classList.contains('translate-x-full')) openCart();
+             else closeCart();
+        };
+
         window.switchTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.remove('hidden');
             if(event) event.currentTarget.classList.add('active');
         };
+
         window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
 
-        // AUTH
+        // LOGIN
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             try {
                 await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value);
                 showSection('admin-panel');
-            } catch (err) { alert("Acceso No Autorizado."); }
+            } catch (err) { alert("Acceso denegado."); }
         };
         window.logout = () => signOut(auth).then(() => showSection('home'));
 
-        // PRODUCTOS - DISEÑO COMPACTO Y DESCRIPCIÓN COMPLETA
+        // PRODUCTOS - CORRECCIÓN DE AGREGADO MÚLTIPLE
         onSnapshot(collection(db, "productos"), (snap) => {
             const grid = document.getElementById('products-grid');
             const adminList = document.getElementById('admin-products-list');
             grid.innerHTML = ''; adminList.innerHTML = '';
             snap.forEach(d => {
                 const p = d.data();
+                // Limpiar nombre para el botón
+                const cleanName = p.nombre.replace(/'/g, "\\'");
+                
                 grid.innerHTML += `
                     <div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full">
-                        <img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 shadow-sm">
+                        <img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 shadow-sm border border-white/5">
                         <div class="px-1 flex-grow">
                             <h3 class="font-black text-[9px] uppercase italic text-orange leading-tight mb-1">${p.nombre}</h3>
                             <p class="text-[8px] opacity-50 font-medium leading-normal mb-3 whitespace-pre-line">${p.descripcion}</p>
                         </div>
                         <div class="mt-auto flex justify-between items-center bg-white/5 p-2 rounded-2xl">
                             <span class="text-lg font-black text-white ml-1">$${p.precio}</span>
-                            <button onclick="addToCart('${p.nombre}', ${p.precio})" class="bg-orange text-white px-3 py-1.5 rounded-full font-bold text-[8px] uppercase tracking-tighter hover:scale-105 transition">Comprar</button>
+                            <button onclick="addToCart('${cleanName}', ${p.precio})" class="bg-orange text-white px-3 py-1.5 rounded-full font-bold text-[8px] uppercase tracking-tighter hover:scale-105 transition">Comprar</button>
                         </div>
                     </div>`;
                 adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold tracking-widest"><span>${p.nombre}</span> <button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
@@ -289,19 +306,26 @@
             e.target.reset();
         };
 
-        window.deleteProduct = (id) => confirm("¿Eliminar producto?") && deleteDoc(doc(db, "productos", id));
-        window.addToCart = (nombre, precio) => { cart.push({nombre, precio}); updateCartUI(); toggleCart(); };
+        window.deleteProduct = (id) => confirm("¿Eliminar?") && deleteDoc(doc(db, "productos", id));
+
+        // CARRITO - LÓGICA CORREGIDA PARA SIEMPRE ABRIR
+        window.addToCart = (nombre, precio) => {
+            cart.push({nombre, precio});
+            updateCartUI();
+            openCart(); // Forzamos abrir el carrito cada vez que se agrega algo
+        };
+
         window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
         window.clearCart = () => { cart = []; updateCartUI(); };
 
         function updateCartUI() {
             const container = document.getElementById('cart-items');
             const total = cart.reduce((s,i) => s + i.precio, 0);
-            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Vacio</p>' : 
+            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Caja vacía</p>' : 
                 cart.map((item, i) => `
                 <div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-2 border-orange">
                     <div><p class="font-bold text-[9px] uppercase">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div>
-                    <button onclick="removeFromCart(${i})" class="text-red-400 p-2"><i class="fas fa-times text-xs"></i></button>
+                    <button onclick="removeFromCart(${i})" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-times text-xs"></i></button>
                 </div>`).join('');
             document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
             document.getElementById('cart-count').innerText = cart.length;
@@ -338,10 +362,10 @@
             const fileInput = document.getElementById('cust-file');
             const file = fileInput.files[0];
 
-            if(cart.length === 0 || !name || !email || !wha || !ref || !file) return alert("Completa todos los datos obligatorios.");
+            if(cart.length === 0 || !name || !email || !wha || !ref || !file) return alert("Por favor, completa todos los datos obligatorios.");
 
             const btn = document.getElementById('btn-confirm');
-            btn.disabled = true; btn.innerText = "ENVIANDO REPORTE...";
+            btn.disabled = true; btn.innerText = "PROCESANDO ENVÍO...";
 
             try {
                 const imgBase64 = await compressImage(file);
@@ -352,15 +376,19 @@
                     fecha: new Date().toLocaleString(), 
                     estatus: "revision"
                 });
-                alert("¡Pedido realizado con éxito!");
-                cart = []; updateCartUI(); toggleCart();
+                alert("¡Pedido enviado correctamente!");
+                
+                // Limpieza total del formulario y carrito
+                cart = []; 
+                updateCartUI(); 
+                closeCart();
                 document.getElementById('cust-name').value = "";
                 document.getElementById('cust-cedula').value = "";
                 document.getElementById('cust-email').value = "";
                 document.getElementById('cust-wha').value = "";
                 document.getElementById('cust-ref').value = "";
                 fileInput.value = "";
-            } catch (e) { alert("Error al enviar."); }
+            } catch (e) { alert("Error al enviar el pedido."); }
             finally { btn.disabled = false; btn.innerText = "Finalizar Pedido"; }
         };
 
@@ -388,14 +416,14 @@
                         <span class="text-[12px] font-black uppercase text-orange italic">Venta #${o.id.slice(0,5)}</span>
                         <p class="text-[8px] opacity-30 uppercase">${o.fecha}</p>
                     </div>
-                    <div class="text-[12px] font-bold space-y-1">
+                    <div class="text-[14px] font-bold space-y-1">
                         <p>CLIENTE: <span class="font-normal opacity-70">${o.cliente}</span></p>
                         <p>WHA: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
                         <p>EMAIL: <span class="font-normal opacity-70">${o.email}</span></p>
                         <p>REF: <span class="font-black text-orange">${o.referencia}</span></p>
                     </div>
                     <div class="bg-black/40 p-2 rounded-xl text-[8px] opacity-50 italic">Items: ${o.items.map(i => i.nombre).join(', ')}</div>
-                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl cursor-zoom-in border border-white/5">
+                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl cursor-zoom-in border border-white/5 grayscale hover:grayscale-0 transition duration-500">
                     <div class="grid grid-cols-2 gap-2 mt-2">
                         <button onclick="updateOrderStatus('${o.id}', 'confirmado')" class="bg-green-500/20 text-green-400 text-[8px] font-black py-2 rounded-lg uppercase border border-green-500/10 hover:bg-green-500 hover:text-white transition">Confirmar</button>
                         <button onclick="updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-500/20 text-red-400 text-[8px] font-black py-2 rounded-lg uppercase border border-red-500/10 hover:bg-red-500 hover:text-white transition">Rechazar</button>
