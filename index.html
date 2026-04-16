@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Store - Liquid Glass Vibrant</title>
+    <title>Digital Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- EmailJS SDK -->
@@ -377,7 +377,7 @@
                     const pSnap = await getDocs(q);
                     pSnap.forEach(pd => links += `<div style="margin-bottom:15px"><strong>${pd.data().nombre}</strong><br><a href="${pd.data().linkDescarga}" style="background:#f37021;color:white;padding:12px 20px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-family:Arial,sans-serif;">DESCARGAR ARCHIVO AQUÍ</a></div>`);
                 }
-                await emailjs.send("service_j0103m2", "template_4edqmb2", { to_name: order.cliente, to_email: order.email, download_links: links });
+                await emailjs.send("service_4edqmb2","template_j0103m2", { to_name: order.cliente, to_email: order.email, download_links: links });
                 await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
                 alert("¡Pago confirmado y enviado!");
             } catch (e) { alert("Error en EmailJS: Verifica tus IDs."); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
