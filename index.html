@@ -3,149 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Store</title>
+    <title>Digital Store - Liquid Glass Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
-        
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --charrito-orange: #f37021;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%);
-            background-attachment: fixed;
-            color: white;
-            min-height: 100vh;
-        }
-
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--charrito-orange);
-        }
-
-        .text-orange { color: var(--charrito-orange); }
-        .bg-orange { background-color: var(--charrito-orange); }
-
+        :root { --glass-bg: rgba(255, 255, 255, 0.06); --glass-border: rgba(255, 255, 255, 0.1); --orange: #f37021; }
+        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%); background-attachment: fixed; color: white; min-height: 100vh; }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); transition: 0.3s; }
         .sidebar-transition { transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); }
-        .admin-tab.active { border-bottom: 2px solid var(--charrito-orange); color: white; background: rgba(255,255,255,0.05); }
-        .sub-tab.active { background: var(--charrito-orange); color: white; }
-        
-        input, select, textarea {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-            outline: none;
-        }
-
+        .admin-tab.active { border-bottom: 3px solid var(--orange); background: rgba(255,255,255,0.05); }
+        .sub-tab.active { background: var(--orange); color: white; }
         .hidden { display: none !important; }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--charrito-orange); border-radius: 10px; }
+        input, select, textarea { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; outline: none; }
     </style>
 </head>
 <body>
 
     <!-- NAVBAR -->
-    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-xl">
         <div class="flex items-center space-x-2 cursor-pointer" onclick="showSection('home')">
             <img id="site-logo" src="https://via.placeholder.com/100?text=LOGO" class="w-10 h-10 rounded-full border border-white/20">
-            <h1 class="font-black text-lg uppercase italic tracking-tighter text-white">Digital<span class="text-orange">Store</span></h1>
+            <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-[#f37021]">Store</span></h1>
         </div>
         <div class="flex items-center space-x-4">
-            <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
-                <i class="fas fa-shopping-basket text-lg text-white"></i>
-                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+            <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-[#f37021] transition">
+                <i class="fas fa-shopping-basket text-lg"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-[#f37021] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">0</span>
             </button>
-            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl text-white"><i class="fas fa-cog"></i></button>
+            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl"><i class="fas fa-cog"></i></button>
         </div>
     </nav>
 
-    <!-- SECCIÓN: HOME -->
-    <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-8">
-        <div class="text-center mb-10">
-            <h2 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter">Catálogo <span class="text-orange">Digital</span></h2>
-            <p class="text-white/30 uppercase text-[8px] tracking-[0.6em] mt-1 italic">Tus archivos favoritos a un click</p>
+    <!-- SECCIÓN HOME -->
+    <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10">
+        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Cargando... -->
         </div>
-        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
     </section>
 
-    <!-- SECCIÓN: LOGIN -->
+    <!-- LOGIN -->
     <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center">
         <div class="glass p-10 rounded-[40px] w-full max-w-md">
-            <h2 class="text-2xl font-black mb-8 uppercase italic tracking-widest text-orange">Admin Login</h2>
+            <h2 class="text-2xl font-black mb-8 uppercase italic text-orange">Admin Access</h2>
             <form id="login-form" class="space-y-4">
-                <input type="email" id="admin-email" placeholder="Usuario" class="w-full p-4 rounded-2xl" required>
+                <input type="email" id="admin-email" placeholder="Correo" class="w-full p-4 rounded-2xl" required>
                 <input type="password" id="admin-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl" required>
-                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase">Entrar</button>
+                <button type="submit" class="w-full bg-[#f37021] text-white font-black py-4 rounded-2xl uppercase">Entrar</button>
             </form>
         </div>
     </section>
 
-    <!-- SECCIÓN: PANEL ADMIN -->
+    <!-- PANEL ADMIN -->
     <section id="section-admin-panel" class="section hidden p-4">
         <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
-            <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
-                <h2 class="text-lg font-black italic uppercase">Administración</h2>
-                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Salir</button>
+            <div class="p-6 flex justify-between bg-black/20">
+                <h2 class="text-lg font-black italic uppercase">Administrador</h2>
+                <button onclick="logout()" class="bg-red-500/20 px-5 py-2 rounded-full text-[9px]">SALIR</button>
             </div>
-            
-            <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
+            <div class="flex bg-black/10 text-[9px] uppercase font-bold tracking-widest">
                 <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
                 <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
                 <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Logo</button>
             </div>
-
             <div class="p-6">
-                <!-- Tab Productos Editable -->
+                <!-- TAB PRODUCTOS -->
                 <div id="tab-products" class="tab-content">
-                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10">
-                        <h3 id="form-title" class="col-span-full text-xs font-black text-orange uppercase italic mb-2 tracking-widest">Añadir Nuevo Producto</h3>
-                        <input type="text" id="p-name" placeholder="Nombre del Producto" class="p-3 rounded-xl" required>
+                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl">
+                        <input type="text" id="p-name" placeholder="Nombre Producto" class="p-3 rounded-xl" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
-                        <textarea id="p-desc" placeholder="Descripción detallada..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
-                        <input type="text" id="p-img" placeholder="URL de la Imagen" class="p-3 rounded-xl col-span-full" required>
-                        
+                        <textarea id="p-desc" placeholder="Descripción..." class="p-3 rounded-xl col-span-full h-20 resize-none" required></textarea>
+                        <input type="text" id="p-img" placeholder="URL Imagen Portada" class="p-3 rounded-xl col-span-full" required>
+                        <input type="text" id="p-link" placeholder="Link Descarga (PDF)" class="p-3 rounded-xl col-span-full" required>
                         <div class="col-span-full flex gap-2">
-                            <button id="btn-submit-product" type="submit" class="flex-grow bg-orange text-white font-black rounded-xl py-3 uppercase text-xs tracking-widest transition hover:bg-orange/80">Publicar en Tienda</button>
-                            <button id="btn-cancel-edit" type="button" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[10px] font-bold uppercase">Cancelar</button>
+                            <button id="btn-submit-product" type="submit" class="flex-grow bg-[#f37021] py-3 rounded-xl font-bold uppercase text-xs">Guardar</button>
+                            <button id="btn-cancel-edit" type="button" onclick="cancelProductEdit()" class="hidden bg-gray-600 px-6 rounded-xl text-[10px]">CANCELAR</button>
                         </div>
                     </form>
                     <div id="admin-products-list" class="grid gap-2"></div>
                 </div>
-
-                <!-- Tab Ventas -->
-                <div id="tab-orders" class="tab-content hidden space-y-6">
+                <!-- TAB VENTAS -->
+                <div id="tab-orders" class="tab-content hidden">
                     <div class="flex justify-center gap-2 mb-6">
-                        <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">En Revisión</button>
-                        <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">Confirmados</button>
-                        <button onclick="filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">Rechazados</button>
+                        <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-4 py-2 rounded-full text-[9px] glass-card uppercase font-bold">Nuevos</button>
+                        <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-4 py-2 rounded-full text-[9px] glass-card uppercase font-bold">Confirmados</button>
+                        <button onclick="filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-4 py-2 rounded-full text-[9px] glass-card uppercase font-bold">Rechazados</button>
                     </div>
                     <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
-
-                <div id="tab-config" class="tab-content hidden text-center space-y-4">
-                    <input type="text" id="new-logo-url" placeholder="URL del Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
-                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
+                <div id="tab-config" class="tab-content hidden text-center">
+                    <input type="text" id="new-logo-url" placeholder="URL Logo" class="p-4 rounded-xl w-full max-w-md mb-4">
+                    <button onclick="updateLogo()" class="bg-[#f37021] px-8 py-3 rounded-xl font-black text-xs uppercase block mx-auto">Actualizar</button>
                 </div>
             </div>
         </div>
@@ -154,110 +105,76 @@
     <!-- CARRITO SIDEBAR -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
         <div class="p-6 bg-black/40 flex justify-between items-center">
-            <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Compra</h2>
-            <button onclick="closeCart()" class="text-5xl hover:text-orange transition leading-none">&times;</button>
+            <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Carrito</h2>
+            <button onclick="closeCart()" class="text-5xl hover:text-orange transition">&times;</button>
         </div>
-        
         <div class="flex-grow overflow-y-auto p-6 space-y-6">
             <div id="cart-items" class="space-y-3"></div>
-            
-            <!-- PAGO MÓVIL BANESCO -->
-            <div class="glass-card p-5 rounded-[25px] border-orange/40 border text-center">
-                <p class="text-orange font-black uppercase text-[9px] mb-2 tracking-widest italic">Datos Pago Móvil</p>
-                <div class="text-[12px] opacity-90">
-                    <p>Banco: <b>Banesco</b></p>
-                    <p>Cédula: <b>24981262</b></p>
-                    <p>Teléfono: <b>04143309639</b></p>
-                </div>
+            <div class="glass-card p-5 rounded-[25px] border-orange border text-center">
+                <p class="text-orange font-black uppercase text-[10px] mb-2 tracking-widest italic">Pago Móvil Banesco</p>
+                <div class="text-[12px] opacity-90 italic"><b>Banesco | 24.981.262 | 0414.330.9639</b></div>
             </div>
-
-            <div class="space-y-3 border-t border-white/10 pt-6">
-                <input type="text" id="cust-name" placeholder="Nombre Completo" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="email" id="cust-email" placeholder="Correo electrónico" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl outline-none w-full text-sm">
-                <input type="text" id="cust-ref" placeholder="N° Referencia Pago Móvil" class="p-4 rounded-xl outline-none w-full text-sm font-bold text-orange">
-                
+            <div class="space-y-3 pt-6 border-t border-white/10">
+                <input type="text" id="cust-name" placeholder="Nombre Completo" class="p-4 rounded-xl w-full text-sm">
+                <input type="email" id="cust-email" placeholder="Email (Obligatorio)" class="p-4 rounded-xl w-full text-sm">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl w-full text-sm">
+                <input type="text" id="cust-ref" placeholder="N° Referencia Pago" class="p-4 rounded-xl w-full text-sm font-bold text-orange">
                 <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center">
-                    <label class="text-[9px] font-black text-white/40 uppercase block mb-2 italic tracking-tighter">Subir Comprobante</label>
-                    <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 mx-auto">
+                    <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50">
                 </div>
             </div>
         </div>
-
         <div class="p-6 bg-black/40 space-y-4">
-            <div class="flex justify-between items-center">
-                <span class="font-bold opacity-30 uppercase text-[10px]">Total:</span>
-                <span id="cart-total" class="text-3xl font-black text-orange">$0.00</span>
-            </div>
-            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase tracking-widest text-lg italic">
-                Realizar Pedido
-            </button>
+            <div class="flex justify-between items-center font-bold"><span>Total:</span><span id="cart-total" class="text-3xl text-orange">$0.00</span></div>
+            <button onclick="processPayment()" id="btn-confirm" class="w-full bg-[#f37021] py-4 rounded-2xl uppercase font-black italic shadow-xl">Realizar Pedido</button>
         </div>
     </div>
 
     <!-- OVERLAYS -->
-    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()">
-        <img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
-    </div>
+    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg"></div>
     <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="closeCart()"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, updateDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // CONFIGURACIÓN DE TU FIREBASE
-        const firebaseConfig = { 
-            apiKey : "AIzaSyClcdmMyvSfkJZicrRXZEmWT8CWHy5ApcI" , 
-            authDomain : "digitalstore-b109b.firebaseapp.com" , 
-            projectId : "digitalstore-b109b" , 
-            storageBucket : "digitalstore-b109b.firebasestorage.app" , 
-            messagingSenderId : "654989683570" , 
-            appId : "1:654989683570:web:fe9dafa4716855a63d0beb" 
-        };
-
+        const firebaseConfig = { apiKey : "AIzaSyClcdmMyvSfkJZicrRXZEmWT8CWHy5ApcI" , authDomain : "digitalstore-b109b.firebaseapp.com" , projectId : "digitalstore-b109b" , storageBucket : "digitalstore-b109b.firebasestorage.app" , messagingSenderId : "654989683570" , appId : "1:654989683570:web:fe9dafa4716855a63d0beb" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // --- EMAILJS: CAMBIA TU PUBLIC KEY AQUÍ ---
+        emailjs.init("TU_PUBLIC_KEY_AQUI"); 
+
         let cart = [];
         let allOrders = [];
         let currentStatusFilter = 'revision';
-        let editingProductId = null; // ID del producto que se está editando
+        let editingProductId = null;
+        let salesListener = null;
 
-        // NAVEGACIÓN
-        window.showSection = (id) => {
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`section-${id}`).classList.remove('hidden');
-        };
-        window.openCart = () => {
-            document.getElementById('cart-sidebar').classList.remove('translate-x-full');
-            document.getElementById('cart-overlay').classList.remove('hidden');
-        };
-        window.closeCart = () => {
-            document.getElementById('cart-sidebar').classList.add('translate-x-full');
-            document.getElementById('cart-overlay').classList.add('hidden');
-        };
-        window.switchTab = (id) => {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.remove('hidden');
-            if(event) event.currentTarget.classList.add('active');
-        };
+        window.showSection = (id) => { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(`section-${id}`).classList.remove('hidden'); };
+        window.openCart = () => { document.getElementById('cart-sidebar').classList.remove('translate-x-full'); document.getElementById('cart-overlay').classList.remove('hidden'); };
+        window.closeCart = () => { document.getElementById('cart-sidebar').classList.add('translate-x-full'); document.getElementById('cart-overlay').classList.add('hidden'); };
+        window.switchTab = (id) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden')); document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.remove('hidden'); if(event) event.currentTarget.classList.add('active'); };
+
         window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
+        onAuthStateChanged(auth, (user) => { if (user) initSalesListener(); });
 
-        // AUTH
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value);
-                showSection('admin-panel');
-            } catch (err) { alert("Error de acceso."); }
+            try { await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value); showSection('admin-panel'); } catch (err) { alert("Acceso denegado"); }
         };
-        window.logout = () => signOut(auth).then(() => showSection('home'));
 
-        // PRODUCTOS - MOSTRAR Y GESTIONAR
+        function initSalesListener() {
+            if (salesListener) salesListener();
+            salesListener = onSnapshot(collection(db, "pedidos"), (snap) => {
+                allOrders = []; snap.forEach(d => allOrders.push({ id: d.id, ...d.data() })); renderFilteredSales();
+            });
+        }
+        window.logout = () => signOut(auth).then(() => location.reload());
+
+        // PRODUCTOS
         onSnapshot(collection(db, "productos"), (snap) => {
             const grid = document.getElementById('products-grid');
             const adminList = document.getElementById('admin-products-list');
@@ -265,215 +182,104 @@
             snap.forEach(d => {
                 const p = d.data();
                 const cleanName = p.nombre.replace(/'/g, "\\'");
-                
-                // Tienda Principal
-                grid.innerHTML += `
-                    <div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full">
-                        <img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 shadow-sm">
-                        <div class="px-1 flex-grow">
-                            <h3 class="font-black text-[9px] uppercase italic text-orange leading-tight mb-1">${p.nombre}</h3>
-                            <p class="text-[8px] opacity-50 font-medium whitespace-pre-line">${p.descripcion}</p>
-                        </div>
-                        <div class="mt-auto flex justify-between items-center bg-white/5 p-2 rounded-2xl">
-                            <span class="text-lg font-black text-white ml-1">$${p.precio}</span>
-                            <button onclick="addToCart('${cleanName}', ${p.precio})" class="bg-orange text-white px-3 py-1.5 rounded-full font-bold text-[8px] uppercase tracking-tighter hover:scale-105 transition">Comprar</button>
-                        </div>
-                    </div>`;
-                
-                // Lista Inventario Admin
-                adminList.innerHTML += `
-                    <div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold tracking-widest border border-white/5">
-                        <div class="flex items-center gap-3">
-                            <img src="${p.imagen}" class="w-8 h-8 rounded-lg object-cover">
-                            <span>${p.nombre}</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="prepareProductEdit('${d.id}')" class="text-orange p-2 hover:scale-110 transition"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteProduct('${d.id}')" class="text-red-400 p-2 hover:scale-110 transition"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>`;
+                grid.innerHTML += `<div class="glass-card rounded-[25px] overflow-hidden p-3 flex flex-col h-full"><img src="${p.imagen}" class="w-full h-24 object-cover rounded-xl mb-2"><div class="flex-grow"><h3 class="font-black text-[10px] text-orange uppercase leading-tight mb-1">${p.nombre}</h3><p class="text-[8px] opacity-50 whitespace-pre-line">${p.descripcion}</p></div><div class="mt-2 flex justify-between items-center"><span class="text-sm font-bold">$${p.precio}</span><button onclick="addToCart('${cleanName}', ${p.precio})" class="bg-orange px-3 py-1 rounded-full text-[8px] font-bold">Comprar</button></div></div>`;
+                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl text-[9px] items-center uppercase font-bold"><span>${p.nombre}</span><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-1"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div></div>`;
             });
         });
 
-        // FUNCIÓN: PREPARAR EDICIÓN (Subir datos al form)
         window.prepareProductEdit = async (id) => {
-            const docRef = doc(db, "productos", id);
-            const docSnap = await getDoc(docRef);
-            
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                editingProductId = id;
-                
-                // Llenar campos
-                document.getElementById('p-name').value = data.nombre;
-                document.getElementById('p-price').value = data.precio;
-                document.getElementById('p-desc').value = data.descripcion;
-                document.getElementById('p-img').value = data.imagen;
-                
-                // Cambiar UI del Formulario
-                document.getElementById('form-title').innerText = "Editando: " + data.nombre;
-                document.getElementById('btn-submit-product').innerText = "Actualizar Producto";
-                document.getElementById('btn-cancel-edit').classList.remove('hidden');
-                
-                // Scroll suave al formulario
-                document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
+            const snap = await getDoc(doc(db, "productos", id));
+            if (snap.exists()) {
+                const data = snap.data(); editingProductId = id;
+                document.getElementById('p-name').value = data.nombre; document.getElementById('p-price').value = data.precio; document.getElementById('p-desc').value = data.descripcion; document.getElementById('p-img').value = data.imagen; document.getElementById('p-link').value = data.linkDescarga || '';
+                document.getElementById('form-title').innerText = "Editando..."; document.getElementById('btn-submit-product').innerText = "Actualizar"; document.getElementById('btn-cancel-edit').classList.remove('hidden');
             }
         };
 
-        // FUNCIÓN: CANCELAR EDICIÓN
-        window.cancelProductEdit = () => {
-            editingProductId = null;
-            document.getElementById('product-form').reset();
-            document.getElementById('form-title').innerText = "Añadir Nuevo Producto";
-            document.getElementById('btn-submit-product').innerText = "Publicar en Tienda";
-            document.getElementById('btn-cancel-edit').classList.add('hidden');
-        };
+        window.cancelProductEdit = () => { editingProductId = null; document.getElementById('product-form').reset(); document.getElementById('btn-cancel-edit').classList.add('hidden'); };
 
-        // FORM SUBMIT: GUARDAR O ACTUALIZAR PRODUCTO
         document.getElementById('product-form').onsubmit = async (e) => {
             e.preventDefault();
-            const productData = {
-                nombre: document.getElementById('p-name').value,
-                precio: parseFloat(document.getElementById('p-price').value),
-                descripcion: document.getElementById('p-desc').value,
-                imagen: document.getElementById('p-img').value
-            };
-
-            try {
-                if (editingProductId) {
-                    // Actualizar existente
-                    await updateDoc(doc(db, "productos", editingProductId), productData);
-                    alert("¡Producto actualizado!");
-                } else {
-                    // Crear nuevo
-                    await addDoc(collection(db, "productos"), productData);
-                    alert("¡Producto publicado!");
-                }
-                cancelProductEdit(); // Limpiar todo
-            } catch (err) {
-                alert("Error: " + err.message);
-            }
+            const data = { nombre: document.getElementById('p-name').value, precio: parseFloat(document.getElementById('p-price').value), descripcion: document.getElementById('p-desc').value, imagen: document.getElementById('p-img').value, linkDescarga: document.getElementById('p-link').value };
+            try { editingProductId ? await updateDoc(doc(db, "productos", editingProductId), data) : await addDoc(collection(db, "productos"), data); cancelProductEdit(); } catch (e) { alert("Error"); }
         };
 
-        window.deleteProduct = (id) => confirm("¿Eliminar definitivamente?") && deleteDoc(doc(db, "productos", id));
-
-        // --- CARRITO ---
-        window.addToCart = (nombre, precio) => {
-            cart.push({nombre, precio});
-            updateCartUI();
-            openCart();
-        };
-        window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
+        window.deleteProduct = (id) => confirm("¿Eliminar?") && deleteDoc(doc(db, "productos", id));
+        window.addToCart = (n, p) => { cart.push({nombre: n, precio: p}); updateCartUI(); openCart(); };
         window.clearCart = () => { cart = []; updateCartUI(); };
+        window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
 
         function updateCartUI() {
-            const container = document.getElementById('cart-items');
-            const total = cart.reduce((s,i) => s + i.precio, 0);
-            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Caja Vacía</p>' : 
-                cart.map((item, i) => `
-                <div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-2 border-orange">
-                    <div><p class="font-bold text-[9px] uppercase">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div>
-                    <button onclick="removeFromCart(${i})" class="text-red-400 p-2"><i class="fas fa-times text-xs"></i></button>
-                </div>`).join('');
-            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('cart-count').innerText = cart.length;
+            const container = document.getElementById('cart-items'); const total = cart.reduce((s,i) => s + i.precio, 0);
+            container.innerHTML = cart.map((item, i) => `<div class="glass-card flex justify-between p-3 rounded-xl text-[9px] font-bold border-l-2 border-orange"><div><p>${item.nombre}</p><p class="text-orange">$${item.precio}</p></div><button onclick="removeFromCart(${i})" class="text-red-400 p-2"><i class="fas fa-times"></i></button></div>`).join('');
+            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`; document.getElementById('cart-count').innerText = cart.length;
         }
 
-        // COMPRESIÓN IMAGEN
         async function compressImage(file) {
             return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
+                const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
+                    const img = new Image(); img.src = e.target.result;
                     img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
-                        const scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        const canvas = document.createElement('canvas'); const scale = 800 / img.width; canvas.width = 800; canvas.height = img.height * scale;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 800, canvas.height); resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
                 };
             });
         }
 
         window.processPayment = async () => {
-            const file = document.getElementById('cust-file').files[0];
-            const name = document.getElementById('cust-name').value;
-            const email = document.getElementById('cust-email').value;
-            const wha = document.getElementById('cust-wha').value;
-            const ref = document.getElementById('cust-ref').value;
-            if(!name || !email || !wha || !ref || !file || cart.length === 0) return alert("Completa todos los campos.");
-
-            const btn = document.getElementById('btn-confirm');
-            btn.disabled = true; btn.innerText = "PROCESANDO...";
-
+            const file = document.getElementById('cust-file').files[0]; const name = document.getElementById('cust-name').value; const email = document.getElementById('cust-email').value; const refNum = document.getElementById('cust-ref').value;
+            if(!name || !email || !refNum || !file || cart.length === 0) return alert("Completa todos los datos.");
+            const btn = document.getElementById('btn-confirm'); btn.disabled = true; btn.innerText = "PROCESANDO...";
             try {
-                const imgBase = await compressImage(file);
-                await addDoc(collection(db, "pedidos"), {
-                    cliente: name, cedula: document.getElementById('cust-cedula').value,
-                    email: email, whatsapp: wha, referencia: ref, 
-                    fotoComprobante: imgBase, items: cart, 
-                    total: cart.reduce((s,i) => s + i.precio, 0),
-                    fecha: new Date().toLocaleString(), estatus: "revision"
-                });
-                alert("¡Pedido realizado!");
-                cart = []; updateCartUI(); closeCart();
-                document.getElementById('cust-file').value = "";
-            } catch (e) { alert("Error"); }
-            finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
+                const img = await compressImage(file);
+                await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: document.getElementById('cust-wha').value, referencia: refNum, fotoComprobante: img, items: cart, total: cart.reduce((s,i) => s + i.precio, 0), fecha: new Date().toLocaleString(), estatus: "revision" });
+                alert("Pedido enviado!"); cart = []; updateCartUI(); closeCart();
+            } catch (e) { alert("Error"); } finally { btn.disabled = false; btn.innerText = "Finalizar Pedido"; }
         };
 
-        // GESTIÓN VENTAS ADMIN
-        onSnapshot(collection(db, "pedidos"), (snap) => {
-            allOrders = [];
-            snap.forEach(d => allOrders.push({ id: d.id, ...d.data() }));
-            renderFilteredSales();
-        });
-
-        window.filterSales = (status) => {
-            currentStatusFilter = status;
-            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-f-${status}`).classList.add('active');
-            renderFilteredSales();
-        };
+        window.filterSales = (status) => { currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales(); };
 
         function renderFilteredSales() {
-            const container = document.getElementById('sales-container');
-            const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
+            const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
             container.innerHTML = filtered.map(o => `
-                <div class="glass-card p-5 rounded-[30px] border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'}">
-                    <div class="flex justify-between items-start mb-2"><span class="text-[10px] font-black text-orange uppercase italic">ID: ${o.id.slice(0,5)}</span><p class="text-[8px] opacity-30">${o.fecha}</p></div>
-                    <div class="text-[11px] font-bold space-y-1">
-                        <p>Cliente: <span class="font-normal opacity-70 uppercase">${o.cliente}</span></p>
-                        <p>Wha: <span class="text-green-400">${o.whatsapp}</span></p>
-                        <p>Ref: <span class="text-orange">${o.referencia}</span></p>
+                <div class="glass-card p-4 rounded-[25px] flex flex-col gap-2 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'}">
+                    <p class="text-[10px] font-bold uppercase">${o.cliente}</p>
+                    <p class="text-[8px] opacity-60">REF: ${o.referencia} | Email: ${o.email}</p>
+                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-20 object-cover rounded-xl cursor-zoom-in">
+                    <div class="grid grid-cols-1 gap-2 mt-2">
+                        ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}')" class="bg-green-500/20 text-green-400 text-[8px] py-2 rounded-lg border border-green-500/20 font-bold uppercase italic">Confirmar y Enviar</button>` : ''}
+                        <button onclick="updateStatus('${o.id}', 'rechazado')" class="bg-red-500/20 text-red-400 text-[8px] py-2 rounded-lg border border-red-500/10 font-bold uppercase">Rechazar</button>
+                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-30 text-[7px] uppercase">Borrar Registro</button>
                     </div>
-                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-3 cursor-zoom-in">
-                    <div class="grid grid-cols-2 gap-2 mt-4">
-                        <button onclick="updateOrderStatus('${o.id}', 'confirmado')" class="bg-green-500/20 text-green-400 text-[8px] font-black py-2 rounded-lg uppercase border border-green-500/10">Confirmar</button>
-                        <button onclick="updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-500/20 text-red-400 text-[8px] font-black py-2 rounded-lg uppercase border border-red-500/10">Rechazar</button>
-                    </div>
-                    <p class="text-xl font-black text-right italic mt-2">$${o.total}</p>
+                    <p class="text-xl font-black text-right italic">$${o.total}</p>
                 </div>`).join('');
         }
 
-        window.updateOrderStatus = async (id, s) => { await updateDoc(doc(db, "pedidos", id), { estatus: s }); };
+        window.confirmAndSend = async (id) => {
+            const snap = await getDoc(doc(db, "pedidos", id)); const order = snap.data();
+            if(!confirm("¿Confirmar y enviar archivos?")) return;
+            const btn = event.currentTarget; btn.innerText = "ENVIANDO..."; btn.disabled = true;
+            try {
+                let links = "";
+                for (let item of order.items) {
+                    const q = query(collection(db, "productos"), where("nombre", "==", item.nombre));
+                    const pSnap = await getDocs(q);
+                    pSnap.forEach(pd => links += `<div style="margin-bottom:15px"><strong>${pd.data().nombre}</strong><br><a href="${pd.data().linkDescarga}" style="background:#f37021;color:white;padding:10px;text-decoration:none;border-radius:5px;display:inline-block">DESCARGAR AQUÍ</a></div>`);
+                }
+                await emailjs.send("service_4ed4v3r", "template_65q7chg", { to_name: order.cliente, to_email: order.email, download_links: links });
+                await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
+                alert("Enviado!");
+            } catch (e) { alert("Error al enviar"); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
+        };
+
+        window.updateStatus = async (id, s) => { await updateDoc(doc(db, "pedidos", id), { estatus: s }); };
+        window.deleteOrder = (id) => confirm("¿Eliminar?") && deleteDoc(doc(db, "pedidos", id));
         window.openImageOverlay = (s) => { document.getElementById('overlay-img').src = s; document.getElementById('image-overlay').classList.remove('hidden'); };
         window.closeImageOverlay = () => document.getElementById('image-overlay').classList.add('hidden');
-
-        // LOGO
-        window.updateLogo = async () => {
-            const url = document.getElementById('new-logo-url').value;
-            await setDoc(doc(db, "settings", "site"), { logoUrl: url });
-            alert("Logo actualizado");
-        };
+        window.updateLogo = async () => { const url = document.getElementById('new-logo-url').value; await setDoc(doc(db, "settings", "site"), { logoUrl: url }); alert("Logo actualizado"); };
         onSnapshot(doc(db, "settings", "site"), d => { if(d.exists()) document.getElementById('site-logo').src = d.data().logoUrl; });
-
     </script>
 </body>
 </html>
