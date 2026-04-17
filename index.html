@@ -35,28 +35,141 @@
     <!-- NAVBAR -->
     <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2 cursor-pointer" onclick="showSection('home')">
-            <img id="site-logo" src="https://via.placeholder.com/100?text=LOGO" class="w-10 h-10 rounded-full border border-white/20 shadow-lg">
+            <img id="site-logo" src="https://via.placeholder.com/100?text=LOGO" class="w-10 h-10 rounded-full border border-white/20">
             <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-orange">Store</span></h1>
         </div>
         <div class="flex items-center space-x-4">
             <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
-                <i class="fas fa-shopping-basket text-lg"></i>
-                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-white">0</span>
+                <i class="fas fa-shopping-basket text-lg text-white"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">0</span>
             </button>
-            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl"><i class="fas fa-cog"></i></button>
+            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl text-white"><i class="fas fa-cog"></i></button>
         </div>
     </nav>
 
-    <!-- HOME -->
+    <!-- CATÁLOGO -->
     <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10">
-        <div class="text-center mb-10">
-            <h2 class="text-5xl font-black italic uppercase tracking-tighter">CATÁLOGO <span class="text-orange">DIGITAL</span></h2>
-            <p class="text-white/30 uppercase text-[8px] tracking-[0.5em] mt-1">Archivos Premium / Entrega Inmediata</p>
-        </div>
         <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 text-center"></div>
     </section>
 
-    <!-- LOGIN -->
+    <!-- ADMIN PANEL -->
+    <section id="section-admin-panel" class="section hidden p-4">
+        <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
+            <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
+                <h2 class="text-lg font-black italic uppercase">Panel de Control</h2>
+                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Cerrar Sesión</button>
+            </div>
+            <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
+                <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
+                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
+                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Diseño</button>
+            </div>
+            <div class="p-6">
+                <div id="tab-products" class="tab-content">
+                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-xl">
+                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2">Gestionar Producto</h3>
+                        <input type="text" id="p-name" placeholder="Nombre" class="p-3 rounded-xl" required>
+                        <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
+                        <textarea id="p-desc" placeholder="Descripción..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
+                        <input type="text" id="p-img" placeholder="URL Imagen" class="p-3 rounded-xl col-span-full" required>
+                        <input type="text" id="p-link" placeholder="Link de descarga" class="p-3 rounded-xl col-span-full border-orange/40" required>
+                        <div class="col-span-full flex gap-2">
+                            <button id="btn-submit-product" type="submit" class="flex-grow bg-orange text-white font-black rounded-xl py-3 uppercase text-[10px] italic">Guardar</button>
+                            <button id="btn-cancel-edit" type="button" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[9px] font-bold uppercase italic">Cancelar</button>
+                        </div>
+                    </form>
+                    <div id="admin-products-list" class="grid gap-2"></div>
+                </div>
+
+                <div id="tab-orders" class="tab-content hidden space-y-6">
+                    <div class="flex justify-center gap-2 mb-8">
+                        <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-6 py-2.5 rounded-full text-[10px] uppercase font-black italic">En Revisión</button>
+                        <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-6 py-2.5 rounded-full text-[10px] uppercase font-black italic">Confirmados</button>
+                        <button onclick="filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-6 py-2.5 rounded-full text-[10px] uppercase font-black italic">Rechazados</button>
+                    </div>
+                    <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div id="tab-config" class="tab-content hidden text-center space-y-4">
+                    <input type="text" id="new-logo-url" placeholder="URL Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
+                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARRITO SIDEBAR -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
+        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Pedido</h2>
+                <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center">
+                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5">BCV del día</span>
+                    <span id="bcv-rate-display" class="text-[11px] font-black text-orange italic">---</span>
+                </div>
+            </div>
+            <button onclick="closeCart()" class="text-5xl hover:text-orange transition leading-none">&times;</button>
+        </div>
+
+        <div class="flex-grow overflow-y-auto p-6 space-y-6">
+            <div class="flex justify-between items-center"><h3 class="font-bold uppercase text-[9px] opacity-20 tracking-widest italic">Artículos en Caja</h3><button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button></div>
+            <div id="cart-items" class="space-y-3"></div>
+            
+            <div class="glass-card p-5 rounded-[25px] border-orange/40 border text-center shadow-inner">
+                <p class="text-orange font-black uppercase text-[10px] mb-2 italic">Pago Móvil Banesco</p>
+                <p class="text-[11px] opacity-90 font-bold italic">24.981.262 | 0414.330.9639</p>
+            </div>
+
+            <div class="space-y-3 border-t border-white/10 pt-6">
+                <input type="text" id="cust-name" placeholder="Nombre completo" class="p-4 rounded-xl w-full text-sm">
+                <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl w-full text-sm">
+                <input type="email" id="cust-email" placeholder="Correo (Archivos)" class="p-4 rounded-xl w-full text-sm">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl w-full text-sm">
+                <input type="text" id="cust-ref" placeholder="N° Referencia Pago" class="p-4 rounded-xl w-full text-sm font-black text-orange">
+                <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 w-full mt-2">
+            </div>
+        </div>
+
+        <div class="p-6 bg-black/40 space-y-4">
+            <div class="flex justify-between items-center font-bold px-2">
+                <span class="opacity-30 uppercase text-[10px]">Total Final:</span>
+                <div class="text-right">
+                    <div id="cart-total" class="text-3xl font-black text-orange">$0.00</div>
+                    <div id="cart-total-bs" class="text-xs text-white/60 font-black italic">Bs 0,00</div>
+                </div>
+            </div>
+            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-5 rounded-2xl uppercase tracking-widest text-lg italic shadow-xl">Realizar Pedido</button>
+        </div>
+    </div>
+
+    <!-- OVERLAYS: SISTEMA DE MENSAJES ADMIN -->
+    <div id="admin-msg-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex items-center justify-center p-4">
+        <div class="glass-card p-10 rounded-[40px] max-w-sm w-full text-center space-y-6">
+            <div id="msg-icon" class="text-5xl"></div>
+            <h3 id="msg-title" class="text-xl font-black uppercase italic tracking-tighter"></h3>
+            <p id="msg-body" class="text-sm opacity-60"></p>
+            <button onclick="closeAdminMsg()" class="bg-white text-black font-black px-8 py-3 rounded-2xl uppercase text-[10px]">Entendido</button>
+        </div>
+    </div>
+
+    <!-- SUCCESS OVERLAY (Recibo) -->
+    <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4">
+        <div class="max-w-md w-full flex flex-col items-center gap-6">
+            <div id="receipt-content" class="bg-white text-black p-8 rounded-[40px] w-full shadow-2xl text-center">
+                <h2 class="text-xl font-black uppercase italic mb-2">Pedido Recibido</h2>
+                <p id="rec-id" class="text-[10px] font-black text-orange-600 mb-4"></p>
+                <div id="rec-items-list" class="text-left text-[10px] border-t border-b py-4 my-4 space-y-2"></div>
+                <div class="bg-gray-100 p-4 rounded-3xl mb-4">
+                    <p id="rec-total-usd" class="text-2xl font-black"></p>
+                    <p id="rec-total-bs" class="text-xs font-bold text-gray-500"></p>
+                </div>
+                <button onclick="downloadReceiptPDF()" class="bg-black text-white px-6 py-2 rounded-full text-[9px] uppercase font-bold mb-2">Descargar PDF</button>
+            </div>
+            <button onclick="location.reload()" class="bg-orange text-white w-full py-4 rounded-2xl font-black italic">FINALIZAR</button>
+        </div>
+    </div>
+
+    <!-- LOGIN OVERLAY -->
     <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center">
         <div class="glass p-10 rounded-[40px] w-full max-w-md">
             <h2 class="text-2xl font-black mb-8 uppercase italic text-orange">Admin Access</h2>
@@ -68,119 +181,8 @@
         </div>
     </section>
 
-    <!-- ADMIN PANEL -->
-    <section id="section-admin-panel" class="section hidden p-4">
-        <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
-            <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
-                <h2 class="text-lg font-black italic uppercase">Panel Administrativo</h2>
-                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold transition uppercase">Cerrar Sesión</button>
-            </div>
-            <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10 text-center">
-                <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
-                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
-                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Diseño</button>
-            </div>
-
-            <div class="p-6 text-center">
-                <!-- Inventario -->
-                <div id="tab-products" class="tab-content text-center">
-                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10">
-                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2">Gestionar Producto</h3>
-                        <input type="text" id="p-name" placeholder="Nombre" class="p-3 rounded-xl" required>
-                        <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
-                        <textarea id="p-desc" placeholder="Descripción..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
-                        <input type="text" id="p-img" placeholder="URL Imagen" class="p-3 rounded-xl col-span-full" required>
-                        <input type="text" id="p-link" placeholder="Link descarga" class="p-3 rounded-xl col-span-full" required>
-                        <div class="col-span-full flex gap-2">
-                            <button id="btn-submit-product" type="submit" class="flex-grow bg-orange text-white font-black rounded-xl py-3 uppercase text-[10px]">Guardar</button>
-                            <button id="btn-cancel-edit" type="button" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[9px] font-bold">Cancelar</button>
-                        </div>
-                    </form>
-                    <div id="admin-products-list" class="grid gap-2"></div>
-                </div>
-
-                <!-- Ventas -->
-                <div id="tab-orders" class="tab-content hidden space-y-6">
-                    <div class="flex justify-center gap-2 mb-8">
-                        <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-6 py-2.5 rounded-full text-[10px] uppercase font-black">En Revisión</button>
-                        <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-6 py-2.5 rounded-full text-[10px] uppercase font-black">Confirmados</button>
-                        <button onclick="filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-6 py-2.5 rounded-full text-[10px] uppercase font-black">Rechazados</button>
-                    </div>
-                    <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                </div>
-
-                <!-- Config -->
-                <div id="tab-config" class="tab-content hidden text-center space-y-4">
-                    <input type="text" id="new-logo-url" placeholder="URL Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
-                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CARRITO SIDEBAR -->
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl">
-            <div class="flex items-center gap-3">
-                <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Pedido</h2>
-                <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center">
-                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5">BCV del día</span>
-                    <span id="bcv-rate-display" class="text-[11px] font-black text-orange italic">---</span>
-                </div>
-            </div>
-            <button onclick="closeCart()" class="text-5xl hover:text-orange transition leading-none">&times;</button>
-        </div>
-
-        <div class="flex-grow overflow-y-auto p-6 space-y-6 text-center">
-            <div class="flex justify-between items-center"><h3 class="font-bold uppercase text-[9px] opacity-20 tracking-widest italic">Artículos en Caja</h3><button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button></div>
-            <div id="cart-items" class="space-y-3"></div>
-            
-            <div class="glass-card p-5 rounded-[25px] border-orange/40 border text-center">
-                <p class="text-orange font-black uppercase text-[10px] mb-2 italic">Pago Móvil Banesco</p>
-                <p class="text-[11px] opacity-90 font-bold">24.981.262 | 0414.330.9639</p>
-            </div>
-
-            <div class="space-y-3 border-t border-white/10 pt-6">
-                <input type="text" id="cust-name" placeholder="Nombre completo" class="p-4 rounded-xl w-full text-sm">
-                <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl w-full text-sm">
-                <input type="email" id="cust-email" placeholder="Correo para el envío" class="p-4 rounded-xl w-full text-sm">
-                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl w-full text-sm">
-                <input type="text" id="cust-ref" placeholder="N° Referencia Pago" class="p-4 rounded-xl w-full text-sm font-black text-orange">
-                <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 w-full mt-2">
-            </div>
-        </div>
-
-        <div class="p-6 bg-black/40 space-y-4 text-center">
-            <div class="flex justify-between items-center font-bold px-2">
-                <span class="opacity-30 uppercase text-[10px]">Total:</span>
-                <div class="text-right">
-                    <div id="cart-total" class="text-3xl font-black text-orange">$0.00</div>
-                    <div id="cart-total-bs" class="text-xs text-white/60 font-black italic">Bs 0,00</div>
-                </div>
-            </div>
-            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-5 rounded-2xl uppercase tracking-widest text-lg italic shadow-xl">Realizar Pedido</button>
-        </div>
-    </div>
-
-    <!-- SUCCESS OVERLAY (Recibo) -->
-    <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4">
-        <div class="max-w-md w-full flex flex-col items-center gap-6">
-            <div id="receipt-content" class="bg-white text-black p-8 rounded-[40px] w-full shadow-2xl text-center">
-                <h2 class="text-xl font-black uppercase italic italic mb-2">Pedido Recibido</h2>
-                <p id="rec-id" class="text-[10px] font-black text-orange-600 mb-4"></p>
-                <div id="rec-items-list" class="text-left text-[10px] border-t border-b py-4 my-4 space-y-2"></div>
-                <div class="bg-gray-100 p-4 rounded-3xl mb-4">
-                    <p id="rec-total-usd" class="text-2xl font-black"></p>
-                    <p id="rec-total-bs" class="text-xs font-bold text-gray-500"></p>
-                </div>
-                <button onclick="downloadReceiptPDF()" class="bg-black text-white px-6 py-2 rounded-full text-[9px] uppercase font-bold mb-2">Descargar PDF</button>
-            </div>
-            <button onclick="location.reload()" class="bg-orange text-white w-full py-4 rounded-2xl font-black uppercase italic shadow-xl">Listo</button>
-        </div>
-    </div>
-
     <!-- OVERLAY IMAGEN -->
-    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg border border-white/10"></div>
+    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg border border-white/10 shadow-2xl"></div>
     <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="closeCart()"></div>
 
     <script type="module">
@@ -188,16 +190,17 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, updateDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // FIREBASE CONFIG
+        // FIREBASE
         const firebaseConfig = { apiKey : "AIzaSyClcdmMyvSfkJZicrRXZEmWT8CWHy5ApcI", authDomain : "digitalstore-b109b.firebaseapp.com", projectId : "digitalstore-b109b", storageBucket : "digitalstore-b109b.firebasestorage.app", messagingSenderId : "654989683570", appId : "1:654989683570:web:fe9dafa4716855a63d0beb" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // EMAILJS CONFIG
-        emailjs.init("Tn3KRFqfckrqZyWzx");
+        // EMAILJS CONFIG (Verificado con tus IDs)
+        const EJS_PUBLIC = "Tn3KRFqfckrqZyWzx";
         const EJS_SERVICE = "service_4edqmb2";
         const EJS_TEMPLATE = "template_j0103m2";
+        emailjs.init(EJS_PUBLIC);
 
         let cart = [];
         let allOrders = [];
@@ -216,6 +219,16 @@
             } catch (e) { document.getElementById('bcv-rate-display').innerText = "N/D"; }
         }
         fetchBcvRate();
+
+        // MENSAJERÍA ADMIN OVERLAY
+        window.showAdminMsg = (title, body, icon = 'info') => {
+            const icons = { info: 'ℹ️', success: '✅', error: '❌', mail: '📧' };
+            document.getElementById('msg-icon').innerText = icons[icon] || icons.info;
+            document.getElementById('msg-title').innerText = title;
+            document.getElementById('msg-body').innerText = body;
+            document.getElementById('admin-msg-overlay').classList.remove('hidden');
+        };
+        window.closeAdminMsg = () => document.getElementById('admin-msg-overlay').classList.add('hidden');
 
         // NAVEGACIÓN
         window.showSection = (id) => { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(`section-${id}`).classList.remove('hidden'); };
@@ -242,22 +255,22 @@
             grid.innerHTML = ''; adminList.innerHTML = '';
             snap.forEach(d => {
                 const p = d.data();
-                grid.innerHTML += `<div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full"><img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 border border-white/5"><div class="px-1 flex-grow"><h3 class="font-black text-[9px] uppercase italic text-orange leading-tight mb-1">${p.nombre}</h3><p class="text-[8px] opacity-50 whitespace-pre-line leading-relaxed mb-3 line-clamp-3">${p.descripcion}</p></div><div class="mt-2 flex justify-between items-center bg-black/20 p-2 rounded-2xl border border-white/5"><span class="text-sm font-black text-white ml-1">$${p.precio}</span><button onclick="addToCart('${p.nombre.replace(/'/g, "\\'")}', ${p.precio})" class="bg-orange text-white px-4 py-1.5 rounded-full font-bold text-[8px] uppercase hover:brightness-110 transition italic">Comprar</button></div></div>`;
-                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold tracking-widest border border-white/5 mb-1"><div class="flex items-center gap-3"><img src="${p.imagen}" class="w-8 h-8 rounded-lg object-cover"><span>${p.nombre}</span></div><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-1 hover:scale-125 transition"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-trash-alt"></i></button></div></div>`;
+                grid.innerHTML += `<div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full"><img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 border border-white/5"><div class="px-1 flex-grow"><h3 class="font-black text-[9px] uppercase italic text-orange leading-tight mb-1">${p.nombre}</h3><p class="text-[8px] opacity-60 whitespace-pre-line leading-relaxed mb-3 line-clamp-3">${p.descripcion}</p></div><div class="mt-3 flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5"><span class="text-sm font-black text-white ml-1">$${p.precio}</span><button onclick="addToCart('${p.nombre.replace(/'/g, "\\'")}', ${p.precio})" class="bg-orange text-white px-4 py-1.5 rounded-full font-black text-[8px] uppercase hover:brightness-125 transition italic">Comprar</button></div></div>`;
+                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold border border-white/5 mb-1"><span>${p.nombre}</span><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-2"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-2"><i class="fas fa-trash-alt"></i></button></div></div>`;
             });
         });
 
-        // EDICIÓN INVENTARIO
+        // INVENTARIO
         window.prepareProductEdit = async (id) => {
             const snap = await getDoc(doc(db, "productos", id));
             if (snap.exists()) {
                 const data = snap.data(); editingProductId = id;
                 document.getElementById('p-name').value = data.nombre; document.getElementById('p-price').value = data.precio; document.getElementById('p-desc').value = data.descripcion; document.getElementById('p-img').value = data.imagen; document.getElementById('p-link').value = data.linkDescarga || '';
-                document.getElementById('form-title').innerText = "Editando Producto"; document.getElementById('btn-submit-product').innerText = "Guardar Cambios"; document.getElementById('btn-cancel-edit').classList.remove('hidden');
+                document.getElementById('form-title').innerText = "Editando: " + data.nombre; document.getElementById('btn-cancel-edit').classList.remove('hidden');
                 document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
             }
         };
-        window.cancelProductEdit = () => { editingProductId = null; document.getElementById('product-form').reset(); document.getElementById('btn-cancel-edit').classList.add('hidden'); document.getElementById('form-title').innerText = "Añadir Nuevo Producto"; document.getElementById('btn-submit-product').innerText = "Guardar"; };
+        window.cancelProductEdit = () => { editingProductId = null; document.getElementById('product-form').reset(); document.getElementById('btn-cancel-edit').classList.add('hidden'); document.getElementById('form-title').innerText = "Añadir Nuevo Producto"; };
         document.getElementById('product-form').onsubmit = async (e) => {
             e.preventDefault();
             const data = { nombre: document.getElementById('p-name').value, precio: parseFloat(document.getElementById('p-price').value), descripcion: document.getElementById('p-desc').value, imagen: document.getElementById('p-img').value, linkDescarga: document.getElementById('p-link').value };
@@ -266,20 +279,29 @@
 
         window.deleteProduct = (id) => confirm("¿Eliminar?") && deleteDoc(doc(db, "productos", id));
 
-        // CARRITO
+        // CARRITO (MONTO A LA DERECHA CORREGIDO)
         window.addToCart = (n, p) => { cart.push({nombre: n, precio: p}); updateCartUI(); openCart(); };
         window.clearCart = () => { cart = []; updateCartUI(); };
         window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
         function updateCartUI() {
             const container = document.getElementById('cart-items'); 
             const totalUSD = cart.reduce((s,i) => s + i.precio, 0);
-            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Caja vacía</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-4 border-orange"><div><p class="font-bold text-[9px] uppercase italic text-white/80">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div><button onclick="removeFromCart(${i})" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-times"></i></button></div>`).join('');
+            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Caja vacía</p>' : 
+                cart.map((item, i) => `
+                <div class="glass-card flex justify-between items-center p-3 rounded-xl border-l-4 border-orange">
+                    <div class="flex-grow pr-2">
+                        <p class="font-bold text-[9px] uppercase italic text-white/80 truncate">${item.nombre}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <p class="text-orange font-black text-sm whitespace-nowrap">$${item.precio.toFixed(2)}</p>
+                        <button onclick="removeFromCart(${i})" class="text-red-400 opacity-50 hover:opacity-100 transition"><i class="fas fa-times text-xs"></i></button>
+                    </div>
+                </div>`).join('');
             document.getElementById('cart-total').innerText = `$${totalUSD.toFixed(2)}`; 
             document.getElementById('cart-total-bs').innerText = `Bs ${(totalUSD * bcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
             document.getElementById('cart-count').innerText = cart.length;
         }
 
-        // PROCESAR PAGO
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -300,67 +322,101 @@
             try {
                 const img = await compressImage(file);
                 const totalUSD = cart.reduce((s,i) => s + i.precio, 0);
-                const dateNow = new Date().toLocaleString();
-                const docRef = await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: refNum, cedula: document.getElementById('cust-cedula').value, fotoComprobante: img, items: cart, total: totalUSD, fecha: dateNow, estatus: "revision" });
-
+                const docRef = await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: refNum, cedula: document.getElementById('cust-cedula').value, fotoComprobante: img, items: cart, total: totalUSD, fecha: new Date().toLocaleString(), estatus: "revision" });
                 document.getElementById('rec-id').innerText = `#${docRef.id.slice(0,8).toUpperCase()}`;
                 document.getElementById('rec-items-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.nombre}</span><b>$${i.precio}</b></div>`).join('');
                 document.getElementById('rec-total-usd').innerText = `$${totalUSD.toFixed(2)}`;
                 document.getElementById('rec-total-bs').innerText = `Bs ${(totalUSD * bcvRate).toLocaleString('es-VE')}`;
-
                 closeCart(); document.getElementById('success-overlay').classList.remove('hidden');
                 cart = []; updateCartUI();
             } catch (e) { alert("Error."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
         // GESTIÓN VENTAS ADMIN
-        window.filterSales = (status) => {
-            currentStatusFilter = status;
-            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-f-${status}`).classList.add('active');
-            renderFilteredSales();
-        };
-
+        window.filterSales = (status) => { currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales(); };
         function renderFilteredSales() {
             const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
             container.innerHTML = filtered.map(o => `
                 <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'}">
-                    <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30 uppercase">${o.fecha}</p></div>
-                    <div class="text-[12px] font-bold space-y-1">
+                    <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30">${o.fecha}</p></div>
+                    <div class="text-[12px] font-bold space-y-1 text-left">
                         <p>Cliente: <span class="font-normal opacity-70 uppercase">${o.cliente}</span></p>
-                        <p>WhatsApp: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
+                        <p>Wha: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
                         <p>Email: <span class="font-normal opacity-70 underline text-blue-300 text-[10px]">${o.email}</span></p>
                     </div>
-                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5 shadow-lg grayscale hover:grayscale-0 transition duration-500">
-                    <div class="grid grid-cols-1 gap-2 mt-4 italic text-center">
-                        ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase">Confirmar y Enviar</button>` : ''}
+                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5">
+                    <div class="grid grid-cols-1 gap-2 mt-4 italic">
+                        ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase italic italic">Confirmar y Enviar</button>` : ''}
                         <button onclick="updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20">Rechazar</button>
-                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Borrar</button>
+                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Eliminar Registro</button>
                     </div>
                     <p class="text-xl font-black text-right text-orange italic">$${o.total}</p>
                 </div>`).join('');
         }
 
+        // ENVÍO DE CORREO REPARADO
         window.confirmAndSend = async (id, ev) => {
-            const btn = ev.currentTarget; const snap = await getDoc(doc(db, "pedidos", id)); const order = snap.data();
-            if(!confirm("¿Confirmar envío?")) return;
-            btn.innerText = "ENVIANDO..."; btn.disabled = true;
+            const btn = ev.currentTarget; 
+            const originalText = btn.innerText;
+            
+            if(!confirm("¿Estás seguro de enviar los archivos al correo del cliente?")) return;
+            
+            btn.innerText = "ENVIANDO..."; 
+            btn.disabled = true;
+
             try {
+                const snap = await getDoc(doc(db, "pedidos", id)); 
+                const order = snap.data();
+                
+                // Mapear links del inventario actual
                 const prodsSnap = await getDocs(collection(db, "productos"));
-                const inventarioMap = {}; prodsSnap.forEach(p => { inventarioMap[p.data().nombre] = p.data().linkDescarga; });
+                const inventarioMap = {}; 
+                prodsSnap.forEach(p => { 
+                    const data = p.data();
+                    inventarioMap[data.nombre.toLowerCase().trim()] = data.linkDescarga; 
+                });
+
                 let links = "";
                 order.items.forEach(item => {
-                    const link = inventarioMap[item.nombre];
-                    if(link) links += `<div style="margin-bottom:15px"><strong>${item.nombre}</strong><br><a href="${link}" style="background:#f37021;color:white;padding:12px 20px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-family:Arial;">DESCARGAR AQUÍ</a></div>`;
+                    const itemName = item.nombre.toLowerCase().trim();
+                    const link = inventarioMap[itemName];
+                    if(link) {
+                        links += `<div style="margin-bottom:20px; text-align:center;">
+                                    <p style="font-weight:bold; color:#333; margin:0 0 10px 0;">${item.nombre}</p>
+                                    <a href="${link}" target="_blank" style="background:#f37021; color:white; padding:12px 25px; text-decoration:none; border-radius:10px; display:inline-block; font-weight:bold; text-transform:uppercase;">Descargar Archivo</a>
+                                  </div>`;
+                    }
                 });
-                await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, { to_name: order.cliente, to_email: order.email, download_links: links }, EJS_PUBLIC);
+
+                if(!links) {
+                    showAdminMsg("Sin Enlaces", "No se encontró el link de descarga en el inventario para estos productos.", "error");
+                    throw new Error("No hay links");
+                }
+
+                // Envío via EmailJS
+                await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, { 
+                    to_name: order.cliente, 
+                    to_email: order.email, 
+                    download_links: links 
+                }, EJS_PUBLIC);
+
                 await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
-                alert("¡Enviado!");
-            } catch (e) { alert("Error al enviar"); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
+                showAdminMsg("¡Éxito!", "Pago validado y correo enviado al cliente.", "mail");
+
+            } catch (e) { 
+                console.error(e);
+                showAdminMsg("Fallo de envío", "Hubo un error con EmailJS. Revisa tus límites o configuración.", "error");
+            } finally { 
+                btn.innerText = originalText; 
+                btn.disabled = false; 
+            }
         };
 
-        window.updateOrderStatus = async (id, s) => { try { await updateDoc(doc(db, "pedidos", id), { estatus: s }); } catch (e) { alert("Error"); } };
-        window.deleteOrder = (id) => confirm("¿Eliminar?") && deleteDoc(doc(db, "pedidos", id));
+        window.updateOrderStatus = async (id, s) => { 
+            await updateDoc(doc(db, "pedidos", id), { estatus: s }); 
+            showAdminMsg("Actualizado", `Estado cambiado a ${s}`, "success");
+        };
+        window.deleteOrder = (id) => confirm("¿Eliminar permanentemente?") && deleteDoc(doc(db, "pedidos", id));
         window.openImageOverlay = (s) => { document.getElementById('overlay-img').src = s; document.getElementById('image-overlay').classList.remove('hidden'); };
         window.closeImageOverlay = () => document.getElementById('image-overlay').classList.add('hidden');
         window.downloadReceiptPDF = () => html2pdf().from(document.getElementById('receipt-content')).save();
