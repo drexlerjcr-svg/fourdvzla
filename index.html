@@ -6,65 +6,23 @@
     <title>Digital Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- EmailJS SDK -->
+    <!-- EmailJS & html2pdf SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
-        
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.07);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --charrito-orange: #f37021;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%);
-            background-attachment: fixed;
-            color: white;
-            min-height: 100vh;
-        }
-
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--charrito-orange);
-            transform: translateY(-2px);
-        }
-
+        :root { --glass-bg: rgba(255, 255, 255, 0.07); --glass-border: rgba(255, 255, 255, 0.12); --charrito-orange: #f37021; }
+        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%); background-attachment: fixed; color: white; min-height: 100vh; }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .text-orange { color: var(--charrito-orange); }
         .bg-orange { background-color: var(--charrito-orange); }
-
         .sidebar-transition { transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); }
-        .admin-tab.active { border-bottom: 3px solid var(--charrito-orange); background: rgba(255,255,255,0.05); color: white; }
+        .admin-tab.active { border-bottom: 3px solid var(--charrito-orange); background: rgba(255,255,255,0.05); }
         .sub-tab.active { background: var(--charrito-orange); color: white; }
-        
-        input, select, textarea {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-            outline: none;
-        }
-        input:focus { border-color: var(--charrito-orange) !important; }
-
+        input, select, textarea { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; outline: none; }
         .hidden { display: none !important; }
-        
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--charrito-orange); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -76,8 +34,8 @@
             <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-orange">Store</span></h1>
         </div>
         <div class="flex items-center space-x-4">
-            <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition group">
-                <i class="fas fa-shopping-basket text-lg group-hover:text-white transition"></i>
+            <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
+                <i class="fas fa-shopping-basket text-lg"></i>
                 <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-white">0</span>
             </button>
             <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl"><i class="fas fa-cog"></i></button>
@@ -93,50 +51,47 @@
         <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 text-center"></div>
     </section>
 
-    <!-- PANEL ADMIN (Login) -->
+    <!-- LOGIN ADMIN -->
     <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center">
         <div class="glass p-10 rounded-[40px] w-full max-w-md">
             <h2 class="text-2xl font-black mb-8 uppercase italic tracking-widest text-orange">Admin Access</h2>
             <form id="login-form" class="space-y-4">
                 <input type="email" id="admin-email" placeholder="Usuario" class="w-full p-4 rounded-2xl" required>
                 <input type="password" id="admin-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl" required>
-                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase tracking-widest italic hover:brightness-110 transition">Entrar</button>
+                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase">Entrar</button>
             </form>
         </div>
     </section>
 
-    <!-- PANEL ADMIN (Contenido) -->
+    <!-- PANEL ADMIN -->
     <section id="section-admin-panel" class="section hidden p-4">
         <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
             <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
-                <h2 class="text-lg font-black italic uppercase">Administración</h2>
-                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold transition uppercase">Cerrar Sesión</button>
+                <h2 class="text-lg font-black italic uppercase italic">Administración</h2>
+                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-500 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Salir</button>
             </div>
-            
             <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
                 <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
                 <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
                 <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Logo</button>
             </div>
-
             <div class="p-6">
                 <div id="tab-products" class="tab-content">
                     <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-xl">
-                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2 tracking-widest">Gestionar Producto</h3>
-                        <input type="text" id="p-name" placeholder="Nombre" class="p-3 rounded-xl" required>
+                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2 tracking-widest">Añadir Nuevo Producto</h3>
+                        <input type="text" id="p-name" placeholder="Nombre del Producto" class="p-3 rounded-xl" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
-                        <textarea id="p-desc" placeholder="Descripción..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
-                        <input type="text" id="p-img" placeholder="URL Imagen" class="p-3 rounded-xl col-span-full" required>
-                        <input type="text" id="p-link" placeholder="Link descarga (Drive)" class="p-3 rounded-xl col-span-full" required>
+                        <textarea id="p-desc" placeholder="Descripción detallada..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
+                        <input type="text" id="p-img" placeholder="URL de la Imagen" class="p-3 rounded-xl col-span-full" required>
+                        <input type="text" id="p-link" placeholder="Link de descarga del archivo" class="p-3 rounded-xl col-span-full border-orange/40" required>
                         <div class="col-span-full flex gap-2">
-                            <button id="btn-submit-product" type="submit" class="flex-grow bg-orange text-white font-black rounded-xl py-3 uppercase text-[10px] shadow-lg hover:brightness-110 transition">Guardar</button>
+                            <button id="btn-submit-product" type="submit" class="flex-grow bg-orange text-white font-black rounded-xl py-3 uppercase text-[10px]">Guardar Producto</button>
                             <button id="btn-cancel-edit" type="button" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[9px] font-bold uppercase">Cancelar</button>
                         </div>
                     </form>
                     <div id="admin-products-list" class="grid gap-2"></div>
                 </div>
-
-                <div id="tab-orders" class="tab-content hidden space-y-6 text-center">
+                <div id="tab-orders" class="tab-content hidden space-y-6">
                     <div class="flex justify-center gap-2 mb-6">
                         <button onclick="filterSales('revision')" id="btn-f-revision" class="sub-tab active px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">En Revisión</button>
                         <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-4 py-2 rounded-full text-[9px] font-bold uppercase glass-card">Confirmados</button>
@@ -144,10 +99,9 @@
                     </div>
                     <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
-
                 <div id="tab-config" class="tab-content hidden text-center space-y-4">
-                    <input type="text" id="new-logo-url" placeholder="URL Logo" class="p-4 rounded-xl w-full max-w-md">
-                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-[10px] uppercase">Actualizar Logo</button>
+                    <input type="text" id="new-logo-url" placeholder="URL del Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
+                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
                 </div>
             </div>
         </div>
@@ -155,66 +109,101 @@
 
     <!-- CARRITO SIDEBAR -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        
-        <!-- CABECERA DEL CARRITO (TASA AL LADO DEL TÍTULO) -->
         <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl border-b border-white/5">
             <div class="flex items-center gap-4">
                 <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Pedido</h2>
-                
-                <!-- CUADRO DE TASA BCV AL LADO -->
                 <div class="glass-card px-3 py-1.5 rounded-xl border-white/10 flex flex-col items-center leading-none">
-                    <span class="text-[7px] font-bold uppercase opacity-50 tracking-tighter mb-0.5">Tasa BCV del día</span>
+                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5">Tasa BCV del día</span>
                     <span id="bcv-rate-display" class="text-[11px] font-black text-orange italic">Cargando...</span>
                 </div>
             </div>
-            
             <button onclick="closeCart()" class="text-5xl hover:text-orange transition leading-none">&times;</button>
         </div>
-
         <div class="flex-grow overflow-y-auto p-6 space-y-6">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold uppercase text-[9px] opacity-20 tracking-widest italic">Artículos en Caja</h3>
-                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar Carrito</button>
-            </div>
-            
+            <div class="flex justify-between items-center"><h3 class="font-bold uppercase text-[9px] opacity-20 tracking-widest italic">Artículos</h3><button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button></div>
             <div id="cart-items" class="space-y-3"></div>
-            
-            <!-- PAGO MÓVIL -->
-            <div class="glass-card p-5 rounded-[25px] border-orange/40 border text-center">
-                <p class="text-orange font-black uppercase text-[10px] mb-2 tracking-widest italic italic">Datos Pago Móvil</p>
-                <div class="text-[12px] opacity-90 italic font-bold leading-relaxed">
-                    <p>Banco: Banesco</p> 
-                    <p>Cédula: 24981262</p>
-                    <p>Teléfono: 04143309639</p>
-                </div>
+            <div class="glass-card p-5 rounded-[25px] border-orange border text-center shadow-inner">
+                <p class="text-orange font-black uppercase text-[10px] mb-2 tracking-widest italic italic">Pago Móvil Banesco</p>
+                <div class="text-[12px] opacity-90 italic font-bold"><p>Banesco | 24.981.262 | 0414.330.9639</p></div>
             </div>
-
             <div class="space-y-3 border-t border-white/10 pt-6">
-                <input type="text" id="cust-name" placeholder="Nombre y Apellido" class="p-4 rounded-xl w-full text-sm">
+                <input type="text" id="cust-name" placeholder="Nombre Completo" class="p-4 rounded-xl w-full text-sm">
                 <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl w-full text-sm">
-                <input type="email" id="cust-email" placeholder="Email (Recepción de archivos)" class="p-4 rounded-xl w-full text-sm">
-                <input type="tel" id="cust-wha" placeholder="Número de WhatsApp" class="p-4 rounded-xl w-full text-sm">
-                <input type="text" id="cust-ref" placeholder="N° Referencia Pago Móvil" class="p-4 rounded-xl w-full text-sm font-black text-orange border-orange/30">
-                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center shadow-md">
-                    <label class="text-[9px] font-black text-white/40 uppercase block mb-2 italic">Adjuntar Captura de Pago</label>
-                    <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 mx-auto">
-                </div>
+                <input type="email" id="cust-email" placeholder="Email para el envío" class="p-4 rounded-xl w-full text-sm">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl w-full text-sm">
+                <input type="text" id="cust-ref" placeholder="N° Referencia Pago" class="p-4 rounded-xl w-full text-sm font-black text-orange">
+                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center"><label class="text-[9px] font-black text-white/40 uppercase block mb-2 tracking-tighter">Adjuntar Captura de Pago</label><input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 mx-auto"></div>
             </div>
         </div>
-
         <div class="p-6 bg-black/40 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center font-bold px-2">
-                <span class="opacity-30 uppercase text-[10px] tracking-widest">Total Final:</span>
+                <span class="opacity-30 uppercase text-[10px]">Total Final:</span>
                 <div class="text-right">
                     <div id="cart-total" class="text-3xl text-orange tracking-tighter font-black">$0.00</div>
                     <div id="cart-total-bs" class="text-xs text-white/60 font-black italic">Bs 0,00</div>
                 </div>
             </div>
-            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-5 rounded-2xl uppercase tracking-widest text-lg italic shadow-xl hover:scale-[1.02] transition">Realizar Pedido</button>
+            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-5 rounded-2xl uppercase tracking-widest text-lg italic shadow-xl">Confirmar Pedido</button>
         </div>
     </div>
 
-    <!-- OVERLAYS -->
+    <!-- OVERLAY DE ÉXITO Y RECIBO (NUEVO) -->
+    <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4">
+        <div class="max-w-md w-full flex flex-col items-center gap-6">
+            <!-- PARTE DEL RECIBO QUE SE GUARDARÁ EN PDF -->
+            <div id="receipt-content" class="bg-white text-black p-8 rounded-[40px] w-full shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16"></div>
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-white text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-black uppercase italic tracking-tighter">Pedido Recibido</h2>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">DigitalStore Pro</p>
+                </div>
+
+                <div class="space-y-4 border-t border-b border-gray-100 py-6 my-4">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 font-bold uppercase">ID PEDIDO:</span>
+                        <span id="rec-id" class="font-black text-orange-600">#---</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 font-bold uppercase">FECHA:</span>
+                        <span id="rec-date" class="font-bold">--/--/--</span>
+                    </div>
+                    <div class="flex justify-between text-xs border-t pt-4">
+                        <span class="text-gray-400 font-bold uppercase">CLIENTE:</span>
+                        <span id="rec-name" class="font-bold uppercase text-right">---</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 font-bold uppercase">REFERENCIA:</span>
+                        <span id="rec-ref" class="font-bold text-blue-600">---</span>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-3xl text-center mb-6">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase mb-1">Monto Reportado</p>
+                    <div id="rec-total-usd" class="text-3xl font-black text-gray-800">$0.00</div>
+                    <div id="rec-total-bs" class="text-sm font-bold text-gray-500">Bs 0,00</div>
+                </div>
+
+                <p class="text-[9px] text-center text-gray-400 italic">
+                    Recuerda que tus archivos serán enviados al correo suministrado una vez validado el pago móvil.
+                </p>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="w-full flex gap-3">
+                <button onclick="downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest shadow-xl hover:bg-orange-500 hover:text-white transition">
+                    <i class="fas fa-file-pdf mr-2"></i> Guardar PDF
+                </button>
+                <button onclick="closeSuccessOverlay()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest shadow-xl hover:scale-105 transition">
+                    Finalizar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTROS OVERLAYS -->
     <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl border border-white/10"></div>
     <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="closeCart()"></div>
 
@@ -230,16 +219,13 @@
         const auth = getAuth(app);
 
         // EMAILJS
-        const EJS_PUBLIC = "Tn3KRFqfckrqZyWzx";
+        emailjs.init("Tn3KRFqfckrqZyWzx");
         const EJS_SERVICE = "service_4edqmb2";
         const EJS_TEMPLATE = "template_j0103m2";
-        emailjs.init(EJS_PUBLIC);
 
         let cart = [];
         let allOrders = [];
         let currentStatusFilter = 'revision';
-        let editingProductId = null;
-        let salesListener = null;
         let bcvRate = 1;
 
         // FETCH BCV RATE
@@ -250,9 +236,7 @@
                 bcvRate = data.promedio;
                 document.getElementById('bcv-rate-display').innerText = `Bs ${bcvRate.toFixed(2)}`;
                 updateCartUI();
-            } catch (e) {
-                document.getElementById('bcv-rate-display').innerText = "N/D";
-            }
+            } catch (e) { document.getElementById('bcv-rate-display').innerText = "N/D"; }
         }
         fetchBcvRate();
 
@@ -265,10 +249,9 @@
         window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
         onAuthStateChanged(auth, (user) => { if (user) initSalesListener(); });
         document.getElementById('login-form').onsubmit = async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value); initSalesListener(); showSection('admin-panel'); } catch (err) { alert("Acceso denegado"); } };
-        
         function initSalesListener() {
-            if (salesListener) salesListener();
-            salesListener = onSnapshot(collection(db, "pedidos"), (snap) => {
+            if (window.salesListener) window.salesListener();
+            window.salesListener = onSnapshot(collection(db, "pedidos"), (snap) => {
                 allOrders = []; snap.forEach(d => allOrders.push({ id: d.id, ...d.data() })); renderFilteredSales();
             });
         }
@@ -287,23 +270,7 @@
             });
         });
 
-        window.prepareProductEdit = async (id) => {
-            const snap = await getDoc(doc(db, "productos", id));
-            if (snap.exists()) {
-                const data = snap.data(); editingProductId = id;
-                document.getElementById('p-name').value = data.nombre; document.getElementById('p-price').value = data.precio; document.getElementById('p-desc').value = data.descripcion; document.getElementById('p-img').value = data.imagen; document.getElementById('p-link').value = data.linkDescarga || '';
-                document.getElementById('form-title').innerText = "Editando Producto"; document.getElementById('btn-submit-product').innerText = "Guardar Cambios"; document.getElementById('btn-cancel-edit').classList.remove('hidden');
-                document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
-            }
-        };
-        window.cancelProductEdit = () => { editingProductId = null; document.getElementById('product-form').reset(); document.getElementById('btn-cancel-edit').classList.add('hidden'); document.getElementById('form-title').innerText = "Añadir Nuevo Producto"; document.getElementById('btn-submit-product').innerText = "Guardar Producto"; };
-        document.getElementById('product-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const data = { nombre: document.getElementById('p-name').value, precio: parseFloat(document.getElementById('p-price').value), descripcion: document.getElementById('p-desc').value, imagen: document.getElementById('p-img').value, linkDescarga: document.getElementById('p-link').value };
-            try { editingProductId ? await updateDoc(doc(db, "productos", editingProductId), data) : await addDoc(collection(db, "productos"), data); cancelProductEdit(); } catch (e) { alert("Error"); }
-        };
-
-        // CARRITO (USD & BS)
+        // CARRITO
         window.addToCart = (n, p) => { cart.push({nombre: n, precio: p}); updateCartUI(); openCart(); };
         window.clearCart = () => { cart = []; updateCartUI(); };
         window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
@@ -311,13 +278,12 @@
             const container = document.getElementById('cart-items'); 
             const totalUSD = cart.reduce((s,i) => s + i.precio, 0);
             const totalBS = totalUSD * bcvRate;
-            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Caja vacía</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-4 border-orange"><div><p class="font-bold text-[9px] uppercase italic text-white/80">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div><button onclick="removeFromCart(${i})" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-times"></i></button></div>`).join('');
+            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Vacío</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-4 border-orange"><div><p class="font-bold text-[9px] uppercase italic text-white/80">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div><button onclick="removeFromCart(${i})" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-times"></i></button></div>`).join('');
             document.getElementById('cart-total').innerText = `$${totalUSD.toFixed(2)}`; 
             document.getElementById('cart-total-bs').innerText = `Bs ${totalBS.toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
             document.getElementById('cart-count').innerText = cart.length;
         }
 
-        // COMPRESIÓN
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -331,44 +297,97 @@
             });
         }
 
+        // --- PROCESAR PAGO Y MOSTRAR ÉXITO ---
         window.processPayment = async () => {
-            const file = document.getElementById('cust-file').files[0]; const name = document.getElementById('cust-name').value; const email = document.getElementById('cust-email').value; const wha = document.getElementById('cust-wha').value; const ref = document.getElementById('cust-ref').value;
-            if(cart.length === 0 || !name || !email || !wha || !ref || !file) return alert("Reporte incompleto. Todos los datos son obligatorios.");
-            const btn = document.getElementById('btn-confirm'); btn.disabled = true; btn.innerText = "ENVIANDO REPORTE...";
+            const file = document.getElementById('cust-file').files[0]; 
+            const name = document.getElementById('cust-name').value; 
+            const email = document.getElementById('cust-email').value; 
+            const wha = document.getElementById('cust-wha').value; 
+            const refNum = document.getElementById('cust-ref').value;
+
+            if(cart.length === 0 || !name || !email || !wha || !refNum || !file) return alert("Completa todos los datos.");
+
+            const btn = document.getElementById('btn-confirm'); btn.disabled = true; btn.innerText = "PROCESANDO...";
+            
             try {
                 const img = await compressImage(file);
-                await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: ref, fotoComprobante: img, items: cart, total: cart.reduce((s,i) => s + i.precio, 0), fecha: new Date().toLocaleString(), estatus: "revision" });
-                alert("¡Pedido realizado con éxito!"); cart = []; updateCartUI(); closeCart();
-                document.getElementById('cust-name').value = ""; document.getElementById('cust-email').value = ""; document.getElementById('cust-wha').value = ""; document.getElementById('cust-ref').value = ""; document.getElementById('cust-file').value = "";
-            } catch (e) { alert("Error al enviar."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
+                const totalUSD = cart.reduce((s,i) => s + i.precio, 0);
+                const totalBS = totalUSD * bcvRate;
+                const dateNow = new Date().toLocaleString();
+
+                // Guardar en Firebase
+                const docRef = await addDoc(collection(db, "pedidos"), { 
+                    cliente: name, email, whatsapp: wha, referencia: refNum, 
+                    cedula: document.getElementById('cust-cedula').value,
+                    fotoComprobante: img, items: cart, total: totalUSD, 
+                    fecha: dateNow, estatus: "revision" 
+                });
+
+                // Llenar Recibo de Éxito
+                document.getElementById('rec-id').innerText = `#${docRef.id.slice(0,8).toUpperCase()}`;
+                document.getElementById('rec-date').innerText = dateNow;
+                document.getElementById('rec-name').innerText = name;
+                document.getElementById('rec-ref').innerText = refNum;
+                document.getElementById('rec-total-usd').innerText = `$${totalUSD.toFixed(2)}`;
+                document.getElementById('rec-total-bs').innerText = `Bs ${totalBS.toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
+
+                // Mostrar Overlay de Éxito
+                closeCart();
+                document.getElementById('success-overlay').classList.remove('hidden');
+
+                // Limpieza total
+                cart = []; updateCartUI();
+                document.getElementById('product-form').reset();
+                document.getElementById('cust-name').value = ""; document.getElementById('cust-cedula').value = ""; 
+                document.getElementById('cust-email').value = ""; document.getElementById('cust-wha').value = ""; 
+                document.getElementById('cust-ref').value = ""; document.getElementById('cust-file').value = "";
+
+            } catch (e) { alert("Error al procesar."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
+        // --- FUNCIONES DEL RECIBO PDF ---
+        window.downloadReceiptPDF = () => {
+            const element = document.getElementById('receipt-content');
+            const orderID = document.getElementById('rec-id').innerText;
+            const opt = {
+                margin:       1,
+                filename:     `Recibo_DigitalStore_${orderID}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        };
+
+        window.closeSuccessOverlay = () => document.getElementById('success-overlay').classList.add('hidden');
+
+        // ADMIN VENTAS
         window.filterSales = (status) => { currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales(); };
         function renderFilteredSales() {
             const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
             container.innerHTML = filtered.map(o => `
                 <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'}">
-                    <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange italic">ID: ${o.id.slice(0,5)}</span><p class="text-[8px] opacity-30 uppercase">${o.fecha}</p></div>
+                    <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30 uppercase">${o.fecha}</p></div>
                     <div class="text-[12px] font-bold space-y-1">
                         <p>Cliente: <span class="font-normal opacity-70 uppercase">${o.cliente}</span></p>
                         <p>WhatsApp: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
                         <p>Email: <span class="font-normal opacity-70 underline text-blue-300">${o.email}</span></p>
                     </div>
-                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5 shadow-lg grayscale hover:grayscale-0 transition duration-500">
+                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5 shadow-lg">
                     <div class="grid grid-cols-1 gap-2 mt-4 italic">
                         ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase">Confirmar y Enviar</button>` : ''}
                         <button onclick="updateOrderStatus('${o.id}', 'rechazado', event)" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20">Rechazar</button>
-                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Borrar Registro</button>
+                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Eliminar</button>
                     </div>
-                    <p class="text-xl font-black text-right italic tracking-tighter text-orange">$${o.total}</p>
+                    <p class="text-xl font-black text-right text-orange italic">$${o.total}</p>
                 </div>`).join('');
         }
 
         window.confirmAndSend = async (id, ev) => {
-            if(!confirm("¿Confirmar y enviar archivos?")) return;
-            const btn = ev.currentTarget; btn.innerText = "ENVIANDO CORREO..."; btn.disabled = true;
+            const snap = await getDoc(doc(db, "pedidos", id)); const order = snap.data();
+            if(!confirm("¿Confirmar envío?")) return;
+            const btn = ev.currentTarget; btn.innerText = "ENVIANDO..."; btn.disabled = true;
             try {
-                const snap = await getDoc(doc(db, "pedidos", id)); const order = snap.data();
                 const prodsSnap = await getDocs(collection(db, "productos"));
                 const inventarioMap = {}; prodsSnap.forEach(p => { inventarioMap[p.data().nombre] = p.data().linkDescarga; });
                 let links = "";
@@ -376,7 +395,6 @@
                     const link = inventarioMap[item.nombre];
                     if(link) links += `<div style="margin-bottom:15px"><strong>${item.nombre}</strong><br><a href="${link}" style="background:#f37021;color:white;padding:12px 20px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-family:Arial;">DESCARGAR AQUÍ</a></div>`;
                 });
-                if(!links) throw new Error("No hay links guardados.");
                 await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, { to_name: order.cliente, to_email: order.email, download_links: links }, EJS_PUBLIC);
                 await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
                 alert("¡Enviado!");
