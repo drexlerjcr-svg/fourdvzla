@@ -10,20 +10,60 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
-        :root { --glass-bg: rgba(255, 255, 255, 0.07); --glass-border: rgba(255, 255, 255, 0.12); --charrito-orange: #f37021; }
-        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%); background-attachment: fixed; color: white; min-height: 100vh; }
-        .glass { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .glass-card:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--charrito-orange); transform: translateY(-3px); }
+        
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --charrito-orange: #f37021;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%);
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--charrito-orange);
+            transform: translateY(-2px);
+        }
+
         .text-orange { color: var(--charrito-orange); }
         .bg-orange { background-color: var(--charrito-orange); }
+
         .sidebar-transition { transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); }
         .admin-tab.active { border-bottom: 3px solid var(--charrito-orange); background: rgba(255,255,255,0.05); color: white; }
         .sub-tab.active { background: var(--charrito-orange); color: white; }
-        input, select, textarea { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; outline: none; }
+        
+        input, select, textarea {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            outline: none;
+        }
         input:focus { border-color: var(--charrito-orange) !important; }
+
         .hidden { display: none !important; }
+        
         ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--charrito-orange); border-radius: 10px; }
     </style>
 </head>
@@ -46,7 +86,7 @@
 
     <!-- SECCIÓN: HOME -->
     <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10">
-        <div class="text-center mb-12">
+        <div class="text-center mb-10">
             <h2 class="text-5xl font-black italic uppercase tracking-tighter italic">CATÁLOGO <span class="text-orange">DIGITAL</span></h2>
             <p class="text-white/30 uppercase text-[8px] tracking-[0.6em] mt-1 italic">Archivos Premium de alta calidad</p>
         </div>
@@ -83,11 +123,11 @@
                 <div id="tab-products" class="tab-content">
                     <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-xl">
                         <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2 tracking-widest">Gestionar Producto</h3>
-                        <input type="text" id="p-name" placeholder="Nombre del Producto" class="p-3 rounded-xl" required>
+                        <input type="text" id="p-name" placeholder="Nombre" class="p-3 rounded-xl" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" class="p-3 rounded-xl" required>
-                        <textarea id="p-desc" placeholder="Descripción detallada..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
-                        <input type="text" id="p-img" placeholder="URL de la Imagen" class="p-3 rounded-xl col-span-full" required>
-                        <input type="text" id="p-link" placeholder="Link de descarga (Google Drive/MEGA)" class="p-3 rounded-xl col-span-full border-orange/40" required>
+                        <textarea id="p-desc" placeholder="Descripción..." class="p-3 rounded-xl col-span-full h-24 resize-none" required></textarea>
+                        <input type="text" id="p-img" placeholder="URL Imagen" class="p-3 rounded-xl col-span-full" required>
+                        <input type="text" id="p-link" placeholder="Link descarga (Drive)" class="p-3 rounded-xl col-span-full" required>
                         <div class="col-span-full flex gap-2">
                             <button id="btn-submit-product" type="submit" class="flex-grow bg-orange text-white font-black rounded-xl py-3 uppercase text-[10px] shadow-lg hover:brightness-110 transition">Guardar</button>
                             <button id="btn-cancel-edit" type="button" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[9px] font-bold uppercase">Cancelar</button>
@@ -115,53 +155,62 @@
 
     <!-- CARRITO SIDEBAR -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl">
-            <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Pedido</h2>
+        
+        <!-- CABECERA DEL CARRITO (TASA AL LADO DEL TÍTULO) -->
+        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl border-b border-white/5">
+            <div class="flex items-center gap-4">
+                <h2 class="text-xl font-black italic uppercase tracking-tighter">Mi Pedido</h2>
+                
+                <!-- CUADRO DE TASA BCV AL LADO -->
+                <div class="glass-card px-3 py-1.5 rounded-xl border-white/10 flex flex-col items-center leading-none">
+                    <span class="text-[7px] font-bold uppercase opacity-50 tracking-tighter mb-0.5">Tasa BCV del día</span>
+                    <span id="bcv-rate-display" class="text-[11px] font-black text-orange italic">Cargando...</span>
+                </div>
+            </div>
+            
             <button onclick="closeCart()" class="text-5xl hover:text-orange transition leading-none">&times;</button>
         </div>
+
         <div class="flex-grow overflow-y-auto p-6 space-y-6">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold uppercase text-[9px] opacity-20 tracking-widest italic">Resumen</h3>
-                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button>
+                <h3 class="font-bold uppercase text-[9px] opacity-20 tracking-widest italic">Artículos en Caja</h3>
+                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar Carrito</button>
             </div>
+            
             <div id="cart-items" class="space-y-3"></div>
             
-            <!-- TASA BCV DEL DÍA (NUEVO) -->
-            <div class="glass-card p-3 rounded-2xl border-white/10 flex justify-between items-center px-5">
-                <span class="text-[10px] font-bold uppercase opacity-50 italic">Tasa BCV del día:</span>
-                <span id="bcv-rate-display" class="text-sm font-black text-orange">Cargando...</span>
-            </div>
-
             <!-- PAGO MÓVIL -->
             <div class="glass-card p-5 rounded-[25px] border-orange/40 border text-center">
-                <p class="text-orange font-black uppercase text-[10px] mb-2 tracking-widest italic italic">Datos Pago Móvil Banesco</p>
-                <div class="text-[12px] opacity-90 italic font-bold">
+                <p class="text-orange font-black uppercase text-[10px] mb-2 tracking-widest italic italic">Datos Pago Móvil</p>
+                <div class="text-[12px] opacity-90 italic font-bold leading-relaxed">
+                    <p>Banco: Banesco</p> 
                     <p>Cédula: 24981262</p>
                     <p>Teléfono: 04143309639</p>
                 </div>
             </div>
 
             <div class="space-y-3 border-t border-white/10 pt-6">
-                <input type="text" id="cust-name" placeholder="Nombre Completo" class="p-4 rounded-xl w-full text-sm">
+                <input type="text" id="cust-name" placeholder="Nombre y Apellido" class="p-4 rounded-xl w-full text-sm">
                 <input type="text" id="cust-cedula" placeholder="Cédula" class="p-4 rounded-xl w-full text-sm">
-                <input type="email" id="cust-email" placeholder="Email (Donde recibirá archivos)" class="p-4 rounded-xl w-full text-sm">
-                <input type="tel" id="cust-wha" placeholder="WhatsApp" class="p-4 rounded-xl w-full text-sm">
+                <input type="email" id="cust-email" placeholder="Email (Recepción de archivos)" class="p-4 rounded-xl w-full text-sm">
+                <input type="tel" id="cust-wha" placeholder="Número de WhatsApp" class="p-4 rounded-xl w-full text-sm">
                 <input type="text" id="cust-ref" placeholder="N° Referencia Pago Móvil" class="p-4 rounded-xl w-full text-sm font-black text-orange border-orange/30">
-                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center">
-                    <label class="text-[9px] font-black text-white/40 uppercase block mb-2 italic">Subir Captura</label>
+                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center shadow-md">
+                    <label class="text-[9px] font-black text-white/40 uppercase block mb-2 italic">Adjuntar Captura de Pago</label>
                     <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 mx-auto">
                 </div>
             </div>
         </div>
+
         <div class="p-6 bg-black/40 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center font-bold">
-                <span class="opacity-30 uppercase text-[10px]">Total a pagar:</span>
+            <div class="flex justify-between items-center font-bold px-2">
+                <span class="opacity-30 uppercase text-[10px] tracking-widest">Total Final:</span>
                 <div class="text-right">
-                    <div id="cart-total" class="text-3xl text-orange tracking-tighter">$0.00</div>
-                    <div id="cart-total-bs" class="text-sm text-white/60 font-bold">Bs 0,00</div>
+                    <div id="cart-total" class="text-3xl text-orange tracking-tighter font-black">$0.00</div>
+                    <div id="cart-total-bs" class="text-xs text-white/60 font-black italic">Bs 0,00</div>
                 </div>
             </div>
-            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase tracking-widest text-lg italic shadow-xl">Confirmar Pedido</button>
+            <button id="btn-confirm" onclick="processPayment()" class="w-full bg-orange text-white font-black py-5 rounded-2xl uppercase tracking-widest text-lg italic shadow-xl hover:scale-[1.02] transition">Realizar Pedido</button>
         </div>
     </div>
 
@@ -191,19 +240,18 @@
         let currentStatusFilter = 'revision';
         let editingProductId = null;
         let salesListener = null;
-        let bcvRate = 1; // Tasa por defecto
+        let bcvRate = 1;
 
-        // --- FUNCIÓN PARA OBTENER TASA BCV ---
+        // FETCH BCV RATE
         async function fetchBcvRate() {
             try {
                 const response = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
                 const data = await response.json();
                 bcvRate = data.promedio;
                 document.getElementById('bcv-rate-display').innerText = `Bs ${bcvRate.toFixed(2)}`;
-                updateCartUI(); // Actualizar el total en Bs si ya hay algo en el carrito
+                updateCartUI();
             } catch (e) {
-                document.getElementById('bcv-rate-display').innerText = "No disponible";
-                console.error("Error al cargar la tasa");
+                document.getElementById('bcv-rate-display').innerText = "N/D";
             }
         }
         fetchBcvRate();
@@ -217,6 +265,7 @@
         window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
         onAuthStateChanged(auth, (user) => { if (user) initSalesListener(); });
         document.getElementById('login-form').onsubmit = async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value); initSalesListener(); showSection('admin-panel'); } catch (err) { alert("Acceso denegado"); } };
+        
         function initSalesListener() {
             if (salesListener) salesListener();
             salesListener = onSnapshot(collection(db, "pedidos"), (snap) => {
@@ -247,14 +296,14 @@
                 document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
             }
         };
-        window.cancelProductEdit = () => { editingProductId = null; document.getElementById('product-form').reset(); document.getElementById('btn-cancel-edit').classList.add('hidden'); document.getElementById('form-title').innerText = "Añadir Nuevo Producto"; };
+        window.cancelProductEdit = () => { editingProductId = null; document.getElementById('product-form').reset(); document.getElementById('btn-cancel-edit').classList.add('hidden'); document.getElementById('form-title').innerText = "Añadir Nuevo Producto"; document.getElementById('btn-submit-product').innerText = "Guardar Producto"; };
         document.getElementById('product-form').onsubmit = async (e) => {
             e.preventDefault();
             const data = { nombre: document.getElementById('p-name').value, precio: parseFloat(document.getElementById('p-price').value), descripcion: document.getElementById('p-desc').value, imagen: document.getElementById('p-img').value, linkDescarga: document.getElementById('p-link').value };
             try { editingProductId ? await updateDoc(doc(db, "productos", editingProductId), data) : await addDoc(collection(db, "productos"), data); cancelProductEdit(); } catch (e) { alert("Error"); }
         };
 
-        // CARRITO (CON BS)
+        // CARRITO (USD & BS)
         window.addToCart = (n, p) => { cart.push({nombre: n, precio: p}); updateCartUI(); openCart(); };
         window.clearCart = () => { cart = []; updateCartUI(); };
         window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
@@ -262,9 +311,7 @@
             const container = document.getElementById('cart-items'); 
             const totalUSD = cart.reduce((s,i) => s + i.precio, 0);
             const totalBS = totalUSD * bcvRate;
-
-            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Vacío</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-4 border-orange"><div><p class="font-bold text-[9px] uppercase italic text-white/80">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div><button onclick="removeFromCart(${i})" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-times"></i></button></div>`).join('');
-            
+            container.innerHTML = cart.length === 0 ? '<p class="text-center opacity-20 py-10 italic text-[10px]">Caja vacía</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between p-3 rounded-xl items-center border-l-4 border-orange"><div><p class="font-bold text-[9px] uppercase italic text-white/80">${item.nombre}</p><p class="text-orange font-black text-sm">$${item.precio}</p></div><button onclick="removeFromCart(${i})" class="text-red-400 p-2 hover:scale-125 transition"><i class="fas fa-times"></i></button></div>`).join('');
             document.getElementById('cart-total').innerText = `$${totalUSD.toFixed(2)}`; 
             document.getElementById('cart-total-bs').innerText = `Bs ${totalBS.toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
             document.getElementById('cart-count').innerText = cart.length;
@@ -289,11 +336,10 @@
             if(cart.length === 0 || !name || !email || !wha || !ref || !file) return alert("Reporte incompleto. Todos los datos son obligatorios.");
             const btn = document.getElementById('btn-confirm'); btn.disabled = true; btn.innerText = "ENVIANDO REPORTE...";
             try {
-                const imgBase64 = await compressImage(file);
-                await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: ref, fotoComprobante: imgBase64, items: cart, total: cart.reduce((s,i) => s + i.precio, 0), fecha: new Date().toLocaleString(), estatus: "revision" });
-                alert("¡Pedido realizado con éxito!");
-                cart = []; updateCartUI(); closeCart();
-                document.getElementById('cust-name').value = ""; document.getElementById('cust-cedula').value = ""; document.getElementById('cust-email').value = ""; document.getElementById('cust-wha').value = ""; document.getElementById('cust-ref').value = ""; document.getElementById('cust-file').value = "";
+                const img = await compressImage(file);
+                await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: ref, fotoComprobante: img, items: cart, total: cart.reduce((s,i) => s + i.precio, 0), fecha: new Date().toLocaleString(), estatus: "revision" });
+                alert("¡Pedido realizado con éxito!"); cart = []; updateCartUI(); closeCart();
+                document.getElementById('cust-name').value = ""; document.getElementById('cust-email').value = ""; document.getElementById('cust-wha').value = ""; document.getElementById('cust-ref').value = ""; document.getElementById('cust-file').value = "";
             } catch (e) { alert("Error al enviar."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
@@ -312,7 +358,7 @@
                     <div class="grid grid-cols-1 gap-2 mt-4 italic">
                         ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase">Confirmar y Enviar</button>` : ''}
                         <button onclick="updateOrderStatus('${o.id}', 'rechazado', event)" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20">Rechazar</button>
-                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Eliminar Registro</button>
+                        <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Borrar Registro</button>
                     </div>
                     <p class="text-xl font-black text-right italic tracking-tighter text-orange">$${o.total}</p>
                 </div>`).join('');
@@ -330,10 +376,11 @@
                     const link = inventarioMap[item.nombre];
                     if(link) links += `<div style="margin-bottom:15px"><strong>${item.nombre}</strong><br><a href="${link}" style="background:#f37021;color:white;padding:12px 20px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-family:Arial;">DESCARGAR AQUÍ</a></div>`;
                 });
+                if(!links) throw new Error("No hay links guardados.");
                 await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, { to_name: order.cliente, to_email: order.email, download_links: links }, EJS_PUBLIC);
                 await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
                 alert("¡Enviado!");
-            } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
+            } catch (e) { alert("Error al enviar"); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
         };
 
         window.updateOrderStatus = async (id, s, ev) => { try { await updateDoc(doc(db, "pedidos", id), { estatus: s }); } catch (e) { alert("Error"); } };
