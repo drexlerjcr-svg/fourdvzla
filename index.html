@@ -84,12 +84,8 @@
         </div>
 
         <div class="flex-grow overflow-y-auto p-6 space-y-6">
-            <div class="flex justify-between items-center text-white">
-                <h3 class="font-bold uppercase text-[9px] opacity-30 italic">Artículos en Caja</h3>
-                <button onclick="clearCart()" class="text-[9px] text-red-400 font-bold uppercase underline">Vaciar</button>
-            </div>
             <div id="cart-items" class="space-y-3"></div>
-            <div class="glass-card p-5 rounded-[25px] border-orange border text-center shadow-lg">
+            <div class="glass-card p-5 rounded-[25px] border-orange border text-center">
                 <p class="text-orange font-black uppercase text-[10px] mb-2 italic">Pago Móvil Banesco</p>
                 <div class="text-[12px] opacity-90 italic font-bold">
                     <p>Banco: Banesco | Cédula: 24.981.262</p>
@@ -101,11 +97,11 @@
                 <input type="text" id="cust-cedula" placeholder="Cédula">
                 <input type="email" id="cust-email" placeholder="Email para el envío">
                 <input type="tel" id="cust-wha" placeholder="WhatsApp">
-                <input type="text" id="cust-ref" placeholder="Referencia de Pago" class="font-black text-orange">
+                <input type="text" id="cust-ref" placeholder="N° Referencia de Pago" class="font-black text-orange">
                 <input type="file" id="cust-file" accept="image/*" class="text-[10px] text-white/50 w-full mt-2">
             </div>
         </div>
-        <div class="p-6 bg-black/40 space-y-4 shadow-2xl">
+        <div class="p-6 bg-black/40 space-y-4">
             <div class="flex justify-between items-center font-bold px-2 text-white">
                 <span class="opacity-30 uppercase text-[10px]">Total Final:</span>
                 <div class="text-right">
@@ -113,7 +109,7 @@
                     <div id="cart-total-bs" class="text-xs text-white/50 font-black">Bs 0,00</div>
                 </div>
             </div>
-            <button onclick="processPayment()" class="w-full bg-orange text-white py-5 rounded-2xl font-black uppercase italic shadow-xl">Realizar Pedido</button>
+            <button onclick="processPayment()" id="btn-confirm" class="w-full bg-orange text-white py-5 rounded-2xl font-black uppercase italic shadow-xl">Realizar Pedido</button>
         </div>
     </div>
 
@@ -122,28 +118,27 @@
         <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
             <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20">
                 <h2 class="text-lg font-black italic uppercase">Administración</h2>
-                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Salir</button>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full text-[9px] font-bold transition uppercase">Salir</button>
             </div>
             <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
-                <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4">Inventario</button>
-                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4">Ventas</button>
-                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4">Logo</button>
+                <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4 uppercase">Inventario</button>
+                <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4 uppercase">Ventas</button>
+                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4 uppercase">Diseño</button>
             </div>
             <div class="p-6">
-                <div id="tab-products" class="tab-content">
+                <div id="tab-products" class="tab-content text-white">
                     <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10">
-                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2">Añadir / Editar Producto</h3>
                         <input type="text" id="p-name" placeholder="Nombre" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" required>
                         <textarea id="p-desc" placeholder="Descripción..." class="col-span-full h-24 resize-none" required></textarea>
                         <input type="text" id="p-img" placeholder="URL Imagen" class="col-span-full" required>
                         <input type="text" id="p-link" placeholder="Link descarga (Drive)" class="col-span-full" required>
                         <div class="col-span-full flex gap-2">
-                            <button type="submit" id="btn-submit-product" class="flex-grow bg-orange text-white py-3 rounded-xl uppercase text-[10px] font-black">Guardar</button>
-                            <button type="button" id="btn-cancel-edit" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[9px]">Cancelar</button>
+                            <button type="submit" id="btn-submit-product" class="flex-grow bg-orange py-3 rounded-xl uppercase text-[10px] font-black">Guardar</button>
+                            <button type="button" id="btn-cancel-edit" onclick="cancelProductEdit()" class="hidden bg-gray-600 px-6 rounded-xl text-[9px]">Cancelar</button>
                         </div>
                     </form>
-                    <div id="admin-products-list" class="grid gap-2 text-white"></div>
+                    <div id="admin-products-list" class="grid gap-2"></div>
                 </div>
                 <div id="tab-orders" class="tab-content hidden space-y-6">
                     <div class="flex justify-center gap-2 mb-6">
@@ -151,10 +146,10 @@
                         <button onclick="filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black">CONFIRMADOS</button>
                         <button onclick="filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black">RECHAZADOS</button>
                     </div>
-                    <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                    <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-white"></div>
                 </div>
                 <div id="tab-config" class="tab-content hidden text-center space-y-4">
-                    <input type="text" id="new-logo-url" placeholder="URL Nuevo Logo" class="w-full max-w-md">
+                    <input type="text" id="new-logo-url" placeholder="URL Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
                     <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase block mx-auto">Actualizar</button>
                 </div>
             </div>
@@ -178,7 +173,7 @@
                 <div class="flex justify-between items-start border-b-4 border-orange-500 pb-6 mb-6">
                     <div>
                         <h1 class="text-4xl font-black italic uppercase tracking-tighter">FACTURA</h1>
-                        <p class="text-[10px] font-bold text-gray-400 mt-1">Digital Store Pro</p>
+                        <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase">Digital Store Pro</p>
                     </div>
                     <div class="text-right text-[10px] font-bold text-gray-400">
                         <p>N° CONTROL</p>
@@ -186,22 +181,32 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-8 mb-8 text-[10px]">
-                    <div><p class="text-gray-400 font-bold uppercase mb-1">Cliente:</p><p id="rec-name" class="font-black text-sm uppercase">---</p><p id="rec-cedula" class="italic">---</p><p id="rec-email">---</p></div>
-                    <div class="text-right"><p class="text-gray-400 font-bold uppercase mb-1">Pago Móvil:</p><p class="font-bold">Banesco</p><p>Ref: <span id="rec-ref" class="font-black">---</span></p><p id="rec-date" class="text-gray-500 mt-1 italic">--/--/--</p></div>
+                    <div>
+                        <p class="text-gray-400 font-bold uppercase mb-1">Cliente:</p>
+                        <p id="rec-name" class="font-black text-sm uppercase">---</p>
+                        <p id="rec-cedula" class="text-gray-600 font-bold italic">---</p>
+                        <p id="rec-email" class="text-gray-500">---</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400 font-bold uppercase mb-1">Detalles Pago:</p>
+                        <p class="font-bold text-gray-800">Pago Móvil Banesco</p>
+                        <p class="text-gray-600 italic">Ref: <span id="rec-ref" class="font-black text-black">---</span></p>
+                        <p id="rec-date" class="text-gray-500 mt-1">--/--/--</p>
+                    </div>
                 </div>
                 <table class="w-full mb-8 text-[11px] border-collapse">
-                    <thead class="bg-gray-100 text-gray-600 uppercase font-bold text-[9px]"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead>
-                    <tbody id="rec-items-list" class="divide-y divide-gray-100 text-gray-800 font-bold"></tbody>
+                    <thead class="bg-gray-100 text-gray-600 uppercase"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead>
+                    <tbody id="rec-items-list" class="divide-y divide-gray-100"></tbody>
                 </table>
                 <div class="flex justify-end border-t-2 border-gray-100 pt-6">
-                    <div class="w-64 space-y-1 text-right text-black font-black">
+                    <div class="w-64 space-y-1 text-right font-black">
                         <div class="text-[9px]">TOTAL USD: <span id="rec-total-usd" class="text-sm">$0.00</span></div>
                         <div class="text-[9px] text-orange-600">TOTAL BS: <span id="rec-total-bs" class="text-sm">Bs 0,00</span></div>
                     </div>
                 </div>
             </div>
             <div class="w-full flex gap-3">
-                <button onclick="downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl"><i class="fas fa-file-pdf mr-2"></i> Descargar</button>
+                <button onclick="downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl hover:bg-orange transition"><i class="fas fa-file-pdf mr-2"></i> Descargar</button>
                 <button onclick="location.reload()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl">Finalizar</button>
             </div>
         </div>
@@ -228,16 +233,16 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, updateDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // FIREBASE CONFIG
+        // FIREBASE
         const firebaseConfig = { apiKey : "AIzaSyClcdmMyvSfkJZicrRXZEmWT8CWHy5ApcI", authDomain : "digitalstore-b109b.firebaseapp.com", projectId : "digitalstore-b109b", storageBucket : "digitalstore-b109b.firebasestorage.app", messagingSenderId : "654989683570", appId : "1:654989683570:web:fe9dafa4716855a63d0beb" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // EMAILJS CONFIG (RESTAURADO)
+        // EMAILJS (ID RESTAURADOS)
         const EJS_PUBLIC = "Tn3KRFqfckrqZyWzx";
-        const EJS_SERVICE = "service_4ed4v3r";
-        const EJS_TEMPLATE = "65q7chg"; // ID corregido según captura
+        const EJS_SERVICE = "service_4edqmb2";
+        const EJS_TEMPLATE = "j0103m2";
         emailjs.init(EJS_PUBLIC);
 
         let cart = [];
@@ -264,8 +269,9 @@
             grid.innerHTML = ''; adminList.innerHTML = '';
             snap.forEach(d => {
                 const p = d.data();
-                grid.innerHTML += `<div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full"><img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3"><div class="px-1 flex-grow text-left"><h3 class="font-black text-[9px] uppercase italic text-orange leading-tight">${p.nombre}</h3><p class="text-[8px] opacity-60 line-clamp-3">${p.descripcion}</p></div><div class="mt-3 flex justify-between items-center bg-black/30 p-2 rounded-xl"><span class="text-sm font-black">$${p.precio}</span><button onclick="addToCart('${p.nombre.replace(/'/g, "\\'")}', ${p.precio})" class="bg-orange text-white px-4 py-1.5 rounded-full font-black text-[9px] uppercase hover:brightness-125 transition">Comprar</button></div></div>`;
-                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold border border-white/5 mb-1"><span>${p.nombre}</span><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-1"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div></div>`;
+                const cleanName = p.nombre.replace(/'/g, "\\'");
+                grid.innerHTML += `<div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full"><img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3"><div class="px-1 flex-grow text-left"><h3 class="font-black text-[9px] uppercase italic text-orange leading-tight mb-1">${p.nombre}</h3><p class="text-[8px] opacity-60 line-clamp-3">${p.descripcion}</p></div><div class="mt-3 flex justify-between items-center bg-black/30 p-2 rounded-xl"><span class="text-sm font-black text-white">$${p.precio}</span><button onclick="addToCart('${cleanName}', ${p.precio})" class="bg-orange text-white px-4 py-1.5 rounded-full font-black text-[9px] uppercase hover:brightness-125 transition">Comprar</button></div></div>`;
+                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold border border-white/5 mb-1 text-white"><span>${p.nombre}</span><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-1"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div></div>`;
             });
         });
         onSnapshot(doc(db, "settings", "site"), d => { if(d.exists()) document.getElementById('site-logo').src = d.data().logoUrl; });
@@ -311,7 +317,13 @@
         }
 
         window.processPayment = async () => {
-            const file = document.getElementById('cust-file').files[0]; const name = document.getElementById('cust-name').value; const email = document.getElementById('cust-email').value; const wha = document.getElementById('cust-wha').value; const refNum = document.getElementById('cust-ref').value; const cedula = document.getElementById('cust-cedula').value;
+            const file = document.getElementById('cust-file').files[0]; 
+            const name = document.getElementById('cust-name').value; 
+            const email = document.getElementById('cust-email').value; 
+            const wha = document.getElementById('cust-wha').value; 
+            const refNum = document.getElementById('cust-ref').value; 
+            const cedula = document.getElementById('cust-cedula').value;
+
             if(cart.length === 0 || !name || !email || !wha || !refNum || !file) return alert("Completa todos los datos.");
             const btn = document.getElementById('btn-confirm'); btn.disabled = true; btn.innerText = "PROCESANDO...";
             try {
@@ -324,25 +336,23 @@
                 document.getElementById('rec-total-bs').innerText = `Bs ${(totalUSD * bcvRate).toLocaleString('es-VE')}`;
                 document.getElementById('rec-items-list').innerHTML = cart.map(i => `<tr><td class="p-3 border-b">${i.nombre}</td><td class="p-3 border-b text-right font-black">$${i.precio.toFixed(2)}</td></tr>`).join('');
                 closeCart(); document.getElementById('success-overlay').classList.remove('hidden');
+                cart = []; updateCartUI();
             } catch (e) { alert("Error."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
         window.downloadReceiptPDF = () => html2pdf().set({ margin: 0.5, filename: 'Factura.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(document.getElementById('receipt-content')).save();
 
-        // ADMIN VENTAS FILTRO
+        // ADMIN VENTAS
         window.filterSales = (status) => {
-            currentStatusFilter = status;
-            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-f-${status}`).classList.add('active');
-            renderFilteredSales();
+            currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales();
         };
 
         function renderFilteredSales() {
             const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
             container.innerHTML = filtered.map(o => `
-                <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'} text-white">
+                <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'} text-white text-left">
                     <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30">${o.fecha}</p></div>
-                    <div class="text-[12px] font-bold space-y-1 text-left">
+                    <div class="text-[12px] font-bold space-y-1">
                         <p>Cliente: <span class="font-normal opacity-70 uppercase text-[10px]">${o.cliente}</span></p>
                         <p>Wha: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
                         <p>Ref: <span class="text-orange font-black">${o.referencia}</span></p>
@@ -365,7 +375,7 @@
                 const prodsSnap = await getDocs(collection(db, "productos"));
                 const inv = {}; prodsSnap.forEach(p => inv[p.data().nombre.toLowerCase().trim()] = p.data().linkDescarga);
                 let links = "";
-                order.items.forEach(i => { const l = inv[i.nombre.toLowerCase().trim()]; if(l) links += `<div style="margin-bottom:20px;text-align:center"><p style="font-weight:bold">${i.nombre}</p><a href="${l}" target="_blank" style="background:#f37021;color:white;padding:12px 25px;text-decoration:none;border-radius:10px;display:inline-block;font-weight:bold">DESCARGAR</a></div>`; });
+                order.items.forEach(i => { const l = inv[i.nombre.toLowerCase().trim()]; if(l) links += `<div style="margin-bottom:20px;text-align:center"><p style="font-weight:bold">${i.nombre}</p><a href="${l}" target="_blank" style="background:#f37021;color:white;padding:10px 25px;text-decoration:none;border-radius:10px;display:inline-block;font-weight:bold">DESCARGAR</a></div>`; });
                 await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, { to_name: order.cliente, to_email: order.email, download_links: links }, EJS_PUBLIC);
                 await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
                 showAdminMsg("¡Éxito!", "Correo enviado.", "mail");
@@ -375,7 +385,6 @@
         window.updateOrderStatus = async (id, s) => { await updateDoc(doc(db, "pedidos", id), { estatus: s }); showAdminMsg("Actualizado", "Estatus cambiado.", "success"); };
         window.deleteOrder = (id) => confirm("¿Eliminar?") && deleteDoc(doc(db, "pedidos", id));
         window.updateLogo = async () => { const url = document.getElementById('new-logo-url').value; await setDoc(doc(db, "settings", "site"), { logoUrl: url }); alert("Logo actualizado"); };
-        
         window.prepareProductEdit = async (id) => {
             const snap = await getDoc(doc(db, "productos", id));
             if (snap.exists()) {
