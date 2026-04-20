@@ -16,152 +16,89 @@
         body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #f37021 100%); background-attachment: fixed; color: white; min-height: 100vh; margin:0; }
         
         .glass { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); transition: 0.3s; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); transition: 0.3s; will-change: transform; }
         .glass-card:hover { border-color: var(--orange); background: rgba(255, 255, 255, 0.08); transform: translateY(-2px); }
         
+        /* Optimización de lista de inventario (menos blur para fluidez) */
+        .admin-item-flat { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.2s; }
+        .admin-item-flat:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--orange); }
+
         .bg-orange { background-color: var(--orange) !important; }
         .text-orange { color: var(--orange) !important; }
         
         .admin-tab.active { border-bottom: 3px solid var(--orange); background: rgba(255,255,255,0.1); color: white; font-weight: 900; }
-        .sub-tab { background: rgba(255, 255, 255, 0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
         .sub-tab.active { background: var(--orange) !important; color: white !important; font-weight: 900; box-shadow: 0 0 15px rgba(243, 112, 33, 0.5); border-color: transparent; }
 
-        input, select, textarea { 
-            background: rgba(255, 255, 255, 0.08) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.15) !important; 
-            color: white !important; outline: none; padding: 12px 16px !important; 
-            border-radius: 16px !important; font-size: 14px !important; width: 100%;
-        }
+        input, select, textarea { background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; color: white !important; outline: none; padding: 12px 16px !important; border-radius: 16px !important; width: 100%; }
         input:focus { border-color: var(--orange) !important; background: rgba(255, 255, 255, 0.12) !important; }
-        ::placeholder { color: rgba(255, 255, 255, 0.4); }
-
+        
         .hidden { display: none !important; }
         .sidebar-transition { transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); }
         #receipt-content { color: #000 !important; background: #fff !important; width: 100%; }
-        
-        /* Animación Promo */
         .promo-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(243, 112, 33, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(243, 112, 33, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(243, 112, 33, 0); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <!-- NAVBAR -->
-    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-xl text-white">
+    <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-xl">
         <div class="flex items-center space-x-2 cursor-pointer" onclick="showSection('home')">
-            <img id="site-logo" src="https://via.placeholder.com/150?text=LOGO" class="w-10 h-10 rounded-full border border-white/20 shadow-lg object-cover">
+            <img id="site-logo" src="https://via.placeholder.com/150?text=DS" class="w-10 h-10 rounded-full border border-white/20 object-cover">
             <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-orange">Store</span></h1>
         </div>
         <div class="flex items-center space-x-4">
             <button onclick="openCart()" class="relative glass-card p-2 rounded-full hover:bg-orange transition">
-                <i class="fas fa-shopping-basket text-lg"></i>
-                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-white">0</span>
+                <i class="fas fa-shopping-basket text-lg text-white"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">0</span>
             </button>
-            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl"><i class="fas fa-cog"></i></button>
+            <button onclick="checkAdminAuth()" class="opacity-30 hover:opacity-100 transition text-xl text-white"><i class="fas fa-cog"></i></button>
         </div>
     </nav>
 
-    <!-- SECCIÓN: HOME -->
+    <!-- HOME -->
     <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10">
         <div class="text-center mb-10">
             <h2 class="text-5xl font-black italic uppercase tracking-tighter text-white">TIENDA <span class="text-orange">DIGITAL</span></h2>
-            <p class="text-white/30 uppercase text-[9px] tracking-[0.5em] mt-1 font-bold italic">¡ARMA TU DESCUENTO! LLEVA 3 Y OBTÉN 20% OFF</p>
+            <p class="text-white/30 uppercase text-[9px] tracking-[0.5em] mt-1 font-bold">Lleva 3 artículos promo y obtén 20% OFF</p>
         </div>
         <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 text-center"></div>
     </section>
 
-    <!-- CARRITO SIDEBAR -->
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl">
-            <div class="flex items-center gap-3">
-                <h2 class="text-xl font-black italic uppercase text-white">Caja</h2>
-                <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center">
-                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5 text-white">Tasa BCV</span>
-                    <span id="bcv-rate-display" class="text-[10px] font-black text-orange italic">---</span>
-                </div>
-            </div>
-            <button onclick="closeCart()" class="text-5xl hover:text-orange transition text-white">&times;</button>
-        </div>
-
-        <div class="flex-grow overflow-y-auto p-6 space-y-6">
-            <div id="cart-items" class="space-y-3"></div>
-            
-            <!-- AVISO DE PROMO ACTIVA -->
-            <div id="promo-notice" class="hidden glass-card p-4 rounded-2xl border-orange bg-orange/10 text-center promo-pulse">
-                <p class="text-orange font-black uppercase text-[10px] italic">¡PROMO ACTIVADA! 20% DE DESCUENTO APLICADO</p>
-            </div>
-
-            <div class="glass-card p-5 rounded-[25px] border-orange border text-center text-white">
-                <p class="text-orange font-black uppercase text-[10px] mb-2 italic">Pago Móvil Banesco</p>
-                <div class="text-[12px] font-bold italic">
-                    <p>Cédula: 24.981.262 | Tel: 0414.330.9639</p>
-                </div>
-            </div>
-
-            <div class="space-y-4 pt-6 border-t border-white/10">
-                <input type="text" id="cust-name" placeholder="Nombre completo">
-                <input type="text" id="cust-cedula" placeholder="Cédula">
-                <input type="email" id="cust-email" placeholder="Email para el envío">
-                <input type="tel" id="cust-wha" placeholder="WhatsApp">
-                <input type="text" id="cust-ref" placeholder="N° Referencia del Pago" class="font-black text-orange">
-                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center">
-                    <input type="file" id="cust-file" accept="image/*" class="text-[10px] mx-auto text-white/50">
-                </div>
-            </div>
-        </div>
-        <div class="p-6 bg-black/40 space-y-4 shadow-2xl">
-            <div id="discount-row" class="hidden flex justify-between items-center px-2 text-red-400 font-bold text-xs uppercase italic">
-                <span>Descuento Promo:</span>
-                <span id="cart-discount-val">-$0.00</span>
-            </div>
-            <div class="flex justify-between items-center font-bold px-2 text-white border-t border-white/5 pt-4">
-                <span class="opacity-30 uppercase text-[10px]">Total a Pagar:</span>
-                <div class="text-right">
-                    <div id="cart-total" class="text-3xl font-black text-orange tracking-tighter">$0.00</div>
-                    <div id="cart-total-bs" class="text-xs text-white/50 font-black italic">Bs 0,00</div>
-                </div>
-            </div>
-            <button onclick="processPayment()" id="btn-confirm-order" class="w-full bg-orange text-white py-5 rounded-2xl font-black uppercase italic shadow-xl">Confirmar Pedido</button>
-        </div>
-    </div>
-
-    <!-- PANEL ADMIN -->
+    <!-- ADMIN PANEL -->
     <section id="section-admin-panel" class="section hidden p-4">
         <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
             <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20 text-white">
                 <h2 class="text-lg font-black italic uppercase">Administración</h2>
-                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-full text-[9px] font-bold uppercase transition italic">Salir</button>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Salir</button>
             </div>
+            
             <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
                 <button onclick="switchTab('tab-products')" class="admin-tab active flex-1 py-4 uppercase">Inventario</button>
                 <button onclick="switchTab('tab-orders')" class="admin-tab flex-1 py-4 uppercase">Ventas</button>
-                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4 uppercase">Logo</button>
+                <button onclick="switchTab('tab-config')" class="admin-tab flex-1 py-4 uppercase text-center">Logo</button>
             </div>
-            <div class="p-6 text-white text-center">
+
+            <div class="p-6 text-white">
                 <div id="tab-products" class="tab-content">
                     <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10">
+                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2 tracking-widest">Añadir Nuevo Producto</h3>
                         <input type="text" id="p-name" placeholder="Nombre" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" required>
                         <textarea id="p-desc" placeholder="Descripción..." class="col-span-full h-24 resize-none" required></textarea>
                         <input type="text" id="p-img" placeholder="URL Imagen" class="col-span-full" required>
                         <input type="text" id="p-link" placeholder="Link descarga" class="col-span-full" required>
-                        
-                        <!-- CHECKBOX PROMO (NUEVO) -->
                         <div class="col-span-full flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
                             <input type="checkbox" id="p-promo" class="w-5 h-5 accent-orange-500">
-                            <label for="p-promo" class="text-xs font-black uppercase italic text-orange">¿Aplica para promoción "Arma tu Descuento"? (3 artículos)</label>
+                            <label for="p-promo" class="text-xs font-black uppercase italic text-orange">¿Aplica para promoción 3x?</label>
                         </div>
-
                         <div class="col-span-full flex gap-2">
                             <button type="submit" id="btn-submit-product" class="flex-grow bg-orange py-3 rounded-xl uppercase text-[10px] font-black italic">Guardar</button>
-                            <button type="button" id="btn-cancel-edit" onclick="cancelProductEdit()" class="hidden bg-gray-600 text-white px-6 rounded-xl text-[9px] italic">Cancelar</button>
+                            <button type="button" id="btn-cancel-edit" onclick="cancelProductEdit()" class="hidden bg-gray-600 px-6 rounded-xl text-[9px]">Cancelar</button>
                         </div>
                     </form>
-                    <div id="admin-products-list" class="grid gap-2"></div>
+                    <!-- Lista optimizada -->
+                    <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
                 <!-- VENTAS -->
                 <div id="tab-orders" class="tab-content hidden space-y-6">
@@ -173,69 +110,80 @@
                     <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
                 <div id="tab-config" class="tab-content hidden text-center space-y-4">
-                    <input type="text" id="new-logo-url" placeholder="URL Nuevo Logo" class="p-4 rounded-xl w-full max-w-md">
-                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase">Actualizar Logo</button>
+                    <input type="text" id="new-logo-url" placeholder="URL Nuevo Logo" class="p-4 rounded-xl w-full max-w-md mx-auto block">
+                    <button onclick="updateLogo()" class="bg-orange text-white px-8 py-3 rounded-xl font-black text-xs uppercase block mx-auto">Actualizar Logo</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- MENSAJES OVERLAY -->
-    <div id="admin-msg-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex items-center justify-center p-4 text-white">
-        <div class="glass-card p-10 rounded-[40px] max-w-sm w-full text-center space-y-6">
-            <div id="msg-icon" class="text-5xl"></div>
-            <h3 id="msg-title" class="text-xl font-black uppercase italic"></h3>
-            <p id="msg-body" class="text-sm opacity-60"></p>
-            <button onclick="closeAdminMsg()" class="bg-orange text-white font-black px-8 py-3 rounded-2xl uppercase text-[10px] italic">Entendido</button>
+    <!-- CARRITO SIDEBAR -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
+        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl">
+            <div class="flex items-center gap-3">
+                <h2 class="text-xl font-black italic uppercase text-white">Mi Pedido</h2>
+                <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center border-white/10">
+                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5 text-white">Tasa BCV</span>
+                    <span id="bcv-rate-display" class="text-[10px] font-black text-orange italic">---</span>
+                </div>
+            </div>
+            <button onclick="closeCart()" class="text-5xl hover:text-orange transition text-white">&times;</button>
+        </div>
+        <div class="flex-grow overflow-y-auto p-6 space-y-6">
+            <div id="cart-items" class="space-y-3"></div>
+            <div id="promo-notice" class="hidden glass-card p-4 rounded-2xl border-orange bg-orange/10 text-center promo-pulse"><p class="text-orange font-black uppercase text-[10px] italic">¡PROMO 3x ACTIVADA!</p></div>
+            <div class="glass-card p-5 rounded-[25px] border-orange border text-center text-white italic font-bold text-[12px]">Banesco | 24.981.262 | 0414.330.9639</div>
+            <div class="space-y-4 pt-6 border-t border-white/10">
+                <input type="text" id="cust-name" placeholder="Nombre completo">
+                <input type="text" id="cust-cedula" placeholder="Cédula">
+                <input type="email" id="cust-email" placeholder="Email para el envío">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp">
+                <input type="text" id="cust-ref" placeholder="N° Referencia del Pago" class="font-black text-orange">
+                <input type="file" id="cust-file" accept="image/*" class="text-[10px] mx-auto text-white/50">
+            </div>
+        </div>
+        <div class="p-6 bg-black/40 space-y-4">
+            <div id="discount-row" class="hidden flex justify-between px-2 text-red-400 font-bold text-[10px] uppercase"><span>Descuento:</span><span id="cart-discount-val">-$0.00</span></div>
+            <div class="flex justify-between items-center font-bold px-2 text-white">
+                <span class="opacity-30 uppercase text-[10px]">Total:</span>
+                <div class="text-right"><div id="cart-total" class="text-3xl font-black text-orange">$0.00</div><div id="cart-total-bs" class="text-xs text-white/50 font-black italic">Bs 0,00</div></div>
+            </div>
+            <button onclick="processPayment()" id="btn-confirm-order" class="w-full bg-orange text-white py-5 rounded-2xl font-black uppercase shadow-xl">Realizar Pedido</button>
         </div>
     </div>
 
-    <!-- SUCCESS OVERLAY (FACTURA) -->
-    <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4 overflow-y-auto">
+    <!-- OVERLAYS (MENSAJES, FACTURA, IMAGEN) -->
+    <div id="admin-msg-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex items-center justify-center p-4 text-white">
+        <div class="glass-card p-10 rounded-[40px] max-w-sm w-full text-center space-y-6">
+            <div id="msg-icon" class="text-5xl"></div><h3 id="msg-title" class="text-xl font-black uppercase italic"></h3><p id="msg-body" class="text-sm opacity-60"></p>
+            <button onclick="closeAdminMsg()" class="bg-orange text-white font-black px-8 py-3 rounded-2xl uppercase text-[10px]">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4 overflow-y-auto text-black">
         <div class="max-w-xl w-full flex flex-col items-center gap-6 py-10">
-            <div id="receipt-content" class="bg-white text-black p-10 rounded-lg w-full shadow-2xl text-black">
+            <div id="receipt-content" class="bg-white p-10 rounded-lg w-full shadow-2xl">
                 <div class="flex justify-between items-start border-b-4 border-orange-500 pb-6 mb-6">
-                    <div><h1 class="text-4xl font-black italic uppercase tracking-tighter">FACTURA</h1><p class="text-[10px] font-bold text-gray-400 mt-1 uppercase">Digital Store Pro</p></div>
+                    <div><h1 class="text-4xl font-black italic uppercase">FACTURA</h1><p class="text-[10px] font-bold text-gray-400 mt-1 uppercase">Digital Store Pro</p></div>
                     <div class="text-right text-[10px] font-bold text-gray-400"><p>N° CONTROL</p><p id="rec-id" class="text-lg font-black text-orange-600">#---</p></div>
                 </div>
                 <div class="grid grid-cols-2 gap-8 mb-8 text-[10px]">
-                    <div><p class="text-gray-400 font-bold uppercase mb-1 text-left">Facturado a:</p><p id="rec-name" class="font-black text-sm uppercase text-left">---</p><p id="rec-cedula" class="text-left italic">---</p><p id="rec-email" class="text-left">---</p></div>
-                    <div class="text-right"><p class="text-gray-400 font-bold uppercase mb-1">Pago Móvil:</p><p class="font-bold">Banesco</p><p>Ref: <span id="rec-ref" class="font-black text-black">---</span></p><p id="rec-date" class="text-gray-500 mt-1 italic">--/--/--</p></div>
+                    <div><p class="text-gray-400 font-bold uppercase mb-1">Cliente:</p><p id="rec-name" class="font-black text-sm uppercase">---</p><p id="rec-cedula" class="italic">---</p><p id="rec-email">---</p></div>
+                    <div class="text-right"><p class="text-gray-400 font-bold uppercase mb-1">Pago Móvil:</p><p class="font-bold text-gray-800">Banesco</p><p>Ref: <span id="rec-ref" class="font-black">---</span></p><p id="rec-date" class="text-gray-500 mt-1 italic">--/--/--</p></div>
                 </div>
-                <table class="w-full mb-8 text-[11px] border-collapse">
-                    <thead class="bg-gray-100 text-gray-600 uppercase font-black text-[9px]"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead>
-                    <tbody id="rec-items-list" class="divide-y divide-gray-100 font-bold"></tbody>
-                </table>
-                <div class="flex justify-end border-t-2 border-gray-100 pt-6">
-                    <div class="w-64 space-y-1 text-right text-black font-black">
-                        <div class="text-[9px]">SUBTOTAL: <span id="rec-subtotal" class="text-xs">$0.00</span></div>
-                        <div id="rec-promo-row" class="text-[9px] text-red-600">PROMO 3x: <span id="rec-discount-val">-$0.00</span></div>
-                        <div class="text-[9px] mt-2 uppercase">TOTAL USD: <span id="rec-total-usd" class="text-sm">$0.00</span></div>
-                        <div class="text-[9px] text-orange-600 uppercase">TOTAL BS: <span id="rec-total-bs" class="text-sm">Bs 0,00</span></div>
+                <table class="w-full mb-8 text-[11px] border-collapse text-gray-800"><thead class="bg-gray-100 font-bold"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead><tbody id="rec-items-list" class="divide-y divide-gray-100"></tbody></table>
+                <div class="flex justify-end border-t-2 border-gray-100 pt-6 text-right font-black">
+                    <div class="w-64 space-y-1">
+                        <div>TOTAL USD: <span id="rec-total-usd" class="text-sm">$0.00</span></div>
+                        <div class="text-orange-600">TOTAL BS: <span id="rec-total-bs" class="text-sm">Bs 0,00</span></div>
                     </div>
                 </div>
             </div>
-            <div class="w-full flex gap-3">
-                <button onclick="downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl hover:bg-orange hover:text-white transition"><i class="fas fa-file-pdf mr-2"></i> Descargar</button>
-                <button onclick="location.reload()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl italic">Terminar</button>
-            </div>
+            <div class="w-full flex gap-3"><button onclick="downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl"><i class="fas fa-file-pdf mr-2"></i> Descargar</button><button onclick="location.reload()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl">Finalizar</button></div>
         </div>
     </div>
 
-    <!-- LOGIN -->
-    <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center text-white">
-        <div class="glass p-10 rounded-[40px] w-full max-w-md shadow-2xl">
-            <h2 class="text-2xl font-black mb-8 uppercase italic text-orange tracking-widest italic">Admin Login</h2>
-            <form id="login-form" class="space-y-4">
-                <input type="email" id="admin-email" placeholder="Usuario" required>
-                <input type="password" id="admin-pass" placeholder="Contraseña" required>
-                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase italic">Entrar</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- OVERLAYS COMUNES -->
-    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg border border-white/10 shadow-2xl"></div>
+    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl border border-white/10"></div>
     <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="closeCart()"></div>
 
     <script type="module">
@@ -243,124 +191,81 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, updateDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // FIREBASE
         const firebaseConfig = { apiKey : "AIzaSyClcdmMyvSfkJZicrRXZEmWT8CWHy5ApcI", authDomain : "digitalstore-b109b.firebaseapp.com", projectId : "digitalstore-b109b", storageBucket : "digitalstore-b109b.firebasestorage.app", messagingSenderId : "654989683570", appId : "1:654989683570:web:fe9dafa4716855a63d0beb" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // EMAILJS
         emailjs.init("0hQJYiywXnq7FrNce");
         const EJS_SERVICE = "service_4edqmb2";
         const EJS_TEMPLATE = "template_j0103m2";
 
-        let cart = [];
-        let allOrders = [];
-        let currentStatusFilter = 'revision';
-        let bcvRate = 1;
-        let editingProductId = null;
+        let cart = [], allOrders = [], currentStatusFilter = 'revision', bcvRate = 1, editingProductId = null;
 
         async function fetchBcvRate() {
-            try {
-                const r = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
-                const d = await r.json();
-                bcvRate = d.promedio;
-                document.getElementById('bcv-rate-display').innerText = `Bs ${bcvRate.toFixed(2)}`;
-                updateCartUI();
-            } catch (e) { document.getElementById('bcv-rate-display').innerText = "N/D"; }
+            try { const r = await fetch('https://ve.dolarapi.com/v1/dolares/oficial'); const d = await r.json(); bcvRate = d.promedio; document.getElementById('bcv-rate-display').innerText = `Bs ${bcvRate.toFixed(2)}`; updateCartUI(); } 
+            catch (e) { document.getElementById('bcv-rate-display').innerText = "N/D"; }
         }
         fetchBcvRate();
 
-        // 1. CARGAR CATÁLOGO Y LOGO
+        // CATÁLOGO Y LOGO (OPTIMIZADO)
         onSnapshot(collection(db, "productos"), (snap) => {
             const grid = document.getElementById('products-grid');
             const adminList = document.getElementById('admin-products-list');
             grid.innerHTML = ''; adminList.innerHTML = '';
             snap.forEach(d => {
-                const p = d.data();
-                const cleanName = p.nombre.replace(/'/g, "\\'");
-                const promoTag = p.aplicaPromo ? `<span class="absolute top-2 right-2 bg-orange text-white text-[7px] font-black px-2 py-1 rounded-full uppercase italic shadow-lg z-10">PROMO 3x</span>` : "";
-                
-                grid.innerHTML += `
-                    <div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full relative">
-                        ${promoTag}
-                        <img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3">
-                        <div class="px-1 flex-grow text-left">
-                            <h3 class="font-black text-[9px] uppercase italic text-orange leading-tight">${p.nombre}</h3>
-                            <p class="text-[8px] opacity-60 line-clamp-3">${p.descripcion}</p>
-                        </div>
-                        <div class="mt-3 flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5">
-                            <span class="text-sm font-black text-white">$${p.precio}</span>
-                            <button onclick="addToCart('${cleanName}', ${p.precio}, ${p.aplicaPromo || false})" class="bg-orange text-white px-4 py-1.5 rounded-full font-black text-[9px] uppercase hover:brightness-125 transition italic">Comprar</button>
-                        </div>
-                    </div>`;
-                
-                adminList.innerHTML += `<div class="glass-card flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold border border-white/5 mb-1 text-white"><span>${p.nombre} ${p.aplicaPromo ? '(PROMO)' : ''}</span><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-1 hover:scale-125 transition"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1 hover:scale-125 transition"><i class="fas fa-trash-alt"></i></button></div></div>`;
+                const p = d.data(); const cleanName = p.nombre.replace(/'/g, "\\'");
+                const tag = p.aplicaPromo ? `<span class="absolute top-2 right-2 bg-orange text-white text-[7px] font-black px-2 py-1 rounded-full uppercase italic z-10 shadow-lg">PROMO 3x</span>` : "";
+                grid.innerHTML += `<div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full relative">${tag}<img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3"><div class="px-1 flex-grow text-left"><h3 class="font-black text-[9px] uppercase italic text-orange leading-tight">${p.nombre}</h3><p class="text-[8px] opacity-60 line-clamp-3">${p.descripcion}</p></div><div class="mt-3 flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5"><span class="text-sm font-black text-white">$${p.precio}</span><button onclick="addToCart('${cleanName}', ${p.precio}, ${p.aplicaPromo || false})" class="bg-orange text-white px-4 py-1.5 rounded-full font-black text-[9px] uppercase hover:brightness-110 transition">Comprar</button></div></div>`;
+                adminList.innerHTML += `<div class="admin-item-flat flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold mb-1 text-white border border-white/5"><span>${p.nombre} ${p.aplicaPromo ? '(P)' : ''}</span><div class="flex gap-2"><button onclick="prepareProductEdit('${d.id}')" class="text-orange p-1 hover:scale-125 transition"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${d.id}')" class="text-red-400 p-1 hover:scale-125 transition"><i class="fas fa-trash-alt"></i></button></div></div>`;
             });
         });
         onSnapshot(doc(db, "settings", "site"), d => { if(d.exists()) document.getElementById('site-logo').src = d.data().logoUrl; });
 
-        // 2. VENTAS
+        // AUTH
         onAuthStateChanged(auth, (user) => { if (user) onSnapshot(collection(db, "pedidos"), (snap) => { allOrders = []; snap.forEach(d => allOrders.push({ id: d.id, ...d.data() })); renderFilteredSales(); }); });
         window.logout = () => signOut(auth).then(() => location.reload());
+        document.getElementById('login-form').onsubmit = async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value); showSection('admin-panel'); } catch (err) { alert("Acceso denegado"); } };
 
-        // 3. UI NAVEGACION
+        // UI
         window.showSection = (id) => { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(`section-${id}`).classList.remove('hidden'); };
         window.openCart = () => { document.getElementById('cart-sidebar').classList.remove('translate-x-full'); document.getElementById('cart-overlay').classList.remove('hidden'); };
         window.closeCart = () => { document.getElementById('cart-sidebar').classList.add('translate-x-full'); document.getElementById('cart-overlay').classList.add('hidden'); };
         window.switchTab = (id) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden')); document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.remove('hidden'); if(event) event.currentTarget.classList.add('active'); };
         window.checkAdminAuth = () => auth.currentUser ? showSection('admin-panel') : showSection('login');
-        window.showAdminMsg = (t, b, i) => { const ic = { mail: '📧', success: '✅', error: '❌' }; document.getElementById('msg-icon').innerText = ic[i] || 'ℹ️'; document.getElementById('msg-title').innerText = t; document.getElementById('msg-body').innerText = b; document.getElementById('admin-msg-overlay').classList.remove('hidden'); };
-        window.closeAdminMsg = () => document.getElementById('admin-msg-overlay').classList.add('hidden');
         window.openImageOverlay = (s) => { document.getElementById('overlay-img').src = s; document.getElementById('image-overlay').classList.remove('hidden'); };
         window.closeImageOverlay = () => document.getElementById('image-overlay').classList.add('hidden');
+        window.showAdminMsg = (t, b, i) => { const ic = { mail: '📧', success: '✅', error: '❌' }; document.getElementById('msg-icon').innerText = ic[i] || 'ℹ️'; document.getElementById('msg-title').innerText = t; document.getElementById('msg-body').innerText = b; document.getElementById('admin-msg-overlay').classList.remove('hidden'); };
+        window.closeAdminMsg = () => document.getElementById('admin-msg-overlay').classList.add('hidden');
 
-        // 4. LÓGICA CARRITO Y DESCUENTO
-        window.addToCart = (n, p, isPromo) => { cart.push({nombre: n, precio: p, aplicaPromo: isPromo}); updateCartUI(); openCart(); };
+        // CARRITO Y PROMO
+        window.addToCart = (n, p, isP) => { cart.push({nombre: n, precio: p, aplicaPromo: isP}); updateCartUI(); openCart(); };
         window.clearCart = () => { cart = []; updateCartUI(); };
         window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
-
         function updateCartUI() {
-            const container = document.getElementById('cart-items');
+            const container = document.getElementById('cart-items'); 
             const totalUSDOriginal = cart.reduce((s,i) => s + i.precio, 0);
-            
-            // LOGICA PROMO: Si hay 3 o más productos que aplican, se resta 20%
             const promoItemsCount = cart.filter(i => i.aplicaPromo).length;
-            let discount = 0;
-            if (promoItemsCount >= 3) {
-                // Descuento del 20% sobre los productos que aplican
-                const promoTotal = cart.filter(i => i.aplicaPromo).reduce((s,i) => s + i.precio, 0);
-                discount = promoTotal * 0.20;
-                document.getElementById('promo-notice').classList.remove('hidden');
-                document.getElementById('discount-row').classList.remove('hidden');
-                document.getElementById('cart-discount-val').innerText = `-$${discount.toFixed(2)}`;
-            } else {
-                document.getElementById('promo-notice').classList.add('hidden');
-                document.getElementById('discount-row').classList.add('hidden');
-            }
-
+            let discount = 0; if (promoItemsCount >= 3) { discount = cart.filter(i => i.aplicaPromo).reduce((s,i) => s + i.precio, 0) * 0.20; document.getElementById('promo-notice').classList.remove('hidden'); document.getElementById('discount-row').classList.remove('hidden'); document.getElementById('cart-discount-val').innerText = `-$${discount.toFixed(2)}`; } else { document.getElementById('promo-notice').classList.add('hidden'); document.getElementById('discount-row').classList.add('hidden'); }
             const totalFinal = totalUSDOriginal - discount;
-            const totalBS = totalFinal * bcvRate;
-
-            container.innerHTML = cart.length === 0 ? '<p class="opacity-20 py-10 italic text-[10px] text-center text-white">Caja vacía</p>' : 
-                cart.map((item, i) => `
-                <div class="glass-card flex justify-between items-center p-3 rounded-xl border-l-4 ${item.aplicaPromo ? 'border-orange' : 'border-white/20'} text-white text-left">
-                    <div class="flex-grow pr-2">
-                        <p class="font-bold text-[9px] uppercase italic text-white/80 truncate">${item.nombre}</p>
-                        ${item.aplicaPromo ? '<span class="text-[6px] text-orange font-black uppercase">Elegible Promo 3x</span>' : ''}
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <p class="text-orange font-black text-sm">$${item.precio.toFixed(2)}</p>
-                        <button onclick="removeFromCart(${i})" class="text-red-400"><i class="fas fa-times"></i></button>
-                    </div>
-                </div>`).join('');
-
-            document.getElementById('cart-total').innerText = `$${totalFinal.toFixed(2)}`; 
-            document.getElementById('cart-total-bs').innerText = `Bs ${totalBS.toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
+            container.innerHTML = cart.length === 0 ? '<p class="opacity-20 py-10 italic text-[10px] text-center text-white">Caja vacía</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between items-center p-3 rounded-xl border-l-4 ${item.aplicaPromo ? 'border-orange' : 'border-white/20'} text-white text-left"><div class="flex-grow pr-2 text-left"><p class="font-bold text-[9px] uppercase italic text-white/80 truncate">${item.nombre}</p></div><div class="flex items-center gap-3"><p class="text-orange font-black text-sm whitespace-nowrap">$${item.precio.toFixed(2)}</p><button onclick="removeFromCart(${i})" class="text-red-400"><i class="fas fa-times"></i></button></div></div>`).join('');
+            document.getElementById('cart-total').innerText = `$${totalFinal.toFixed(2)}`; document.getElementById('cart-total-bs').innerText = `Bs ${(totalFinal * bcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
             document.getElementById('cart-count').innerText = cart.length;
         }
 
-        // 5. PROCESAR PAGO
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader(); reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image(); img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas'); const scale = 800 / img.width; canvas.width = 800; canvas.height = img.height * scale;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 800, canvas.height); resolve(canvas.toDataURL('image/jpeg', 0.6));
+                    };
+                };
+            });
+        }
+
         window.processPayment = async () => {
             const file = document.getElementById('cust-file').files[0]; const name = document.getElementById('cust-name').value; const email = document.getElementById('cust-email').value; const wha = document.getElementById('cust-wha').value; const refNum = document.getElementById('cust-ref').value; const cedula = document.getElementById('cust-cedula').value;
             if(cart.length === 0 || !name || !email || !wha || !refNum || !file) return alert("Completa todos los datos.");
@@ -368,53 +273,33 @@
             try {
                 const img = await compressImage(file);
                 const totalUSD = cart.reduce((s,i) => s + i.precio, 0);
-                const promoItemsCount = cart.filter(i => i.aplicaPromo).length;
-                let discount = 0; if (promoItemsCount >= 3) { discount = cart.filter(i => i.aplicaPromo).reduce((s,i) => s + i.precio, 0) * 0.20; }
+                const promoCount = cart.filter(i => i.aplicaPromo).length;
+                let discount = 0; if (promoCount >= 3) { discount = cart.filter(i => i.aplicaPromo).reduce((s,i) => s + i.precio, 0) * 0.20; }
                 const totalFinal = totalUSD - discount;
-
-                const docRef = await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: refNum, cedula: cedula, fotoComprobante: img, items: cart, total: totalFinal, descuento: discount, fecha: new Date().toLocaleString(), estatus: "revision" });
-
-                // FACTURA
+                const docRef = await addDoc(collection(db, "pedidos"), { cliente: name, email, whatsapp: wha, referencia: refNum, cedula: cedula, fotoComprobante: img, items: cart, total: totalFinal, fecha: new Date().toLocaleString(), estatus: "revision" });
                 document.getElementById('rec-id').innerText = `#${docRef.id.toUpperCase().slice(0,8)}`;
-                document.getElementById('rec-name').innerText = name; document.getElementById('rec-cedula').innerText = `V-${cedula}`; document.getElementById('rec-email').innerText = email; document.getElementById('rec-wha').innerText = wha; document.getElementById('rec-ref').innerText = refNum; document.getElementById('rec-date').innerText = new Date().toLocaleString();
-                
-                document.getElementById('rec-subtotal').innerText = `$${totalUSD.toFixed(2)}`;
-                if(discount > 0) {
-                    document.getElementById('rec-promo-row').classList.remove('hidden');
-                    document.getElementById('rec-discount-val').innerText = `-$${discount.toFixed(2)}`;
-                } else { document.getElementById('rec-promo-row').classList.add('hidden'); }
-
-                document.getElementById('rec-total-usd').innerText = `$${totalFinal.toFixed(2)}`;
-                document.getElementById('rec-total-bs').innerText = `Bs ${(totalFinal * bcvRate).toLocaleString('es-VE')}`;
-                document.getElementById('rec-items-list').innerHTML = cart.map(i => `<tr><td class="p-3 border-b text-gray-800">${i.nombre}</td><td class="p-3 border-b text-right font-black">$${i.precio.toFixed(2)}</td></tr>`).join('');
-                
+                document.getElementById('rec-name').innerText = name; document.getElementById('rec-cedula').innerText = `V-${cedula}`; document.getElementById('rec-email').innerText = email; document.getElementById('rec-ref').innerText = refNum; document.getElementById('rec-date').innerText = new Date().toLocaleString();
+                document.getElementById('rec-total-usd').innerText = `$${totalFinal.toFixed(2)}`; document.getElementById('rec-total-bs').innerText = `Bs ${(totalFinal * bcvRate).toLocaleString('es-VE')}`;
+                document.getElementById('rec-items-list').innerHTML = cart.map(i => `<tr><td class="p-3 border-b text-gray-800">${i.nombre}</td><td class="p-3 border-b text-right font-black text-gray-900">$${i.precio.toFixed(2)}</td></tr>`).join('');
                 closeCart(); document.getElementById('success-overlay').classList.remove('hidden');
                 cart = []; updateCartUI();
-            } catch (e) { alert("Error."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
+            } catch (e) { alert("Error al procesar pedido."); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
-        window.downloadReceiptPDF = () => html2pdf().set({ margin: 0.5, filename: 'Factura.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(document.getElementById('receipt-content')).save();
-
-        // 6. ADMIN
+        // ADMIN VENTAS
         window.filterSales = (status) => { currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales(); };
         function renderFilteredSales() {
             const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
             container.innerHTML = filtered.map(o => `
                 <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'} text-white text-left">
-                    <div class="flex justify-between mb-1 text-[10px] font-black text-orange uppercase italic">ID: ${o.id.slice(0,8)}<p class="opacity-30">${o.fecha}</p></div>
-                    <div class="text-[12px] font-bold space-y-1">
-                        <p>Cliente: <span class="font-normal opacity-70">${o.cliente}</span></p>
-                        <p>Wha: <span class="text-green-400 font-black">${o.whatsapp}</span></p>
-                        <p>Email: <span class="text-orange underline">${o.email || 'Sin correo'}</span></p>
-                        <p>Ref: <span class="font-black">${o.referencia}</span></p>
-                    </div>
-                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5 grayscale hover:grayscale-0 transition duration-500">
-                    <div class="grid grid-cols-1 gap-2 mt-4 text-center italic">
-                        ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase">Confirmar y Enviar</button>` : ''}
-                        <button onclick="updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20">Rechazar</button>
+                    <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30">${o.fecha}</p></div>
+                    <div class="text-[12px] font-bold space-y-1"><p>CLIENTE: <span class="font-normal opacity-70 uppercase text-[10px]">${o.cliente}</span></p><p>TEL: <span class="text-green-400 font-black">${o.whatsapp}</span></p><p>EMAIL: <span class="font-black text-orange underline text-[10px]">${o.email || 'Sin correo'}</span></p></div>
+                    <img src="${o.fotoComprobante}" onclick="openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5">
+                    <div class="grid grid-cols-1 gap-2 mt-4 text-center">
+                        ${o.estatus === 'revision' ? `<button onclick="confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase italic font-black">Confirmar y Enviar</button>` : ''}
+                        <button onclick="updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20 uppercase">Rechazar</button>
                         <button onclick="deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Borrar Registro</button>
-                    </div>
-                    <p class="text-xl font-black text-right italic text-orange">$${o.total}</p>
+                    </div><p class="text-xl font-black text-right text-orange italic">$${o.total}</p>
                 </div>`).join('');
         }
 
@@ -425,16 +310,16 @@
                 const snap = await getDoc(doc(db, "pedidos", id)); const order = snap.data();
                 const prodsSnap = await getDocs(collection(db, "productos"));
                 const inv = {}; prodsSnap.forEach(p => inv[p.data().nombre.toLowerCase().trim()] = p.data().linkDescarga);
-                let links = "";
-                order.items.forEach(i => { const l = inv[i.nombre.toLowerCase().trim()]; if(l) links += `<div style="margin-bottom:20px;text-align:center"><p style="font-weight:bold;color:#000">${i.nombre}</p><a href="${l}" target="_blank" style="background:#f37021;color:white;padding:12px 25px;text-decoration:none;border-radius:10px;display:inline-block;font-weight:bold">DESCARGAR</a></div>`; });
+                let links = ""; order.items.forEach(i => { const l = inv[i.nombre.toLowerCase().trim()]; if(l) links += `<div style="margin-bottom:20px;text-align:center"><p style="font-weight:bold;color:#000">${i.nombre}</p><a href="${l}" target="_blank" style="background:#f37021;color:white;padding:12px 25px;text-decoration:none;border-radius:10px;display:inline-block;font-weight:bold">DESCARGAR</a></div>`; });
                 await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, { to_name: order.cliente, to_email: order.email, download_links: links }, EJS_PUBLIC);
                 await updateDoc(doc(db, "pedidos", id), { estatus: "confirmado" });
-                showAdminMsg("¡Éxito!", "Correo enviado.", "mail");
-            } catch (e) { showAdminMsg("Error", "Fallo al enviar.", "error"); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
+                showAdminMsg("¡Éxito!", "Correo enviado al cliente.", "mail");
+            } catch (e) { showAdminMsg("Error", "Fallo al enviar. Revisa EmailJS.", "error"); } finally { btn.innerText = "Confirmar y Enviar"; btn.disabled = false; }
         };
 
         window.updateOrderStatus = async (id, s) => { await updateDoc(doc(db, "pedidos", id), { estatus: s }); showAdminMsg("Actualizado", "Estatus cambiado.", "success"); };
         window.deleteOrder = (id) => confirm("¿Borrar?") && deleteDoc(doc(db, "pedidos", id));
+        window.downloadReceiptPDF = () => html2pdf().set({ margin: 0.5, filename: 'Factura.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(document.getElementById('receipt-content')).save();
         window.updateLogo = async () => { const url = document.getElementById('new-logo-url').value; await setDoc(doc(db, "settings", "site"), { logoUrl: url }); alert("Logo actualizado"); };
         
         window.prepareProductEdit = async (id) => {
@@ -451,7 +336,8 @@
         document.getElementById('product-form').onsubmit = async (e) => {
             e.preventDefault();
             const data = { nombre: document.getElementById('p-name').value, precio: parseFloat(document.getElementById('p-price').value), descripcion: document.getElementById('p-desc').value, imagen: document.getElementById('p-img').value, linkDescarga: document.getElementById('p-link').value, aplicaPromo: document.getElementById('p-promo').checked };
-            try { editingProductId ? await updateDoc(doc(db, "productos", editingProductId), data) : await addDoc(collection(db, "productos"), data); showAdminMsg("¡Éxito!", "Inventario actualizado.", "success"); cancelProductEdit(); } catch (e) { alert("Error"); }
+            try { if(editingProductId) await updateDoc(doc(db, "productos", editingProductId), data); else await addDoc(collection(db, "productos"), data); showAdminMsg("¡Éxito!", "Inventario actualizado.", "success"); cancelProductEdit(); } 
+            catch (e) { console.error(e); }
         };
     </script>
 </body>
