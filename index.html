@@ -29,9 +29,19 @@
         .sub-tab { background: rgba(255, 255, 255, 0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; cursor: pointer; }
         .sub-tab.active { background: var(--orange) !important; color: white !important; font-weight: 900 !important; box-shadow: 0 0 15px rgba(243, 112, 33, 0.5); border-color: transparent !important; }
 
-        input, select, textarea { background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; color: white !important; outline: none; padding: 12px 16px !important; border-radius: 16px !important; font-size: 14px !important; }
+        /* --- CORRECCIÓN DE TAMAÑO DE TEXTBOXES --- */
+        input, select, textarea { 
+            background: rgba(255, 255, 255, 0.08) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.15) !important; 
+            color: white !important; outline: none; 
+            padding: 10px 14px !important; /* Más compacto */
+            border-radius: 14px !important; /* Más fino */
+            font-size: 13px !important; 
+            width: 100%;
+            transition: 0.3s;
+        }
         input:focus { border-color: var(--orange) !important; background: rgba(255, 255, 255, 0.12) !important; }
-        ::placeholder { color: rgba(255, 255, 255, 0.4); }
+        ::placeholder { color: rgba(255, 255, 255, 0.3); }
 
         input[type="file"]::-webkit-file-upload-button { background: var(--orange); color: white; border: none; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-weight: 900; text-transform: uppercase; font-size: 9px; margin-right: 10px; }
 
@@ -60,30 +70,54 @@
     </nav>
 
     <!-- HOME -->
-    <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10 text-center">
+    <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10 text-center text-white">
         <div class="text-center mb-10">
-            <h2 class="text-5xl font-black italic uppercase tracking-tighter text-white italic">TIENDA <span class="text-orange">DIGITAL</span></h2>
+            <h2 class="text-5xl font-black italic uppercase tracking-tighter italic">TIENDA <span class="text-orange">DIGITAL</span></h2>
             <p class="text-white/30 uppercase text-[9px] tracking-[0.5em] mt-1 font-bold">Lleva 3 artículos promo y obtén 20% OFF</p>
         </div>
         <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
     </section>
 
-    <!-- LOGIN -->
-    <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center">
-        <div class="glass p-10 rounded-[40px] w-full max-w-md shadow-2xl text-white">
-            <h2 class="text-2xl font-black mb-8 uppercase italic text-orange tracking-widest italic">Admin Login</h2>
-            <form id="login-form" class="space-y-4">
-                <input type="email" id="admin-email" placeholder="Usuario" required>
-                <input type="password" id="admin-pass" placeholder="Contraseña" required>
-                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase italic">Entrar</button>
-            </form>
+    <!-- CARRITO SIDEBAR -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
+        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl">
+            <div class="flex items-center gap-3">
+                <h2 class="text-xl font-black italic uppercase text-white tracking-tighter">Mi Pedido</h2>
+                <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center border-white/10">
+                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5 text-white">Tasa BCV</span>
+                    <span id="bcv-rate-display" class="text-[10px] font-black text-orange italic">---</span>
+                </div>
+            </div>
+            <button onclick="window.closeCart()" class="text-5xl hover:text-orange transition text-white leading-none">&times;</button>
         </div>
-    </section>
+        <div class="flex-grow overflow-y-auto p-6 space-y-6">
+            <div id="cart-items" class="space-y-3"></div>
+            <div id="promo-notice" class="hidden glass-card p-4 rounded-2xl border-orange bg-orange/10 text-center promo-pulse"><p class="text-orange font-black uppercase text-[10px] italic">¡PROMO 3x ACTIVADA!</p></div>
+            <div class="glass-card p-5 rounded-[25px] border-orange border text-center text-white italic font-bold text-[12px]">Banesco | 24.981.262 | 0414.330.9639</div>
+            
+            <div class="space-y-3 border-t border-white/10 pt-6">
+                <input type="text" id="cust-name" placeholder="Nombre completo">
+                <input type="text" id="cust-cedula" placeholder="Cédula">
+                <input type="email" id="cust-email" placeholder="Email para el envío">
+                <input type="tel" id="cust-wha" placeholder="WhatsApp">
+                <input type="text" id="cust-ref" placeholder="N° Referencia del Pago" class="font-black text-orange">
+                <div class="glass-card p-4 rounded-2xl border-dashed border-2 border-white/10 text-center"><label class="text-[9px] font-black text-white/40 uppercase block mb-2 italic tracking-tighter">Subir Comprobante</label><input type="file" id="cust-file" accept="image/*" class="text-[10px] mx-auto text-white/50"></div>
+            </div>
+        </div>
+        <div class="p-6 bg-black/40 space-y-4">
+            <div id="discount-row" class="hidden flex justify-between px-2 text-red-400 font-bold text-[10px] uppercase italic"><span>Descuento Promo:</span><span id="cart-discount-val">-$0.00</span></div>
+            <div class="flex justify-between items-center font-bold px-2 text-white">
+                <span class="opacity-30 uppercase text-[10px]">Total:</span>
+                <div class="text-right"><div id="cart-total" class="text-3xl font-black text-orange">$0.00</div><div id="cart-total-bs" class="text-xs text-white/50 font-black italic">Bs 0,00</div></div>
+            </div>
+            <button onclick="window.processPayment()" id="btn-confirm-order" class="w-full bg-orange text-white py-5 rounded-2xl font-black uppercase italic shadow-xl">Realizar Pedido</button>
+        </div>
+    </div>
 
-    <!-- ADMIN PANEL -->
+    <!-- PANEL ADMIN -->
     <section id="section-admin-panel" class="section hidden p-4">
         <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
-            <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20 text-white">
+            <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20 text-white text-center">
                 <h2 class="text-lg font-black italic uppercase italic">Administración</h2>
                 <button onclick="window.logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition">Salir</button>
             </div>
@@ -117,9 +151,9 @@
                 <!-- VENTAS -->
                 <div id="tab-orders" class="tab-content hidden space-y-6">
                     <div class="flex justify-center gap-3 mb-6">
-                        <button onclick="window.filterSales('revision')" id="btn-f-revision" class="sub-tab active px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic italic">En Revisión</button>
-                        <button onclick="window.filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic italic">Confirmados</button>
-                        <button onclick="window.filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic italic">Rechazados</button>
+                        <button onclick="window.filterSales('revision')" id="btn-f-revision" class="sub-tab active px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic">En Revisión</button>
+                        <button onclick="window.filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic">Confirmados</button>
+                        <button onclick="window.filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic">Rechazados</button>
                     </div>
                     <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
@@ -131,62 +165,38 @@
         </div>
     </section>
 
-    <!-- CARRITO SIDEBAR -->
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl">
-            <div class="flex items-center gap-3">
-                <h2 class="text-xl font-black italic uppercase text-white tracking-tighter">Mi Pedido</h2>
-                <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center border-white/10">
-                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5 text-white">Tasa BCV</span>
-                    <span id="bcv-rate-display" class="text-[10px] font-black text-orange italic">---</span>
-                </div>
-            </div>
-            <button onclick="window.closeCart()" class="text-5xl hover:text-orange transition text-white leading-none">&times;</button>
-        </div>
-        <div class="flex-grow overflow-y-auto p-6 space-y-6">
-            <div id="cart-items" class="space-y-3"></div>
-            <div id="promo-notice" class="hidden glass-card p-4 rounded-2xl border-orange bg-orange/10 text-center promo-pulse"><p class="text-orange font-black uppercase text-[10px] italic">¡PROMO 3x ACTIVADA!</p></div>
-            <div class="glass-card p-5 rounded-[25px] border-orange border text-center text-white italic font-bold text-[12px]">Banesco | 24.981.262 | 0414.330.9639</div>
-            <div class="space-y-4 pt-6 border-t border-white/10">
-                <input type="text" id="cust-name" placeholder="Nombre completo">
-                <input type="text" id="cust-cedula" placeholder="Cédula">
-                <input type="email" id="cust-email" placeholder="Email para el envío">
-                <input type="tel" id="cust-wha" placeholder="WhatsApp">
-                <input type="text" id="cust-ref" placeholder="N° Referencia del Pago" class="font-black text-orange">
-                <div class="glass-card p-6 rounded-2xl border-dashed border-2 border-white/10 text-center"><input type="file" id="cust-file" accept="image/*" class="text-[10px] mx-auto text-white/50"></div>
-            </div>
-        </div>
-        <div class="p-6 bg-black/40 space-y-4">
-            <div id="discount-row" class="hidden flex justify-between px-2 text-red-400 font-bold text-[10px] uppercase italic"><span>Descuento Promo:</span><span id="cart-discount-val">-$0.00</span></div>
-            <div class="flex justify-between items-center font-bold px-2 text-white">
-                <span class="opacity-30 uppercase text-[10px]">Total:</span>
-                <div class="text-right"><div id="cart-total" class="text-3xl font-black text-orange">$0.00</div><div id="cart-total-bs" class="text-xs text-white/50 font-black italic">Bs 0,00</div></div>
-            </div>
-            <button onclick="window.processPayment()" id="btn-confirm-order" class="w-full bg-orange text-white py-5 rounded-2xl font-black uppercase italic shadow-xl">Realizar Pedido</button>
-        </div>
-    </div>
-
-    <!-- OVERLAYS COMUNES -->
+    <!-- OVERLAYS (MENSAJES, FACTURA, IMAGEN, LOGIN) -->
     <div id="admin-msg-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex items-center justify-center p-4 text-white">
         <div class="glass-card p-10 rounded-[40px] max-w-sm w-full text-center space-y-6">
-            <div id="msg-icon" class="text-5xl"></div><h3 id="msg-title" class="text-xl font-black uppercase italic italic"></h3><p id="msg-body" class="text-sm opacity-60"></p>
-            <button onclick="window.closeAdminMsg()" class="bg-orange text-white font-black px-8 py-3 rounded-2xl uppercase text-[10px] italic">Cerrar</button>
+            <div id="msg-icon" class="text-5xl"></div><h3 id="msg-title" class="text-xl font-black uppercase italic"></h3><p id="msg-body" class="text-sm opacity-60"></p>
+            <button onclick="window.closeAdminMsg()" class="bg-orange text-white font-black px-8 py-3 rounded-2xl uppercase text-[10px]">Cerrar</button>
         </div>
     </div>
 
     <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="max-w-xl w-full flex flex-col items-center gap-6 py-10">
             <div id="receipt-content" class="bg-white text-black p-10 rounded-lg w-full shadow-2xl text-black">
-                <div class="flex justify-between items-start border-b-4 border-orange-500 pb-6 mb-6 font-black italic"><div><h1 class="text-4xl">FACTURA</h1><p class="text-[10px] text-gray-400 uppercase">Digital Store Pro</p></div><div class="text-right text-[10px] text-gray-400 uppercase"><p>N° CONTROL</p><p id="rec-id" class="text-lg text-orange-600">#---</p></div></div>
-                <div class="grid grid-cols-2 gap-8 mb-8 text-[10px]"><div><p class="text-gray-400 font-bold uppercase mb-1">Facturado a:</p><p id="rec-name" class="font-black text-sm uppercase">---</p><p id="rec-cedula" class="italic italic">---</p><p id="rec-email">---</p></div><div class="text-right"><p class="text-gray-400 font-bold uppercase mb-1">Pago Móvil:</p><p class="font-bold">Banesco</p><p>Ref: <span id="rec-ref" class="font-black text-black">---</span></p><p id="rec-date" class="text-gray-500 mt-1 italic italic">--/--/--</p></div></div>
-                <table class="w-full mb-8 text-[11px] border-collapse"><thead class="bg-gray-100 font-bold italic"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead><tbody id="rec-items-list" class="divide-y divide-gray-100 font-black"></tbody></table>
-                <div class="flex justify-end border-t-2 border-gray-100 pt-6 text-right font-black"><div class="w-64 space-y-1"><div>TOTAL USD: <span id="rec-total-usd" class="text-sm">$0.00</span></div><div class="text-orange-600">TOTAL BS: <span id="rec-total-bs" class="text-sm italic">Bs 0,00</span></div></div></div>
+                <div class="flex justify-between items-start border-b-4 border-orange-500 pb-6 mb-6 font-black italic"><div><h1 class="text-4xl">FACTURA</h1><p class="text-[10px] text-gray-400 uppercase">Digital Store</p></div><div class="text-right text-[10px] text-gray-400 uppercase"><p>N° CONTROL</p><p id="rec-id" class="text-lg text-orange-600">#---</p></div></div>
+                <div class="grid grid-cols-2 gap-8 mb-8 text-[10px]"><div><p class="text-gray-400 font-bold uppercase mb-1">Facturado a:</p><p id="rec-name" class="font-black text-sm uppercase">---</p><p id="rec-cedula" class="italic">---</p><p id="rec-email">---</p></div><div class="text-right"><p class="text-gray-400 font-bold uppercase mb-1">Pago Móvil:</p><p class="font-bold">Banesco</p><p>Ref: <span id="rec-ref" class="font-black text-black">---</span></p><p id="rec-date" class="text-gray-500 mt-1 italic">--/--/--</p></div></div>
+                <table class="w-full mb-8 text-[11px] border-collapse"><thead class="bg-gray-100 font-bold italic text-black"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead><tbody id="rec-items-list" class="divide-y divide-gray-100 font-black"></tbody></table>
+                <div class="flex justify-end border-t-2 border-gray-100 pt-6 text-right font-black"><div class="w-64 space-y-1"><div>USD: <span id="rec-total-usd" class="text-sm">$0.00</span></div><div class="text-orange-600">BS: <span id="rec-total-bs" class="text-sm italic">Bs 0,00</span></div></div></div>
             </div>
-            <div class="w-full flex gap-3"><button onclick="window.downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl hover:bg-orange transition"><i class="fas fa-file-pdf mr-2"></i> Descargar</button><button onclick="location.reload()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl italic italic">Listo</button></div>
+            <div class="w-full flex gap-3"><button onclick="window.downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl hover:bg-orange transition"><i class="fas fa-file-pdf mr-2"></i> Descargar</button><button onclick="location.reload()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl italic">Terminar</button></div>
         </div>
     </div>
 
-    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="window.closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl border border-white/10"></div>
+    <section id="section-login" class="section hidden min-h-[70vh] flex items-center justify-center p-6 text-center text-white">
+        <div class="glass p-10 rounded-[40px] w-full max-w-md shadow-2xl">
+            <h2 class="text-2xl font-black mb-8 uppercase italic text-orange tracking-widest italic text-white">Admin Login</h2>
+            <form id="login-form" class="space-y-4 text-white">
+                <input type="email" id="admin-email" placeholder="Usuario" required>
+                <input type="password" id="admin-pass" placeholder="Contraseña" required>
+                <button type="submit" class="w-full bg-orange text-white font-black py-4 rounded-2xl uppercase italic">Entrar</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="image-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4" onclick="window.closeImageOverlay()"><img id="overlay-img" src="" class="max-w-full max-h-full rounded-lg border border-white/10 shadow-2xl"></div>
     <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-[55] hidden backdrop-blur-md" onclick="window.closeCart()"></div>
 
     <script type="module">
@@ -206,7 +216,7 @@
 
         let cart = [], allOrders = [], currentStatusFilter = 'revision', bcvRate = 1, editingProductId = null;
 
-        // --- FUNCIONES GLOBALES ---
+        // --- EXPORTAR FUNCIONES AL WINDOW ---
         window.showSection = (id) => { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(`section-${id}`).classList.remove('hidden'); window.scrollTo(0,0); };
         window.openCart = () => { document.getElementById('cart-sidebar').classList.remove('translate-x-full'); document.getElementById('cart-overlay').classList.remove('hidden'); };
         window.closeCart = () => { document.getElementById('cart-sidebar').classList.add('translate-x-full'); document.getElementById('cart-overlay').classList.add('hidden'); };
@@ -267,7 +277,7 @@
             } catch (e) { console.error(e); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
-        // ADMIN VENTAS LÓGICA
+        // ADMIN VENTAS
         window.filterSales = (status) => { currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales(); };
         function renderFilteredSales() {
             const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
@@ -282,10 +292,9 @@
                     <img src="${o.fotoComprobante}" onclick="window.openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5 shadow-lg grayscale hover:grayscale-0 transition duration-500">
                     <div class="grid grid-cols-1 gap-2 mt-4 text-center">
                         ${o.estatus === 'revision' ? `<button onclick="window.confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase italic font-black">Confirmar y Enviar</button>` : ''}
-                        <button onclick="window.updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20">Rechazar</button>
+                        <button onclick="window.updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20 uppercase font-black">Rechazar</button>
                         <button onclick="window.deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2">Borrar Registro</button>
-                    </div>
-                    <p class="text-xl font-black text-right text-orange italic italic tracking-tighter">$${o.total}</p>
+                    </div><p class="text-xl font-black text-right text-orange italic italic tracking-tighter">$${o.total}</p>
                 </div>`).join('');
         }
 
