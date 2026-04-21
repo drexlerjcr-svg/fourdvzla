@@ -52,7 +52,7 @@
     <!-- NAVBAR -->
     <nav class="glass sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-xl text-white">
         <div class="flex items-center space-x-2 cursor-pointer" onclick="window.showSection('home')">
-            <!-- LOGO CORREGIDO SIN BUCLE INFINITO -->
+            <!-- Se quitó el onerror para evitar el bucle -->
             <img id="site-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="w-10 h-10 rounded-full border border-white/20 shadow-lg object-cover">
             <h1 class="font-black text-lg uppercase italic tracking-tighter">Digital<span class="text-orange">Store</span></h1>
         </div>
@@ -65,7 +65,7 @@
         </div>
     </nav>
 
-    <!-- HOME -->
+    <!-- CATÁLOGO -->
     <section id="section-home" class="section max-w-[1600px] mx-auto px-4 py-10 text-center text-white">
         <div class="text-center mb-10">
             <h2 class="text-5xl font-black italic uppercase tracking-tighter italic">TIENDA <span class="text-orange">DIGITAL</span></h2>
@@ -76,27 +76,25 @@
 
     <!-- CARRITO SIDEBAR -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass z-[60] transform translate-x-full sidebar-transition flex flex-col border-l border-white/10">
-        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl text-white">
+        <div class="p-6 bg-black/40 flex justify-between items-center shadow-xl text-white text-white">
             <div class="flex items-center gap-3">
-                <h2 class="text-xl font-black italic uppercase text-white tracking-tighter italic">Mi Pedido</h2>
+                <h2 class="text-xl font-black italic uppercase tracking-tighter italic">Mi Pedido</h2>
                 <div class="glass-card px-3 py-1.5 rounded-xl flex flex-col items-center border-white/10">
-                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5 text-white">Tasa BCV</span>
+                    <span class="text-[7px] font-bold uppercase opacity-50 mb-0.5">Tasa BCV</span>
                     <span id="bcv-rate-display" class="text-[10px] font-black text-orange italic">---</span>
                 </div>
             </div>
-            <button onclick="window.closeCart()" class="text-5xl hover:text-orange transition text-white leading-none">&times;</button>
+            <button onclick="window.closeCart()" class="text-5xl hover:text-orange transition">&times;</button>
         </div>
-        <div class="flex-grow overflow-y-auto p-6 space-y-6">
-            <div id="cart-items" class="space-y-3 text-white"></div>
-            <div id="promo-notice" class="hidden glass-card p-4 rounded-2xl border-orange bg-orange/10 text-center promo-pulse text-white font-black italic uppercase text-[10px]">¡PROMO 3x ACTIVADA!</div>
-            
-            <div class="glass-card p-6 rounded-[30px] border-orange border-2 text-center text-white shadow-2xl">
+        <div class="flex-grow overflow-y-auto p-6 space-y-6 text-white">
+            <div id="cart-items" class="space-y-3"></div>
+            <div id="promo-notice" class="hidden glass-card p-4 rounded-2xl border-orange bg-orange/10 text-center promo-pulse"><p class="text-orange font-black uppercase text-[10px] italic">¡PROMO 3x ACTIVADA!</p></div>
+            <div class="glass-card p-6 rounded-[30px] border-orange border-2 text-center shadow-2xl">
                 <p class="text-orange font-black uppercase text-[11px] mb-3 tracking-widest italic font-black">PAGO MÓVIL BANESCO</p>
                 <div class="text-[14px] font-black italic tracking-tighter">
-                    <p class="opacity-90">24.981.262 | 0414.330.9639</p>
+                    <p class="opacity-90 font-black">24.981.262 | 0414.330.9639</p>
                 </div>
             </div>
-
             <div class="space-y-3 border-t border-white/10 pt-6">
                 <input type="text" id="cust-name" placeholder="Nombre completo">
                 <input type="text" id="cust-cedula" placeholder="Cédula">
@@ -107,7 +105,7 @@
             </div>
         </div>
         <div class="p-6 bg-black/40 space-y-4">
-            <div id="discount-row" class="hidden flex justify-between px-2 text-red-400 font-bold text-[10px] uppercase italic"><span>Descuento Promo:</span><span id="cart-discount-val">-$0.00</span></div>
+            <div id="discount-row" class="hidden flex justify-between px-2 text-red-400 font-bold text-[10px] uppercase italic font-black"><span>Descuento Promo:</span><span id="cart-discount-val">-$0.00</span></div>
             <div class="flex justify-between items-center font-bold px-2 text-white">
                 <span class="opacity-30 uppercase text-[10px]">Total:</span>
                 <div class="text-right"><div id="cart-total" class="text-3xl font-black text-orange tracking-tighter font-black italic">$0.00</div><div id="cart-total-bs" class="text-xs text-white/50 font-black italic">Bs 0,00</div></div>
@@ -120,20 +118,18 @@
     <section id="section-admin-panel" class="section hidden p-4">
         <div class="max-w-7xl mx-auto glass rounded-[40px] overflow-hidden min-h-[600px]">
             <div class="p-6 flex justify-between items-center border-b border-white/10 bg-black/20 text-white">
-                <h2 class="text-lg font-black italic uppercase italic text-white">Administración</h2>
+                <h2 class="text-lg font-black italic uppercase italic">Administración</h2>
                 <button onclick="window.logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase transition italic">Salir</button>
             </div>
-            
             <div class="flex font-bold text-white/40 uppercase text-[9px] tracking-widest bg-black/10">
                 <button onclick="window.switchTab('tab-products')" class="admin-tab active flex-1 py-4 uppercase font-black italic">Inventario</button>
                 <button onclick="window.switchTab('tab-orders')" class="admin-tab flex-1 py-4 uppercase font-black italic">Ventas</button>
                 <button onclick="window.switchTab('tab-config')" class="admin-tab flex-1 py-4 uppercase font-black italic text-center">Logo</button>
             </div>
-
             <div class="p-6 text-white text-center">
                 <div id="tab-products" class="tab-content">
-                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-xl text-center">
-                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2 tracking-widest italic italic">Añadir Nuevo Producto</h3>
+                    <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-xl">
+                        <h3 id="form-title" class="col-span-full text-[10px] font-black text-orange uppercase italic mb-2 tracking-widest">Añadir Nuevo Producto</h3>
                         <input type="text" id="p-name" placeholder="Nombre" required>
                         <input type="number" id="p-price" placeholder="Precio ($)" required>
                         <textarea id="p-desc" placeholder="Descripción..." class="col-span-full h-24 resize-none text-center" required></textarea>
@@ -151,10 +147,10 @@
                     <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
                 <div id="tab-orders" class="tab-content hidden space-y-6">
-                    <div class="flex justify-center gap-3 mb-6">
-                        <button onclick="window.filterSales('revision')" id="btn-f-revision" class="sub-tab active px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic italic">En Revisión</button>
-                        <button onclick="window.filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic italic">Confirmados</button>
-                        <button onclick="window.filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase font-black italic italic">Rechazados</button>
+                    <div class="flex justify-center gap-3 mb-6 font-black italic">
+                        <button onclick="window.filterSales('revision')" id="btn-f-revision" class="sub-tab active px-5 py-2.5 rounded-full text-[9px] uppercase italic">En Revisión</button>
+                        <button onclick="window.filterSales('confirmado')" id="btn-f-confirmado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase italic">Confirmados</button>
+                        <button onclick="window.filterSales('rechazado')" id="btn-f-rechazado" class="sub-tab px-5 py-2.5 rounded-full text-[9px] uppercase italic">Rechazados</button>
                     </div>
                     <div id="sales-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
@@ -167,7 +163,7 @@
     </section>
 
     <!-- OVERLAYS -->
-    <div id="admin-msg-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex items-center justify-center p-4 text-white text-white">
+    <div id="admin-msg-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex items-center justify-center p-4 text-white">
         <div class="glass-card p-10 rounded-[40px] max-w-sm w-full text-center space-y-6">
             <div id="msg-icon" class="text-5xl"></div><h3 id="msg-title" class="text-xl font-black uppercase italic italic font-black"></h3><p id="msg-body" class="text-sm opacity-60 font-bold"></p>
             <button onclick="window.closeAdminMsg()" class="bg-orange text-white font-black px-8 py-3 rounded-2xl uppercase text-[10px] italic font-black">Cerrar</button>
@@ -177,9 +173,9 @@
     <div id="success-overlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="max-w-xl w-full flex flex-col items-center gap-6 py-10 text-black">
             <div id="receipt-content" class="bg-white text-black p-10 rounded-lg w-full shadow-2xl text-black">
-                <div class="flex justify-between items-start border-b-4 border-orange-500 pb-6 mb-6 font-black italic"><div><h1 class="text-4xl font-black">FACTURA</h1><p class="text-[10px] text-gray-400 uppercase font-black">Digital Store Pro</p></div><div class="text-right text-[10px] text-gray-400 uppercase"><p>N° CONTROL</p><p id="rec-id" class="text-lg text-orange-600 font-black">#---</p></div></div>
+                <div class="flex justify-between items-start border-b-4 border-orange-500 pb-6 mb-6 font-black italic"><div><h1 class="text-4xl">FACTURA</h1><p class="text-[10px] text-gray-400 uppercase font-black">Digital Store Pro</p></div><div class="text-right text-[10px] text-gray-400 uppercase"><p>N° CONTROL</p><p id="rec-id" class="text-lg text-orange-600 font-black">#---</p></div></div>
                 <div class="grid grid-cols-2 gap-8 mb-8 text-[10px]"><div><p class="text-gray-400 font-bold uppercase mb-1 font-black">Facturado a:</p><p id="rec-name" class="font-black text-sm uppercase text-left font-black italic">---</p><p id="rec-cedula" class="italic italic italic font-black">---</p><p id="rec-email" class="font-bold">---</p></div><div class="text-right"><p class="text-gray-400 font-bold uppercase mb-1 font-black italic">Pago Móvil:</p><p class="font-bold font-black italic uppercase text-black">Banesco</p><p class="font-black italic text-black">Ref: <span id="rec-ref" class="font-black text-black">---</span></p><p id="rec-date" class="text-gray-500 mt-1 italic italic italic">--/--/--</p></div></div>
-                <table class="w-full mb-8 text-[11px] border-collapse"><thead class="bg-gray-100 font-bold italic text-black"><tr><th class="text-left p-3 uppercase">Producto</th><th class="text-right p-3 uppercase">Precio</th></tr></thead><tbody id="rec-items-list" class="divide-y divide-gray-100 font-black"></tbody></table>
+                <table class="w-full mb-8 text-[11px] border-collapse"><thead class="bg-gray-100 font-bold italic text-black font-black uppercase"><tr><th class="text-left p-3">Producto</th><th class="text-right p-3">Precio</th></tr></thead><tbody id="rec-items-list" class="divide-y divide-gray-100 font-black"></tbody></table>
                 <div class="flex justify-end border-t-2 border-gray-100 pt-6 text-right font-black"><div class="w-64 space-y-1"><div class="text-[9px] uppercase opacity-50 text-black">SUBTOTAL: <span id="rec-subtotal">$0.00</span></div><div id="rec-promo-row" class="text-[9px] text-red-600 hidden font-black italic uppercase">PROMO 3x: <span id="rec-discount-val">-$0.00</span></div><div class="mt-2 text-black font-black italic tracking-tighter uppercase text-black">Total USD: <span id="rec-total-usd" class="text-sm font-black">$0.00</span></div><div class="text-orange-600 font-black italic tracking-tighter uppercase font-black">Total BS: <span id="rec-total-bs" class="text-sm italic italic tracking-tighter font-black">Bs 0,00</span></div></div></div>
             </div>
             <div class="w-full flex gap-3 text-black"><button onclick="window.downloadReceiptPDF()" class="flex-1 bg-white text-black font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl hover:bg-orange transition font-black italic"><i class="fas fa-file-pdf mr-2"></i> Descargar</button><button onclick="location.reload()" class="flex-1 bg-orange text-white font-black py-4 rounded-2xl uppercase text-[10px] shadow-xl italic italic font-black">Terminar</button></div>
@@ -217,7 +213,7 @@
 
         let cart = [], allOrders = [], currentStatusFilter = 'revision', bcvRate = 1, editingProductId = null;
 
-        // --- FUNCIONES GLOBALES EXPORTADAS ---
+        // GLOBALS
         window.showSection = (id) => { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(`section-${id}`).classList.remove('hidden'); window.scrollTo(0,0); };
         window.openCart = () => { document.getElementById('cart-sidebar').classList.remove('translate-x-full'); document.getElementById('cart-overlay').classList.remove('hidden'); };
         window.closeCart = () => { document.getElementById('cart-sidebar').classList.add('translate-x-full'); document.getElementById('cart-overlay').classList.add('hidden'); };
@@ -240,11 +236,15 @@
                 const p = d.data(); const cleanName = p.nombre.replace(/'/g, "\\'");
                 const tag = p.aplicaPromo ? `<span class="absolute top-2 right-2 bg-orange text-white text-[7px] font-black px-2 py-1 rounded-full uppercase italic z-10 shadow-lg">PROMO 3x</span>` : "";
                 grid.innerHTML += `<div class="glass-card rounded-[30px] overflow-hidden p-3 flex flex-col h-full relative">${tag}<img src="${p.imagen}" class="w-full h-32 object-cover rounded-[20px] mb-3 border border-white/5 shadow-2xl"><div class="px-1 flex-grow text-left text-white"><h3 class="font-black text-[9px] uppercase italic text-orange leading-tight">${p.nombre}</h3><p class="text-[8px] opacity-60 line-clamp-3">${p.descripcion}</p></div><div class="mt-3 flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5"><span class="text-sm font-black text-white italic font-black">$${p.precio}</span><button onclick="window.addToCart('${cleanName}', ${p.precio}, ${p.aplicaPromo || false})" class="bg-orange text-white px-4 py-1.5 rounded-full font-black text-[9px] uppercase hover:brightness-125 transition italic font-black">Comprar</button></div></div>`;
-                adminList.innerHTML += `<div class="admin-item-flat flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold border border-white/5 mb-1 text-white italic font-black"><span>${p.nombre}</span><div class="flex gap-2"><button onclick="window.prepareProductEdit('${d.id}')" class="text-orange p-1 hover:scale-125 transition"><i class="fas fa-edit text-orange"></i></button><button onclick="window.deleteProduct('${d.id}')" class="text-red-400 p-1 hover:scale-125 transition"><i class="fas fa-trash-alt"></i></button></div></div>`;
+                adminList.innerHTML += `<div class="admin-item-flat flex justify-between p-3 rounded-xl items-center text-[9px] uppercase font-bold border border-white/5 mb-1 text-white italic font-black text-white"><span>${p.nombre}</span><div class="flex gap-2"><button onclick="window.prepareProductEdit('${d.id}')" class="text-orange p-1 hover:scale-125 transition"><i class="fas fa-edit text-orange"></i></button><button onclick="window.deleteProduct('${d.id}')" class="text-red-400 p-1 hover:scale-125 transition"><i class="fas fa-trash-alt"></i></button></div></div>`;
             });
         });
+        
+        // LOGO CORREGIDO - SIN BUCLE
         onSnapshot(doc(db, "settings", "site"), d => { 
-            if(d.exists() && d.data().logoUrl) document.getElementById('site-logo').src = d.data().logoUrl; 
+            if(d.exists() && d.data().logoUrl) {
+                document.getElementById('site-logo').src = d.data().logoUrl; 
+            }
         });
 
         // CARRITO
@@ -256,7 +256,7 @@
             const promoItemsCount = cart.filter(i => i.aplicaPromo).length;
             let discount = 0; if (promoItemsCount >= 3) { discount = cart.filter(i => i.aplicaPromo).reduce((s,i) => s + i.precio, 0) * 0.20; document.getElementById('promo-notice').classList.remove('hidden'); document.getElementById('discount-row').classList.remove('hidden'); document.getElementById('cart-discount-val').innerText = `-$${discount.toFixed(2)}`; } else { document.getElementById('promo-notice').classList.add('hidden'); document.getElementById('discount-row').classList.add('hidden'); }
             const totalFinal = totalUSDOriginal - discount;
-            container.innerHTML = cart.length === 0 ? '<p class="opacity-20 py-10 italic text-[10px] text-center text-white font-black">Vacio</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between items-center p-3 rounded-xl border-l-4 ${item.aplicaPromo ? 'border-orange' : 'border-white/20'} text-white text-left italic font-bold"><div class="flex-grow pr-2"><p class="font-bold text-[9px] uppercase text-white/80 truncate">${item.nombre}</p></div><div class="flex items-center gap-3"><p class="text-orange font-black text-sm whitespace-nowrap italic">$${item.precio.toFixed(2)}</p><button onclick="window.removeFromCart(${i})" class="text-red-400"><i class="fas fa-times"></i></button></div></div>`).join('');
+            container.innerHTML = cart.length === 0 ? '<p class="opacity-20 py-10 italic text-[10px] text-center text-white font-black">Vacio</p>' : cart.map((item, i) => `<div class="glass-card flex justify-between items-center p-3 rounded-xl border-l-4 ${item.aplicaPromo ? 'border-orange' : 'border-white/20'} text-white text-left italic font-bold text-white"><div class="flex-grow pr-2"><p class="font-bold text-[9px] uppercase text-white/80 truncate">${item.nombre}</p></div><div class="flex items-center gap-3"><p class="text-orange font-black text-sm whitespace-nowrap italic">$${item.precio.toFixed(2)}</p><button onclick="window.removeFromCart(${i})" class="text-red-400"><i class="fas fa-times"></i></button></div></div>`).join('');
             document.getElementById('cart-total').innerText = `$${totalFinal.toFixed(2)}`; document.getElementById('cart-total-bs').innerText = `Bs ${(totalFinal * bcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2 })}`;
             document.getElementById('cart-count').innerText = cart.length;
         }
@@ -276,31 +276,33 @@
                 document.getElementById('rec-subtotal').innerText = `$${totalUSD.toFixed(2)}`;
                 if(discount > 0) { document.getElementById('rec-promo-row').classList.remove('hidden'); document.getElementById('rec-discount-val').innerText = `-$${discount.toFixed(2)}`; } else { document.getElementById('rec-promo-row').classList.add('hidden'); }
                 document.getElementById('rec-total-usd').innerText = `$${totalFinal.toFixed(2)}`; document.getElementById('rec-total-bs').innerText = `Bs ${(totalFinal * bcvRate).toLocaleString('es-VE')}`;
-                document.getElementById('rec-items-list').innerHTML = cart.map(i => `<tr><td class="p-3 border-b text-gray-800 uppercase font-black italic">${i.nombre}</td><td class="p-3 border-b text-right font-black text-gray-900">$${i.precio.toFixed(2)}</td></tr>`).join('');
+                document.getElementById('rec-items-list').innerHTML = cart.map(i => `<tr><td class="p-3 border-b text-gray-800 uppercase font-black italic text-black">${i.nombre}</td><td class="p-3 border-b text-right font-black text-gray-900 text-black">$${i.precio.toFixed(2)}</td></tr>`).join('');
                 window.closeCart(); document.getElementById('success-overlay').classList.remove('hidden');
                 cart = []; updateCartUI();
+                document.getElementById('cust-name').value = ""; document.getElementById('cust-cedula').value = ""; document.getElementById('cust-email').value = ""; document.getElementById('cust-wha').value = ""; document.getElementById('cust-ref').value = ""; document.getElementById('cust-file').value = "";
             } catch (e) { console.error(e); } finally { btn.disabled = false; btn.innerText = "Realizar Pedido"; }
         };
 
-        // VENTAS ADMIN
+        // ADMIN VENTAS
         window.filterSales = (status) => { currentStatusFilter = status; document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active')); document.getElementById(`btn-f-${status}`).classList.add('active'); renderFilteredSales(); };
         function renderFilteredSales() {
             const container = document.getElementById('sales-container'); const filtered = allOrders.filter(o => o.estatus === currentStatusFilter);
             container.innerHTML = filtered.map(o => `
-                <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'} text-white text-left italic font-bold">
-                    <div class="flex justify-between mb-1"><span class="text-[10px] font-black text-orange italic font-black">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30 uppercase font-black italic">${o.fecha}</p></div>
-                    <div class="text-[12px] font-bold space-y-1">
+                <div class="glass-card p-5 rounded-[30px] flex flex-col gap-3 border-l-4 ${o.estatus === 'confirmado' ? 'border-green-500' : o.estatus === 'rechazado' ? 'border-red-500' : 'border-orange'} text-white text-left italic font-bold text-white">
+                    <div class="flex justify-between mb-1 text-white"><span class="text-[10px] font-black text-orange italic font-black">ID: ${o.id.slice(0,8)}</span><p class="text-[8px] opacity-30 uppercase font-black italic">${o.fecha}</p></div>
+                    <div class="text-[12px] font-bold space-y-1 text-white uppercase italic text-white">
                         <p>CLIENTE: <span class="font-normal opacity-70 uppercase text-[10px]">${o.cliente}</span></p>
                         <p>WHA: <span class="text-green-400 font-black underline">${o.whatsapp}</span></p>
-                        <p>EMAIL: <span class="font-black text-orange underline text-[10px]">${o.email || 'Sin correo'}</span></p>
+                        <p>EMAIL: <span class="font-black text-orange underline text-[10px] lowercase italic">${o.email || 'Sin correo'}</span></p>
                         <p>REF: <span class="font-black text-white italic">${o.referencia || 'N/A'}</span></p>
                     </div>
                     <img src="${o.fotoComprobante}" onclick="window.openImageOverlay(this.src)" class="w-full h-24 object-cover rounded-xl mt-2 cursor-zoom-in border border-white/5 shadow-lg grayscale hover:grayscale-0 transition duration-500">
-                    <div class="grid grid-cols-1 gap-2 mt-4 text-center">
+                    <div class="grid grid-cols-1 gap-2 mt-4 text-center text-white">
                         ${o.estatus === 'revision' ? `<button onclick="window.confirmAndSend('${o.id}', event)" class="bg-green-600 text-white text-[9px] font-black py-3 rounded-lg shadow-lg uppercase italic font-black italic">Confirmar y Enviar</button>` : ''}
                         <button onclick="window.updateOrderStatus('${o.id}', 'rechazado')" class="bg-red-600/30 text-white text-[9px] font-bold py-2 rounded-lg border border-red-500/20 uppercase font-black italic">Rechazar</button>
                         <button onclick="window.deleteOrder('${o.id}')" class="text-white opacity-20 text-[7px] uppercase mt-2 italic">Borrar Registro</button>
-                    </div><p class="text-xl font-black text-right text-orange italic italic tracking-tighter">$${o.total}</p>
+                    </div>
+                    <p class="text-xl font-black text-right text-orange italic italic tracking-tighter">$${o.total}</p>
                 </div>`).join('');
         }
 
@@ -322,6 +324,7 @@
         window.deleteOrder = (id) => confirm("¿Borrar?") && deleteDoc(doc(db, "pedidos", id));
         window.downloadReceiptPDF = () => html2pdf().set({ margin: 0.5, filename: 'Factura.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(document.getElementById('receipt-content')).save();
         window.updateLogo = async () => { const url = document.getElementById('new-logo-url').value; await setDoc(doc(db, "settings", "site"), { logoUrl: url }); alert("Logo actualizado"); };
+        
         window.prepareProductEdit = async (id) => {
             const snap = await getDoc(doc(db, "productos", id));
             if (snap.exists()) {
