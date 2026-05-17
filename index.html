@@ -168,7 +168,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">🚛</div>
+                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">1️⃣</div>
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Carga Industrial Sobredimensionada</h3>
                         <p class="text-slate-600 text-sm leading-relaxed">Contamos con equipo modular de arrastre, lowboys y plataformas de alta resistencia para el traslado de maquinaria y componentes estructurales masivos.</p>
@@ -176,7 +176,7 @@
                 </div>
 
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">👥</div>
+                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">2️⃣</div>
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Transporte Ejecutivo Premium</h3>
                         <p class="text-slate-600 text-sm leading-relaxed">Logística de movilidad VIP para directivos y equipos corporativos. Unidades de gama alta blindadas, operadores bilingües certificados y control de agenda en tiempo real.</p>
@@ -184,10 +184,10 @@
                 </div>
 
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">📊</div>
+                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">3️⃣</div>
                     <div class="p-6">
-                        <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Monitoreo y Telemetría Activa</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed">Central de seguridad operativa las 24 horas del día. Sensores de apertura no autorizada, corte de motor remoto y rastreo redundante satelital / celular.</p>
+                        <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Garantía y Precisión de Entrega</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Despacho técnico con metodologías Just-in-Time (JIT) y ventanas estrictas. Aseguramos el cumplimiento exacto del plan de ruta mediante indexación de datos y reportes de conformidad en tiempo real sin márgenes de error.</p>
                     </div>
                 </div>
 
@@ -276,8 +276,7 @@
                     <select id="modal-service" class="w-full bg-slate-50 border border-slate-200 focus:border-[#e9522d] focus:bg-white px-4 py-2.5 rounded-lg text-sm outline-none transition-colors text-slate-700">
                         <option>Carga Pesada / Estructural Sobredimensionada</option>
                         <option>Transporte Ejecutivo Corporativo Premium</option>
-                        <option>Distribución Distribución de Última Milla</option>
-                        <option>Monitoreo Dedicado y Resguardo de Carga</option>
+                        <option>Garantía y Precisión de Entrega Directa</option>
                     </select>
                 </div>
 
@@ -292,7 +291,6 @@
     </div>
 
     <script>
-        // Elementos interactivos del scroll
         const heroSection = document.getElementById('inicio');
         const truckLeft = document.getElementById('truckLeft');
         const truckRight = document.getElementById('truckRight');
@@ -300,12 +298,10 @@
         const infoBlock = document.getElementById('infoBlock');
         const scrollerIndicator = document.getElementById('scrollerIndicator');
 
-        // Elementos del Modal
         const modalOverlay = document.getElementById('modalOverlay');
         const modalBox = document.getElementById('modalBox');
         const mobileMenu = document.getElementById('mobileMenu');
 
-        // Control de Animación del Scroll
         window.addEventListener('scroll', () => {
             if (!heroSection) return;
             const rect = heroSection.getBoundingClientRect();
@@ -318,26 +314,21 @@
             if (progress < 0) progress = 0;
             if (progress > 1) progress = 1;
 
-            // Física de los camiones acelerando a los extremos
             const driveDistance = progress * (window.innerWidth / 1.3);
             truckLeft.style.transform = `translateX(-${driveDistance}px)`;
             truckRight.style.transform = `translateX(${driveDistance}px)`;
 
-            // Opacidades progresivas
             const truckOpacity = Math.max(0, 1 - progress * 2.5);
             truckLeft.style.opacity = truckOpacity;
             truckRight.style.opacity = truckOpacity;
 
-            // Desvanecimiento del título principal
             const titleOpacity = Math.max(0, 1 - progress * 3.5);
             const titleScale = 1 - progress * 0.12;
             mainTitleBlock.style.opacity = titleOpacity;
             mainTitleBlock.style.transform = `scale(${titleScale})`;
 
-            // Ocultar indicador "Desliza"
             scrollerIndicator.style.opacity = Math.max(0, 1 - progress * 4);
 
-            // Aparición fluida del bloque informativo de reemplazo
             if (progress > 0.28) {
                 const infoProgress = Math.min(1, (progress - 0.28) / 0.6);
                 infoBlock.style.opacity = infoProgress;
@@ -350,7 +341,6 @@
             }
         });
 
-        // Eventos del Modal (Abrir/Cerrar)
         const openModal = () => {
             modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
             modalOverlay.classList.add('opacity-100', 'pointer-events-auto');
@@ -374,12 +364,10 @@
             if (e.target === modalOverlay) closeModal();
         });
 
-        // Menú Móvil toggle
         const toggleMobileMenu = () => {
             mobileMenu.classList.toggle('hidden');
         };
 
-        // Submit Formulario
         const handleFormSubmit = (e) => {
             e.preventDefault();
             alert('Solicitud de cotización consolidada con éxito. Nuestro despacho técnico se pondrá en contacto en un rango de 30 minutos.');
