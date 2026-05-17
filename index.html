@@ -5,27 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RUZTMAR</title>
     <style>
-        /* --- VARIABLES Y CONFIGURACIÓN BASE --- */
+        /* --- CONFIGURACIÓN BASE Y COLORES DE LA IMAGEN --- */
         :root {
-            --primary: #0f172a;      /* Azul Oscuro Industrial */
-            --secondary: #f59e0b;    /* Amarillo de Seguridad */
-            --accent: #3b82f6;       /* Azul Brillante */
-            --text-dark: #1e293b;    /* Texto Principal */
-            --text-light: #f8fafc;   /* Texto Claro */
-            --bg-light: #f1f5f9;     /* Fondo Claro */
-            --bg-card: #ffffff;      /* Fondo de Tarjetas */
+            --primary-blue: #0b3b80;  /* El azul corporativo del titular */
+            --orange-brand: #e9522d;  /* El naranja del botón y logo */
+            --bg-grid-color: #e2e8f0;  /* Color de las líneas de la cuadrícula */
+            --text-dark: #1e293b;
+            --text-light: #64748b;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-light);
+            background-color: #f8fafc;
             color: var(--text-dark);
             overflow-x: hidden;
         }
@@ -36,75 +34,81 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2rem;
         }
 
-        .logo {
-            color: var(--text-light);
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 1px;
+        .logo-container {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #1e293b;
+            letter-spacing: 0.5px;
         }
 
-        .logo span {
-            color: var(--secondary);
+        .logo-icon {
+            background-color: var(--orange-brand);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 2.2rem;
             align-items: center;
         }
 
         .nav-menu a {
-            color: #cbd5e1;
+            color: #475569;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            font-size: 0.95rem;
+            transition: color 0.2s;
         }
 
         .nav-menu a:hover {
-            color: var(--secondary);
+            color: var(--orange-brand);
         }
 
         .btn-quote {
-            background-color: var(--secondary);
-            color: var(--primary) !important;
-            padding: 0.6rem 1.2rem;
-            border-radius: 4px;
-            font-weight: 700 !important;
-            transition: transform 0.3s, background-color 0.3s;
+            background-color: var(--orange-brand);
+            color: white !important;
+            padding: 0.7rem 1.6rem;
+            border-radius: 20px; /* Bordes bien redondeados como la captura */
+            font-weight: 600 !important;
+            transition: background-color 0.2s;
         }
 
         .btn-quote:hover {
-            background-color: #d97706;
-            transform: translateY(-2px);
+            background-color: #cf4320;
         }
 
-        /* --- SECCIÓN HERO Y ANIMACIÓN DE CAMIONES --- */
-        .hero-scroller-container {
+        /* --- CONTENEDOR HERO INTERACTIVO CON PERSPECTIVA --- */
+        .hero-scroll-section {
             position: relative;
-            height: 200vh; /* Espacio extra para permitir el scroll de la animación */
-            background-color: var(--primary);
+            height: 220vh; /* Espacio de tracción para el scroll */
         }
 
-        .sticky-wrapper {
+        .sticky-viewport {
             position: sticky;
             top: 0;
             height: 100vh;
@@ -114,359 +118,237 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 2rem;
+            background: #f4f7fa;
         }
 
-        /* Carretera simulada de fondo */
-        .highway {
+        /* Fondo Técnico con Efecto Grid (Cuadrícula en perspectiva) */
+        .grid-background {
             position: absolute;
-            bottom: 15%;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 120px;
-            background: #1e293b;
-            border-top: 4px solid #64748b;
-            border-bottom: 4px solid #64748b;
-            display: flex;
-            align-items: center;
+            height: 100%;
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(226, 232, 240, 0.6) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.6) 1px, transparent 1px);
+            z-index: 1;
         }
 
-        .highway::after {
-            content: '';
-            width: 100%;
-            height: 0;
-            border-top: 4px dashed var(--secondary);
-        }
-
-        /* Contenedor de Textos del Hero */
-        .hero-text {
-            text-align: center;
-            color: var(--text-light);
-            max-width: 800px;
-            z-index: 10;
-            margin-bottom: 8rem;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-text h1 span {
-            color: var(--secondary);
-        }
-
-        .hero-text p {
-            font-size: 1.25rem;
-            color: #94a3b8;
-        }
-
-        /* Contenedor de Información de la Empresa (Aparece con el Scroll) */
-        .company-intro-overlay {
+        /* Silueta de Montañas Vectoriales Estilo Alambre (Wireframe/Gris) */
+        .mountains-vector {
             position: absolute;
-            max-width: 700px;
+            bottom: 40%;
+            width: 100%;
+            height: auto;
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        /* CONTENIDO DE TEXTO CENTRAL */
+        .brand-center-container {
             text-align: center;
-            color: var(--text-light);
             z-index: 5;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.3s ease;
-            padding: 2rem;
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        .company-intro-overlay h2 {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
+        .brand-sub-top {
+            color: var(--orange-brand);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
 
-        .company-intro-overlay p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #cbd5e1;
+        .brand-main-title {
+            font-size: 6.5rem; /* Letras masivas como en tu imagen */
+            font-weight: 900;
+            color: var(--primary-blue);
+            line-height: 1;
+            letter-spacing: -1px;
         }
 
-        /* Estilización de los Camiones CSS */
-        .truck-lane {
+        .brand-sub-bottom {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            margin-top: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* Mensaje dinámico inferior (Desliza) */
+        .scroll-indicator {
             position: absolute;
-            bottom: 15%;
+            bottom: 5%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .scroll-indicator::after {
+            content: '';
+            width: 2px;
+            height: 25px;
+            background: var(--orange-brand);
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        /* TEXTO QUE APARECE (INFORMACIÓN DE LA EMPRESA) */
+        .info-emergente {
+            position: absolute;
+            max-width: 750px;
+            text-align: center;
+            padding: 2rem;
+            z-index: 4;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.4s ease;
+        }
+
+        .info-emergente h2 {
+            font-size: 2.8rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.2rem;
+            font-weight: 800;
+        }
+
+        .info-emergente p {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            color: #475569;
+        }
+
+        /* --- ESCENARIO DE CAMIONES MODIFICADOS DE LA CAPTURA --- */
+        .trucks-stage {
+            position: absolute;
+            bottom: 25%;
             width: 100%;
+            max-width: 1400px;
             height: 120px;
-            z-index: 20;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
             pointer-events: none;
         }
 
-        .truck {
-            position: absolute;
-            bottom: 20px;
-            width: 180px;
-            height: 70px;
-            transition: transform 0.1s linear, opacity 0.1s linear;
-        }
-
-        .truck-left {
-            left: calc(50% - 190px);
-        }
-
-        .truck-right {
-            right: calc(50% - 190px);
-            transform: scaleX(-1); /* Voltear el camión para que mire a la derecha */
-        }
-
-        /* Gráfico del camión con CSS */
-        .truck-body {
+        .truck-wrapper {
             position: relative;
+            width: 280px;
+            height: 90px;
+            transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.1s ease;
+        }
+
+        /* Camión Izquierdo (Rojo con estela difuminada atrás) */
+        .truck-red {
+            background: linear-gradient(to right, rgba(233, 82, 45, 0) 0%, rgba(233, 82, 45, 0.8) 30%, #e9522d 100%);
+            border-radius: 8px 25px 12px 8px;
+            box-shadow: -15px 0 30px rgba(233, 82, 45, 0.4);
+        }
+
+        /* Camión Derecho (Oscuro como en la imagen) */
+        .truck-dark {
+            background: linear-gradient(to left, rgba(30, 41, 59, 0) 0%, rgba(30, 41, 59, 0.8) 30%, #1e293b 100%);
+            border-radius: 25px 8px 8px 12px;
+            box-shadow: 15px 0 30px rgba(30, 41, 59, 0.3);
+        }
+
+        /* Detalles de las Ventanas y Estética de los Camiones */
+        .truck-window {
+            position: absolute;
+            top: 20px;
+            width: 40px;
+            height: 30px;
+            background-color: #cbd5e1;
+            opacity: 0.7;
+        }
+        .truck-red .truck-window { right: 25px; border-radius: 4px 12px 4px 4px; }
+        .truck-dark .truck-window { left: 25px; border-radius: 12px 4px 4px 4px; }
+
+        /* Ruedas simplificadas */
+        .truck-wheels {
+            position: absolute;
+            bottom: -8px;
             width: 100%;
-            height: 100%;
-        }
-
-        .cabin {
-            position: absolute;
-            right: 0;
-            bottom: 10px;
-            width: 50px;
-            height: 45px;
-            background: #ef4444; /* Cabina Roja */
-            border-radius: 5px 15px 0 0;
-        }
-
-        .truck-right .cabin {
-            background: #3b82f6; /* Cabina Azul para diferenciar */
-        }
-
-        .window {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 18px;
-            height: 15px;
-            background: #93c5fd;
-            border-radius: 2px 6px 0 0;
-        }
-
-        .trailer {
-            position: absolute;
-            left: 0;
-            bottom: 10px;
-            width: 125px;
-            height: 55px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            border: 2px solid #cbd5e1;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 0.75rem;
-            color: #475569;
-            letter-spacing: 1px;
+            gap: 15px;
         }
+        .truck-red .truck-wheels { justify-content: flex-end; padding-right: 20px; }
+        .truck-dark .truck-wheels { justify-content: flex-start; padding-left: 20px; }
 
-        .wheel {
-            position: absolute;
-            bottom: 0;
-            width: 18px;
-            height: 18px;
+        .truck-wheel {
+            width: 24px;
+            height: 24px;
             background: #0f172a;
             border-radius: 50%;
-            border: 3px solid #64748b;
+            border: 4px solid #94a3b8;
         }
 
-        .w1 { left: 15px; }
-        .w2 { left: 35px; }
-        .w3 { right: 15px; }
-
-        /* --- SECCIÓN NOSOTROS --- */
-        .section {
+        /* --- BLOQUE DE SECCIONES TRADICIONALES DE ABAJO --- */
+        .content-section {
+            background: white;
             padding: 6rem 2rem;
+            position: relative;
+            z-index: 20;
+        }
+
+        .container {
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            position: relative;
-            color: var(--primary);
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 4px;
-            background-color: var(--secondary);
-            margin: 0.5rem auto 0;
-        }
-
-        .pillars {
+        .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1max));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
         }
 
-        .pillar-card {
-            background: var(--bg-card);
+        .card {
+            background: #f8fafc;
             padding: 2.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-            border-top: 4px solid var(--primary);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
             transition: transform 0.3s;
         }
 
-        .pillar-card:hover {
-            transform: translateY(-5px);
-            border-top-color: var(--secondary);
-        }
+        .card:hover { transform: translateY(-5px); }
 
-        .pillar-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
+        .card h3 { color: var(--primary-blue); margin-bottom: 1rem; font-size: 1.4rem; }
 
-        .pillar-card h3 {
-            margin-bottom: 0.8rem;
-            font-size: 1.4rem;
-        }
-
-        /* --- SECCIÓN SERVICIOS --- */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .service-card {
-            background: var(--bg-card);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .service-img-sim {
-            height: 150px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--secondary);
-            font-size: 3rem;
-        }
-
-        .service-info {
-            padding: 1.5rem;
-        }
-
-        .service-info h3 {
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
-        }
-
-        /* --- SECCIÓN FORMULARIO Y CONTACTO --- */
-        .contact-wrapper {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 3rem;
-            background: var(--bg-card);
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
-        .contact-info h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-method {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .contact-method .icon {
-            background: var(--bg-light);
-            padding: 0.75rem;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quote-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-group input, .form-group select {
-            padding: 0.8rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--accent);
-        }
-
-        .btn-submit {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 1rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-submit:hover {
-            background-color: #1e293b;
-        }
-
-        /* --- FOOTER --- */
+        /* --- FOOTER / CONTACTO --- */
         footer {
-            background: var(--primary);
+            background: #0f172a;
             color: #94a3b8;
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             text-align: center;
-            border-top: 4px solid var(--secondary);
-        }
-
-        .footer-content p {
-            margin-bottom: 1rem;
+            z-index: 20;
+            position: relative;
         }
 
         /* --- RESPONSIVE --- */
+        @media (max-width: 992px) {
+            .brand-main-title { font-size: 4rem; }
+            .truck-wrapper { width: 180px; height: 70px; }
+        }
         @media (max-width: 768px) {
             .nav-menu { display: none; }
-            .hero-text h1 { font-size: 2.2rem; }
-            .truck { width: 140px; height: 55px; }
-            .trailer { width: 95px; height: 42px; font-size: 0.6rem; }
-            .cabin { width: 40px; height: 35px; }
-            .contact-wrapper { padding: 1.5rem; grid-template-columns: 1fr; }
+            .brand-main-title { font-size: 3rem; }
         }
     </style>
 </head>
@@ -474,214 +356,143 @@
 
     <header>
         <nav class="nav-container">
-            <div class="logo">📦 RUZTMAR<span>.</span></div>
+            <div class="logo-container">
+                <div class="logo-icon">🚚</div>
+                <span>RUZTMAR</span>
+            </div>
             <ul class="nav-menu">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#nosotros">Nosotros</a></li>
                 <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#flota">Flota</a></li>
                 <li><a href="#contacto">Contacto</a></li>
                 <li><a href="#contacto" class="btn-quote">Cotizar Envío</a></li>
             </ul>
         </nav>
     </header>
 
-    <div id="inicio" class="hero-scroller-container">
-        <div class="sticky-wrapper">
+    <div id="inicio" class="hero-scroll-section">
+        <div class="sticky-viewport">
             
-            <div class="hero-text" id="heroText">
-                <h1>Conectamos tu negocio con el <span>mundo</span></h1>
-                <p>Logística pesada, distribución inteligente y seguridad garantizada en cada kilómetro.</p>
+            <div class="grid-background"></div>
+
+            <svg class="mountains-vector" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 220 L150 140 L320 190 L500 110 L720 160 L900 90 L1150 170 L1300 120 L1440 180 L1440 320 L0 320 Z" fill="#cbd5e1" opacity="0.5"/>
+                <path d="M0 240 L200 170 L450 210 L650 140 L850 190 L1100 120 L1280 180 L1440 150 L1440 320 L0 320 Z" fill="#94a3b8" opacity="0.4"/>
+            </svg>
+
+            <div class="brand-center-container" id="mainBrandBlock">
+                <div class="brand-sub-top">Ruztmar</div>
+                <h1 class="brand-main-title">RUZTMAR</h1>
+                <div class="brand-sub-bottom">Logística y Transporte de Confianza</div>
             </div>
 
-            <div class="company-intro-overlay" id="companyIntro">
-                <h2>Llegamos a donde otros no pueden</h2>
-                <p>En Ruztmar optimizamos tu cadena de suministro con tecnología de rastreo en tiempo real, una flota moderna y un equipo dispuesto a mover tus metas con precisión quirúrgica.</p>
+            <div class="info-emergente" id="infoBlock">
+                <h2>Infraestructura en Movimiento</h2>
+                <p>Somos líderes globales en la gestión y distribución de carga pesada. Con una flota automatizada, tracking de precisión en tiempo real y seguridad inteligente, garantizamos la continuidad de tu cadena de suministro sin importar las fronteras.</p>
             </div>
 
-            <div class="highway"></div>
-            <div class="truck-lane">
-                <div class="truck truck-left" id="truckLeft">
-                    <div class="truck-body">
-                        <div class="trailer">RUZTMAR LOGISTICS</div>
-                        <div class="cabin"><div class="window"></div></div>
-                        <div class="wheel w1"></div>
-                        <div class="wheel w2"></div>
-                        <div class="wheel w3"></div>
+            <div class="trucks-stage">
+                <div class="truck-wrapper truck-red" id="truckLeft">
+                    <div class="truck-window"></div>
+                    <div class="truck-wheels">
+                        <div class="truck-wheel"></div>
+                        <div class="truck-wheel"></div>
                     </div>
                 </div>
-                <div class="truck truck-right" id="truckRight">
-                    <div class="truck-body">
-                        <div class="trailer">EXPRESS CARGO</div>
-                        <div class="cabin"><div class="window"></div></div>
-                        <div class="wheel w1"></div>
-                        <div class="wheel w2"></div>
-                        <div class="wheel w3"></div>
+
+                <div class="truck-wrapper truck-dark" id="truckRight">
+                    <div class="truck-window"></div>
+                    <div class="truck-wheels">
+                        <div class="truck-wheel"></div>
+                        <div class="truck-wheel"></div>
                     </div>
                 </div>
+            </div>
+
+            <div class="scroll-indicator" id="scrollerText">
+                <span>Desliza</span>
             </div>
 
         </div>
     </div>
 
-    <section id="nosotros" class="section">
-        <h2 class="section-title">Nuestros Pilares Operativos</h2>
-        <div class="pillars">
-            <div class="pillar-card">
-                <div class="pillar-icon">⏱️</div>
-                <h3>Puntualidad Rigurosa</h3>
-                <p>Sabemos que el tiempo es dinero. Cumplimos con ventanas de entrega estrictas mediante optimización de rutas asistida por IA.</p>
-            </div>
-            <div class="pillar-card">
-                <div class="pillar-icon">🛡️</div>
-                <h3>Seguridad Total</h3>
-                <p>Monitoreo satelital 24/7 y pólizas de cobertura amplia para asegurar que tu valiosa carga llegue intacta.</p>
-            </div>
-            <div class="pillar-card">
-                <div class="pillar-icon">🌍</div>
-                <h3>Cobertura Total</h3>
-                <p>Contamos con una robusta red de distribución nacional y fronteriza para conectar cualquier punto geográfico.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="servicios" class="section" style="background: #e2e8f0; max-width: 100%; width: 100%;">
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
-            <h2 class="section-title">Soluciones Logísticas a Medida</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-img-sim">🚛</div>
-                    <div class="service-info">
-                        <h3>Carga Pesada e Industrial</h3>
-                        <p>Plataformas, lowboys y cajas secas preparadas para mover volúmenes industriales masivos.</p>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-img-sim">📦</div>
-                    <div class="service-info">
-                        <h3>Última Milla</h3>
-                        <p>Distribución capilar rápida en zonas urbanas asegurando entregas ágiles al consumidor final.</p>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-img-sim">🏬</div>
-                    <div class="service-info">
-                        <h3>Almacenamiento Inteligente</h3>
-                        <p>Centros de distribución estratégicos con gestión avanzada de inventario en tiempo real.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contacto" class="section">
-        <h2 class="section-title">¿Listo para mover tu carga?</h2>
-        <div class="contact-wrapper">
+    <section id="servicios" class="content-section">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; color: var(--primary-blue); text-align: center; margin-bottom: 1rem;">Nuestra Cobertura</h2>
+            <p style="text-align: center; color: var(--text-light); max-width: 600px; margin: 0 auto 3rem;">Garantizamos soluciones robustas para necesidades complejas de transporte y almacenamiento.</p>
             
-            <div class="contact-info">
-                <h3>Contacto Directo</h3>
-                <p style="margin-bottom: 2rem; color: #64748b;">Ponte en contacto con nuestros asesores de operaciones o solicita una cotización formal mediante el formulario.</p>
-                
-                <div class="contact-method">
-                    <div class="icon">📞</div>
-                    <div>
-                        <strong>Línea Telefónica</strong>
-                        <p>+1 (555) 019-2834</p>
-                    </div>
+            <div class="services-grid">
+                <div class="card">
+                    <h3>Transporte Pesado</h3>
+                    <p>Unidades de arrastre de última generación preparadas para tonelajes sobredimensionados e industriales.</p>
                 </div>
-                <div class="contact-method">
-                    <div class="icon">✉️</div>
-                    <div>
-                        <strong>Correo Corporativo</strong>
-                        <p>operaciones@ruztmar-logistics.com</p>
-                    </div>
+                <div class="card">
+                    <h3>Monitoreo Activo</h3>
+                    <p>Sistemas satelitales avanzados con telemetría que resguardan la seguridad de tus operadores y productos.</p>
                 </div>
-                <div class="contact-method">
-                    <div class="icon">📍</div>
-                    <div>
-                        <strong>Oficinas Centrales</strong>
-                        <p>Zona Industrial Norte, Hangar 4B, Ciudad de México</p>
-                    </div>
+                <div class="card">
+                    <h3>Optimización de Rutas</h3>
+                    <p>Cálculo logístico preventivo para mitigar retrasos operativos en puertos o cruces fronterizos.</p>
                 </div>
             </div>
-
-            <form class="quote-form" onsubmit="event.preventDefault(); alert('¡Solicitud de cotización enviada con éxito! Un asesor se comunicará contigo.');">
-                <div class="form-group">
-                    <label for="name">Nombre Completo</label>
-                    <input type="text" id="name" required placeholder="Ej. Juan Pérez">
-                </div>
-                <div class="form-group">
-                    <label for="origin">Ciudad de Origen</label>
-                    <input type="text" id="origin" required placeholder="Ej. Monterrey">
-                </div>
-                <div class="form-group">
-                    <label for="destination">Ciudad de Destino</label>
-                    <input type="text" id="destination" required placeholder="Ej. Guadalajara">
-                </div>
-                <div class="form-group">
-                    <label for="type">Tipo de Carga</label>
-                    <select id="type">
-                        <option>Carga Seca General</option>
-                        <option>Carga Pesada / Sobredimensionada</option>
-                        <option>Refrigerados / Perecederos</option>
-                        <option>Materiales Peligrosos (Hazmat)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit">Solicitar Cotización Inmediata</button>
-            </form>
-
         </div>
     </section>
 
     <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 Logística y Transporte Ruztmar S.A. Todos los derechos reservados.</p>
-            <p style="font-size: 0.85rem; color: #64748b;">Políticas de Privacidad | Términos de Servicio</p>
+        <div class="container">
+            <p style="font-weight: 700; margin-bottom: 0.5rem; color: white;">RUZTMAR LOGÍSTICA S.A.</p>
+            <p>&copy; 2026 Todos los derechos reservados. Eficiencia, seguridad y trayectoria.</p>
         </div>
     </footer>
 
     <script>
-        const scrollerContainer = document.querySelector('.hero-scroller-container');
+        const scrollSection = document.getElementById('inicio');
         const truckLeft = document.getElementById('truckLeft');
         const truckRight = document.getElementById('truckRight');
-        const heroText = document.getElementById('heroText');
-        const companyIntro = document.getElementById('companyIntro');
+        const mainBrandBlock = document.getElementById('mainBrandBlock');
+        const infoBlock = document.getElementById('infoBlock');
+        const scrollerText = document.getElementById('scrollerText');
 
         window.addEventListener('scroll', () => {
-            // Calculamos el progreso de scroll específico dentro de la sección Hero
-            const containerTop = scrollerContainer.offsetTop;
-            const containerHeight = scrollerContainer.offsetHeight - window.innerHeight;
-            const scrolled = window.scrollY - containerTop;
-            
-            // Sacamos un porcentaje de 0 a 1 de cuánto se ha navegado en el Hero
-            let progress = scrolled / containerHeight;
+            const sectionTop = scrollSection.offsetTop;
+            const sectionHeight = scrollSection.offsetHeight - window.innerHeight;
+            const scrollPosition = window.scrollY - sectionTop;
+
+            // Conseguimos un factor de progreso del scroll de 0 a 1
+            let progress = scrollPosition / sectionHeight;
             if (progress < 0) progress = 0;
             if (progress > 1) progress = 1;
 
-            // 1. Desplazar los camiones hacia los lados de la pantalla proporcionalmente
-            // Aumentando los píxeles multiplicados obligamos a que salgan del viewport rápidamente
-            const moveX = progress * window.innerWidth * 0.8; 
-            truckLeft.style.transform = `translateX(-${moveX}px)`;
-            truckRight.style.transform = `scaleX(-1) translateX(-${moveX}px)`;
+            // --- ANIMACIÓN DE CAMIONES (ARRANCAN HACIA AFUERA) ---
+            // Multiplicamos por la mitad de la pantalla para garantizar que salgan por completo
+            const driveDistance = progress * (window.innerWidth / 1.5);
+            
+            truckLeft.style.transform = `translateX(-${driveDistance}px)`;
+            truckRight.style.transform = `translateX(${driveDistance}px)`;
 
-            // Desvanecer sutilmente los camiones cuando van llegando al extremo exterior
-            const truckOpacity = 1 - (progress * 1.5);
-            truckLeft.style.opacity = truckOpacity < 0 ? 0 : truckOpacity;
-            truckRight.style.opacity = truckOpacity < 0 ? 0 : truckOpacity;
+            // Difuminado progresivo de los camiones al acelerar lateralmente
+            const objectOpacity = 1 - (progress * 2);
+            truckLeft.style.opacity = objectOpacity < 0 ? 0 : objectOpacity;
+            truckRight.style.opacity = objectOpacity < 0 ? 0 : objectOpacity;
 
-            // 2. Desvanecer el texto principal (Hero h1) al bajar
-            const textOpacity = 1 - (progress * 2.5);
-            heroText.style.opacity = textOpacity < 0 ? 0 : textOpacity;
-            heroText.style.transform = `translateY(-${progress * 40}px)`;
+            // --- DESVANECIMIENTO DEL TITULAR CENTRAL RUZTMAR ---
+            const brandOpacity = 1 - (progress * 3); // Desaparece rápido para dar paso al texto limpio
+            mainBrandBlock.style.opacity = brandOpacity < 0 ? 0 : brandOpacity;
+            mainBrandBlock.style.transform = `scale(${1 - (progress * 0.15)})`;
+            
+            // Ocultar indicador de scroll
+            scrollerText.style.opacity = 1 - (progress * 4);
 
-            // 3. Hacer aparecer la información corporativa (Company Intro) al mismo tiempo
-            if (progress > 0.2) {
-                // Mapeamos el progreso para que la transición sea orgánica
-                const introProgress = (progress - 0.2) / 0.8;
-                companyIntro.style.opacity = introProgress;
-                companyIntro.style.transform = `translateY(${50 - (introProgress * 50)}px)`;
+            // --- APARICIÓN DE LA INFORMACIÓN DE LA EMPRESA ---
+            if (progress > 0.25) {
+                // Aparece fluidamente de abajo hacia arriba en el centro limpio
+                const infoProgress = (progress - 0.25) / 0.75;
+                infoBlock.style.opacity = infoProgress;
+                infoBlock.style.transform = `translateY(${60 - (infoProgress * 60)}px)`;
             } else {
-                companyIntro.style.opacity = 0;
-                companyIntro.style.transform = 'translateY(50px)';
+                infoBlock.style.opacity = 0;
+                infoBlock.style.transform = 'translateY(60px)';
             }
         });
     </script>
