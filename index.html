@@ -4,745 +4,387 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruztmar | Logística y Transporte de Confianza</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <style>
-        /* --- CONFIGURACIÓN BASE Y COLORES --- */
-        :root {
-            --primary-blue: #0b3b80;  /* Azul corporativo de la captura */
-            --orange-brand: #e9522d;  /* Naranja de acentos y botones */
-            --bg-grid-color: rgba(226, 232, 240, 0.6);
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: #f8fafc;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* --- NAVBAR --- */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.2rem 2rem;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: #1e293b;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-        }
-
-        .logo-icon {
-            background-color: var(--orange-brand);
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2.2rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: #475569;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-        }
-
-        .nav-menu a:hover {
-            color: var(--orange-brand);
-        }
-
-        .btn-quote {
-            background-color: var(--orange-brand);
-            color: white !important;
-            padding: 0.7rem 1.6rem;
-            border-radius: 20px;
-            font-weight: 600 !important;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
-        }
-
-        .btn-quote:hover {
-            background-color: #cf4320;
-            transform: scale(1.03);
-        }
-
-        /* --- HERO CON PERSPECTIVA Y SCROLL --- */
-        .hero-scroll-section {
-            position: relative;
-            height: 220vh; /* Zona de empuje del scroll */
-        }
-
-        .sticky-viewport {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
-        }
-
-        /* Cuadrícula técnica de fondo */
-        .grid-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: 50px 50px;
-            background-image: 
-                linear-gradient(to right, var(--bg-grid-color) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--bg-grid-color) 1px, transparent 1px);
-            z-index: 1;
-        }
-
-        /* Montañas Vectoriales */
-        .mountains-vector {
-            position: absolute;
-            bottom: 35%;
-            width: 100%;
-            height: auto;
-            z-index: 2;
-            opacity: 0.75;
-        }
-
-        /* EFECTO LIQUID GLASS (Cristal Líquido Fluido sobre las montañas) */
-        .liquid-glass-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 45%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.6) 40%, rgba(248,250,252,1) 100%);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 3;
-            border-top: 1px solid rgba(255, 255, 255, 0.4);
-            pointer-events: none;
-        }
-
-        /* BLOQUE DE TÍTULO CENTRAL (IMAGEN ORIGINAL) */
-        .brand-center-container {
-            text-align: center;
-            z-index: 5;
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .brand-sub-top {
-            color: var(--orange-brand);
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 6px;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .brand-main-title {
-            font-size: 6.5rem;
-            font-weight: 900;
-            color: var(--primary-blue);
-            line-height: 1;
-            letter-spacing: -1px;
-        }
-
-        .brand-sub-bottom {
-            color: var(--text-light);
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 4px;
-            margin-top: 1rem;
-            text-transform: uppercase;
-        }
-
-        /* INFORMACIÓN QUE APARECE DESPUÉS DEL DESPLAZAMIENTO */
-        .info-emergente {
-            position: absolute;
-            max-width: 800px;
-            text-align: center;
-            padding: 2rem;
-            z-index: 6;
-            opacity: 0;
-            transform: translateY(60px);
-            transition: all 0.4s ease;
-            pointer-events: none;
-        }
-
-        .info-emergente.active {
-            pointer-events: auto;
-        }
-
-        .info-emergente h2 {
-            font-size: 2.8rem;
-            color: var(--primary-blue);
-            margin-bottom: 1.2rem;
-            font-weight: 800;
-        }
-
-        .info-emergente p {
-            font-size: 1.25rem;
-            line-height: 1.7;
-            color: #334155;
-        }
-
-        /* Indicador de Deslizar */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 5%;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-        .scroll-indicator::after {
-            content: '';
-            width: 2px;
-            height: 25px;
-            background: var(--orange-brand);
-            animation: bounce 1.5s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(6px); }
-        }
-
-        /* --- ESCENARIO DE CAMIONES (EXTREMOS LATERALES) --- */
-        .trucks-stage {
-            position: absolute;
-            bottom: 22%;
-            width: 100%;
-            max-width: 1500px;
-            height: 120px;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            pointer-events: none;
-        }
-
-        .truck-wrapper {
-            position: relative;
-            width: 280px;
-            height: 85px;
-            transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.1s ease;
-        }
-
-        .truck-red {
-            background: linear-gradient(to right, rgba(233, 82, 45, 0) 0%, rgba(233, 82, 45, 0.85) 30%, #e9522d 100%);
-            border-radius: 8px 25px 12px 8px;
-            box-shadow: -15px 0 30px rgba(233, 82, 45, 0.3);
-        }
-
-        .truck-dark {
-            background: linear-gradient(to left, rgba(30, 41, 59, 0) 0%, rgba(30, 41, 59, 0.85) 30%, #1e293b 100%);
-            border-radius: 25px 8px 8px 12px;
-            box-shadow: 15px 0 30px rgba(30, 41, 59, 0.25);
-        }
-
-        .truck-window {
-            position: absolute;
-            top: 18px;
-            width: 38px;
-            height: 28px;
-            background-color: #cbd5e1;
-            opacity: 0.7;
-        }
-        .truck-red .truck-window { right: 22px; border-radius: 4px 12px 4px 4px; }
-        .truck-dark .truck-window { left: 22px; border-radius: 12px 4px 4px 4px; }
-
-        .truck-wheels {
-            position: absolute;
-            bottom: -8px;
-            width: 100%;
-            display: flex;
-            gap: 12px;
-        }
-        .truck-red .truck-wheels { justify-content: flex-end; padding-right: 20px; }
-        .truck-dark .truck-wheels { justify-content: flex-start; padding-left: 20px; }
-
-        .truck-wheel {
-            width: 22px;
-            height: 22px;
-            background: #0f172a;
-            border-radius: 50%;
-            border: 4px solid #94a3b8;
-        }
-
-        /* --- OVERLAY CON FORMULARIO FLOTANTE (AL DAR CLICK A COTIZAR) --- */
-        .overlay-form-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .overlay-form-container.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-box {
-            background: white;
-            width: 100%;
-            max-width: 550px;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            position: relative;
-            transform: translateY(-30px);
-            transition: transform 0.3s ease;
-        }
-
-        .overlay-form-container.open .modal-box {
-            transform: translateY(0);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: #f1f5f9;
-            border: none;
-            font-size: 1.2rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #64748b;
-        }
-
-        .modal-box h3 {
-            color: var(--primary-blue);
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-box p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .quote-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #334155;
-        }
-
-        .form-group input, .form-group select {
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            background-color: #f8fafc;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--orange-brand);
-            background-color: white;
-        }
-
-        .btn-submit {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 0.9rem;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 0.5rem;
-        }
-
-        .btn-submit:hover {
-            background-color: #08295b;
-        }
-
-        /* --- BOTÓN FLOTANTE DE WHATSAPP --- */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #25d366;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            z-index: 1500;
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-        }
-
-        /* --- CONTENIDO ADICIONAL (COBERTURA Y DATOS) --- */
-        .content-section {
-            background: white;
-            padding: 6rem 2rem;
-            position: relative;
-            z-index: 20;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
-        }
-
-        .card {
-            background: #f8fafc;
-            padding: 2.5rem;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--orange-brand);
-        }
-
-        .card .icon-box {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card h3 {
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            font-size: 1.4rem;
-        }
-
-        .card p {
-            color: #475569;
-            line-height: 1.6;
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            background: #0f172a;
-            color: #94a3b8;
-            padding: 4rem 2rem;
-            text-align: center;
-            z-index: 20;
-            position: relative;
-            border-top: 1px solid #1e293b;
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 992px) {
-            .brand-main-title { font-size: 4.5rem; }
-            .truck-wrapper { width: 190px; height: 65px; }
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu { display: none; }
-            .brand-main-title { font-size: 3.2rem; }
-            .trucks-stage { padding: 0 15px; bottom: 25%; }
-            .truck-wrapper { width: 120px; height: 50px; }
-            .modal-box { padding: 1.5rem; margin: 10px; }
+        @layer base {
+            html {
+                scroll-behavior: smooth;
+            }
         }
     </style>
 </head>
-<body>
-
-    <a href="https://wa.me/5551234567?text=Hola,%20solicito%20información%20sobre%20sus%20servicios%20logísticos" class="whatsapp-float" target="_blank" title="Contactar por WhatsApp">
-        <svg width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.907h.004c4.368 0 7.926-3.558 7.93-7.93a7.897 7.897 0 0 0-2.327-5.594l.001-.004zm-5.607 11.048c-1.185 0-2.35-.319-3.366-.919l-.24-.144-2.5 1.15.652-2.4-.158-.253A6.56 6.56 0 0 1 1.658 7.93c.004-3.606 2.93-6.53 6.536-6.53 1.748 0 3.39.68 4.623 1.913a6.522 6.522 0 0 1 1.912 4.629c-.004 3.606-2.93 6.53-6.532 6.53zM11.022 9.5c-.167-.083-1-.49-1.167-.552-.167-.062-.288-.093-.41.09-.12.183-.47.583-.577.7-.108.12-.217.133-.383.05-.167-.083-.702-.258-1.34-1.252-.497-.442-.833-.986-.93-1.152-.097-.17-.01-.261.073-.344.075-.074.167-.194.25-.291.085-.097.113-.165.17-.276.057-.111.028-.21-.014-.293-.041-.083-.41-1.01-.56-1.378-.148-.36-.3-.31-.41-.315-.104-.005-.224-.005-.345-.005a.614 .614 0 0 0-.444.207c-.152.167-.58.567-.58 1.382 0 .816.594 1.603.677 1.714.083.112 1.168 1.783 2.83 2.502 1.966.85 2.366.68 2.81.637.445-.043 1.432-.585 1.634-1.144.202-.559.202-1.04.141-1.14-.06-.1-.223-.183-.39-.266z"/>
+<body class="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden selection:bg-orange-500 selection:text-white">
+      
+    <a 
+        href="https://wa.me/5551234567?text=Hola%20Ruztmar,%20solicito%20asesoría%20sobre%20sus%20servicios%20logísticos%20y%20de%20transporte."
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform duration-300 flex items-center justify-center group"
+        aria-label="Contactar por WhatsApp"
+    >
+        <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.628 1.975 14.151.95 11.531.95c-5.44 0-9.866 4.372-9.87 9.802 0 1.714.463 3.39 1.34 4.875l-.101.163-1.01 3.693 3.78-1.017.164.102z"/>
         </svg>
     </a>
 
-    <header>
-        <nav class="nav-container">
-            <div class="logo-container" onclick="window.scrollTo(0,0)">
-                <div class="logo-icon">📦</div>
+    <header class="fixed top-0 left-0 w-full bg-white/85 backdrop-blur-md z-40 border-b border-slate-200/80 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3 font-extrabold text-xl tracking-tight text-slate-800 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="bg-[#e9522d] w-9 h-9 rounded-lg flex items-center justify-center text-white shadow-sm">
+                    <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                        <path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-5v10h2"/>
+                        <circle cx="7.5" cy="18.5" r="2.5"/>
+                        <circle cx="16.5" cy="18.5" r="2.5"/>
+                    </svg>
+                </div>
                 <span>RUZTMAR</span>
             </div>
-            <ul class="nav-menu">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#cobertura">Cobertura</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-                <li><button class="btn-quote" id="openModalBtn">Cotizar Envío</button></li>
-            </ul>
-        </nav>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#inicio" class="text-slate-600 hover:text-[#e9522d] font-medium text-sm transition-colors">Inicio</a>
+                <a href="#nosotros" class="text-slate-600 hover:text-[#e9522d] font-medium text-sm transition-colors">Nosotros</a>
+                <a href="#cobertura" class="text-slate-600 hover:text-[#e9522d] font-medium text-sm transition-colors">Cobertura</a>
+                <a href="#servicios" class="text-slate-600 hover:text-[#e9522d] font-medium text-sm transition-colors">Servicios</a>
+                <button 
+                    id="openModalBtn"
+                    class="bg-[#e9522d] hover:bg-[#cf4320] text-white px-6 py-2.5 rounded-full font-semibold text-sm shadow-md shadow-orange-500/10 transition-all hover:scale-[1.02] cursor-pointer"
+                >
+                    Cotizar Envío
+                </button>
+            </nav>
+
+            <button class="md:hidden text-slate-700" onclick="toggleMobileMenu()">
+                <svg class="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-slate-200 px-6 py-4 flex flex-col gap-4 shadow-inner">
+            <a href="#inicio" onclick="toggleMobileMenu()" class="text-slate-600 font-medium">Inicio</a>
+            <a href="#nosotros" onclick="toggleMobileMenu()" class="text-slate-600 font-medium">Nosotros</a>
+            <a href="#cobertura" onclick="toggleMobileMenu()" class="text-slate-600 font-medium">Cobertura</a>
+            <a href="#servicios" onclick="toggleMobileMenu()" class="text-slate-600 font-medium">Servicios</a>
+            <button 
+                id="openModalBtnMobile"
+                class="bg-[#e9522d] text-white py-3 rounded-xl font-bold text-center w-full"
+            >
+                Cotizar Envío
+            </button>
+        </div>
     </header>
 
-    <div id="inicio" class="hero-scroll-section">
-        <div class="sticky-viewport">
-            
-            <div class="grid-background"></div>
+    <section id="inicio" class="relative h-[220vh] w-full">
+        <div class="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center items-center bg-gradient-to-b from-slate-100 to-slate-200">
+          
+            <div 
+                class="absolute inset-0 z-0 opacity-60"
+                style="background-image: linear-gradient(to right, rgba(226, 232, 240, 0.8) 1px, transparent 1px), linear-gradient(to bottom, rgba(226, 232, 240, 0.8) 1px, transparent 1px); background-size: 50px 50px;"
+            ></div>
 
-            <svg class="mountains-vector" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="absolute bottom-[35%] w-full h-auto z-10 opacity-75 pointer-events-none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 220 L150 140 L320 190 L500 110 L720 160 L900 90 L1150 170 L1300 120 L1440 180 L1440 320 L0 320 Z" fill="#cbd5e1" opacity="0.5"/>
                 <path d="M0 240 L200 170 L450 210 L650 140 L850 190 L1100 120 L1280 180 L1440 150 L1440 320 L0 320 Z" fill="#94a3b8" opacity="0.4"/>
             </svg>
 
-            <div class="liquid-glass-overlay"></div>
+            <div class="absolute bottom-0 left-0 w-full h-[45%] bg-gradient-to-b from-white/10 via-white/60 to-slate-50 backdrop-blur-xl z-20 border-t border-white/40 pointer-events-none"></div>
 
-            <div class="brand-center-container" id="mainBrandBlock">
-                <div class="brand-sub-top">Ruztmar</div>
-                <h1 class="brand-main-title">RUZTMAR</h1>
-                <div class="brand-sub-bottom">Logística y Transporte de Confianza</div>
+            <div id="mainTitleBlock" class="text-center z-20 pointer-events-none select-none transition-all duration-100 ease-out">
+                <div class="text-[#e9522d] text-xs md:text-sm font-bold tracking-[6px] md:tracking-[8px] mb-2 uppercase">Ruztmar</div>
+                <h1 class="text-5xl md:text-8xl lg:text-9xl font-black text-[#0b3b80] tracking-tighter leading-none">RUZTMAR</h1>
+                <div class="text-slate-500 text-xs md:text-sm font-semibold tracking-[3px] md:tracking-[5px] mt-4 uppercase">Logística y Transporte de Confianza</div>
             </div>
 
-            <div class="info-emergente" id="infoBlock">
-                <h2>Infraestructura de Vanguardia</h2>
-                <p>En Ruztmar redefinimos el transporte de carga. Mediante una flota moderna, tracking satelital ininterrumpido en tiempo real y protocolos estrictos de seguridad industrial, garantizamos la entrega óptima de sus activos comerciales en cualquier destino geográfico.</p>
+            <div id="infoBlock" class="absolute max-w-3xl text-center px-6 z-25 opacity-0 pointer-events-none transition-all duration-100 ease-out" style="transform: translateY(50px);">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-[#0b3b80] mb-4">Soluciones de Infraestructura Líderes</h2>
+                <p class="text-base md:text-xl text-slate-600 leading-relaxed font-normal">
+                    Revolucionamos la cadena de suministro global integrando flotas de última generación con telemetría predictiva. Desde transportación industrial sobredimensionada hasta traslados ejecutivos exclusivos, aseguramos un control total en cada tramo.
+                </p>
             </div>
 
-            <div class="trucks-stage">
-                <div class="truck-wrapper truck-red" id="truckLeft">
-                    <div class="truck-window"></div>
-                    <div class="truck-wheels">
-                        <div class="truck-wheel"></div>
-                        <div class="truck-wheel"></div>
+            <div class="absolute bottom-[22%] w-full max-w-[1500px] h-24 z-30 flex justify-between items-center px-4 md:px-12 pointer-events-none">
+            
+                <div id="truckLeft" class="relative w-[130px] md:w-[280px] h-14 md:h-[85px] rounded-l-md rounded-r-[25px] bg-gradient-to-r from-orange-500/0 via-orange-500/80 to-[#e9522d] shadow-[-15px_0_30px_rgba(233,82,45,0.25)] transition-all duration-75 ease-out">
+                    <div class="absolute top-[20%] right-5 w-[15%] h-[35%] bg-slate-300/70 rounded-tr-[10px] rounded-l-[2px]"></div>
+                    <div class="absolute -bottom-2 right-4 flex gap-3">
+                        <div class="w-5 h-5 bg-slate-900 border-2 border-slate-400 rounded-full"></div>
+                        <div class="w-5 h-5 bg-slate-900 border-2 border-slate-400 rounded-full"></div>
                     </div>
                 </div>
 
-                <div class="truck-wrapper truck-dark" id="truckRight">
-                    <div class="truck-window"></div>
-                    <div class="truck-wheels">
-                        <div class="truck-wheel"></div>
-                        <div class="truck-wheel"></div>
+                <div id="truckRight" class="relative w-[130px] md:w-[280px] h-14 md:h-[85px] rounded-r-md rounded-l-[25px] bg-gradient-to-l from-slate-800/0 via-slate-800/85 to-[#1e293b] shadow-[15px_0_30px_rgba(30,41,59,0.2)] transition-all duration-75 ease-out">
+                    <div class="absolute top-[20%] left-5 w-[15%] h-[35%] bg-slate-300/70 rounded-tl-[10px] rounded-r-[2px]"></div>
+                    <div class="absolute -bottom-2 left-4 flex gap-3">
+                        <div class="w-5 h-5 bg-slate-900 border-2 border-slate-400 rounded-full"></div>
+                        <div class="w-5 h-5 bg-slate-900 border-2 border-slate-400 rounded-full"></div>
                     </div>
                 </div>
+
             </div>
 
-            <div class="scroll-indicator" id="scrollerText">
+            <div id="scrollerIndicator" class="absolute bottom-6 flex flex-col items-center gap-1.5 text-slate-400 text-[10px] font-bold tracking-[3px] uppercase pointer-events-none">
                 <span>Desliza</span>
+                <div class="w-[1.5px] h-6 bg-[#e9522d] animate-bounce"></div>
             </div>
 
         </div>
-    </div>
+    </section>
 
-    <section id="cobertura" class="content-section">
-        <div class="container">
-            <h2 style="font-size: 2.5rem; color: var(--primary-blue); text-align: center; margin-bottom: 0.5rem;">Nuestras Líneas de Operación</h2>
-            <p style="text-align: center; color: var(--text-light); max-width: 600px; margin: 0 auto 3rem;">Capacidad operativa escalable para responder a requerimientos corporativos complejos.</p>
-            
-            <div class="services-grid">
-                <div class="card">
-                    <div class="icon-box">🚛</div>
-                    <h3>Carga Pesada e Industrial</h3>
-                    <p>Transporte especializado mediante plataformas, lowboys y contenedores blindados diseñados para soportar altos tonelajes industriales.</p>
+    <section id="nosotros" class="relative z-30 bg-white py-24 px-6 border-t border-slate-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-black text-[#0b3b80] mb-3">Estándares Corporativos de Confianza</h2>
+                <div class="w-12 h-1 bg-[#e9522d] mx-auto mb-4"></div>
+                <p class="text-slate-500">Mantenemos la integridad de su cadena de valor combinando automatización e infraestructura pesada.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/60 hover:border-orange-500/30 hover:shadow-xl hover:shadow-slate-200/50 transition-all">
+                    <h3 class="text-xl font-bold text-[#0b3b80] mb-2">Ventanas Horarias Estrictas</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Optimizamos algoritmos de ruta para mitigar cuellos de botella en hubs logísticos, garantizando un índice de puntualidad del 99.4%.</p>
                 </div>
-                <div class="card">
-                    <div class="icon-box">🚘</div>
-                    <h3>Transporte Ejecutivo Corporativo</h3>
-                    <p>Traslados de personal premium y directivo con vehículos de alta gama, choferes bilingües certificados y esquemas logísticos basados en puntualidad absoluta.</p>
+
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/60 hover:border-orange-500/30 hover:shadow-xl hover:shadow-slate-200/50 transition-all">
+                    <h3 class="text-xl font-bold text-[#0b3b80] mb-2">Custodia Virtual y Blindaje</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Cada kilómetro es auditado por nuestro centro de comando integrado, respaldado por pólizas internacionales de cobertura integral.</p>
                 </div>
-                <div class="card">
-                    <div class="icon-box">🛡️</div>
-                    <h3>Seguridad y Monitoreo Activo</h3>
-                    <p>Central de inteligencia con rastreo satelital GPS 24/7, custodias virtuales y planes de contingencia preventiva en ruta.</p>
+
+                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/60 hover:border-orange-500/30 hover:shadow-xl hover:shadow-slate-200/50 transition-all">
+                    <h3 class="text-xl font-bold text-[#0b3b80] mb-2">Alcance Fronterizo Global</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Operamos con patentes aduanales directas para acelerar los cruces e interconexiones multimodales en puertos y fronteras.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="overlay-form-container" id="modalOverlay">
-        <div class="modal-box">
-            <button class="close-modal" id="closeModalBtn">&times;</button>
-            <h3>Solicitud de Cotización</h3>
-            <p>Complete el formulario técnico para recibir una propuesta estructurada por nuestro equipo.</p>
+    <section id="cobertura" class="relative z-30 bg-slate-100 py-24 px-6 border-y border-slate-200/40">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-black text-[#0b3b80] mb-3">Líneas de Servicios Especializados</h2>
+                <p class="text-slate-500">Respuestas precisas para exigencias operacionales corporativas de alto nivel.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <form class="quote-form" onsubmit="event.preventDefault(); alert('Formulario recibido correctamente. Nuestro departamento comercial le contactará en breve.'); document.getElementById('modalOverlay').classList.remove('open');">
-                <div class="form-group">
-                    <label for="name">Nombre de la Empresa / Solicitante</label>
-                    <input type="text" id="name" required placeholder="Ej. Logística Industrial S.A.">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">🚛</div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Carga Industrial Sobredimensionada</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Contamos con equipo modular de arrastre, lowboys y plataformas de alta resistencia para el traslado de maquinaria y componentes estructurales masivos.</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="route-from">Punto de Origen</label>
-                    <input type="text" id="route-from" required placeholder="Ciudad, Estado o Puerto">
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">👥</div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Transporte Ejecutivo Premium</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Logística de movilidad VIP para directivos y equipos corporativos. Unidades de gama alta blindadas, operadores bilingües certificados y control de agenda en tiempo real.</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="route-to">Punto de Destino</label>
-                    <input type="text" id="route-to" required placeholder="Destino de Entrega final">
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="h-44 bg-gradient-to-br from-slate-900 to-[#0b3b80] flex items-center justify-center text-white text-5xl">📊</div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-[#0b3b80] mb-2">Monitoreo y Telemetría Activa</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Central de seguridad operativa las 24 horas del día. Sensores de apertura no autorizada, corte de motor remoto y rastreo redundante satelital / celular.</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="service-type">Modalidad de Servicio</label>
-                    <select id="service-type">
-                        <option>Transporte de Carga Pesada</option>
-                        <option>Transporte Ejecutivo / Corporativo</option>
-                        <option>Distribución Distribución Local / Última Milla</option>
-                        <option>Servicio de Almacén y Resguardo</option>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="relative z-30 bg-white py-24 px-6">
+        <div class="max-w-5xl mx-auto bg-slate-900 text-white rounded-3xl p-8 md:p-14 shadow-2xl flex flex-col md:flex-row gap-12 items-center">
+            <div class="flex-1">
+                <span class="text-[#e9522d] text-xs font-bold uppercase tracking-widest block mb-2">Central Operativa</span>
+                <h2 class="text-2xl md:text-4xl font-black mb-4 tracking-tight">¿Necesita soporte inmediato o cotización directa?</h2>
+                <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-6">Nuestros ingenieros de guardia están listos para trazar las mejores opciones logísticas de origen a destino.</p>
+                <button 
+                    id="openModalBtnContact"
+                    class="bg-[#e9522d] hover:bg-[#cf4320] text-white font-bold text-sm px-8 py-3 rounded-xl shadow-lg transition-all cursor-pointer"
+                >
+                    Iniciar Solicitud Formal
+                </button>
+            </div>
+            <div class="w-full md:w-auto flex flex-col gap-6 text-sm border-t border-slate-800 md:border-t-0 md:border-l md:pl-12 pt-8 md:pt-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-800 p-3 rounded-xl text-orange-400 font-bold">📞</div>
+                    <div>
+                        <p class="text-slate-400 text-xs uppercase font-bold">Línea de Enlace</p>
+                        <p class="font-semibold text-slate-200">+1 (555) 019-2834</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-800 p-3 rounded-xl text-orange-400 font-bold">✉️</div>
+                    <div>
+                        <p class="text-slate-400 text-xs uppercase font-bold">Despacho Comercial</p>
+                        <p class="font-semibold text-slate-200">operaciones@ruztmar-logistics.com</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-800 p-3 rounded-xl text-orange-400 font-bold">📍</div>
+                    <div>
+                        <p class="text-slate-400 text-xs uppercase font-bold">Oficinas Corporativas</p>
+                        <p class="font-semibold text-slate-200">Zona Industrial Norte, Hangar 4B, CDMX</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative z-30 bg-slate-950 text-slate-500 py-12 px-6 border-t border-slate-900 text-center">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+            <p class="font-medium text-slate-400">RUZTMAR LOGÍSTICA & TRANSPORTE S.A.</p>
+            <p>&copy; 2026 Todos los derechos reservados. Eficiencia, trayectoria y control industrial en ruta.</p>
+        </div>
+    </footer>
+
+    <div id="modalOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="modalBox" class="bg-white w-full max-w-lg p-6 md:p-8 rounded-2xl shadow-2xl relative scale-95 -translate-y-4 transition-all duration-300">
+            <button 
+                id="closeModalBtn"
+                class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 p-1.5 rounded-full text-slate-500 transition-colors cursor-pointer"
+                aria-label="Cerrar formulario"
+            >
+                ✕
+            </button>
+
+            <h3 class="text-xl md:text-2xl font-black text-[#0b3b80] mb-1">Módulo de Cotización Técnica</h3>
+            <p class="text-slate-500 text-xs md:text-sm mb-6">Proporcione los metadatos de su requerimiento operativo para trazar la propuesta comercial óptima.</p>
+
+            <form class="flex flex-col gap-4" onsubmit="handleFormSubmit(event)">
+                <div class="flex flex-col gap-1.5">
+                    <label for="company" class="text-xs font-bold text-slate-700 uppercase">Organización / Razón Social</label>
+                    <input type="text" id="company" required class="w-full bg-slate-50 border border-slate-200 focus:border-[#e9522d] focus:bg-white px-4 py-2.5 rounded-lg text-sm outline-none transition-colors" placeholder="Ej. Corporativo Industrial S.A.">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="origin" class="text-xs font-bold text-slate-700 uppercase">Punto de Origen</label>
+                        <input type="text" id="origin" required class="w-full bg-slate-50 border border-slate-200 focus:border-[#e9522d] focus:bg-white px-4 py-2.5 rounded-lg text-sm outline-none transition-colors" placeholder="Ciudad o Puerto de Salida">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="destination" class="text-xs font-bold text-slate-700 uppercase">Punto de Destino</label>
+                        <input type="text" id="destination" required class="w-full bg-slate-50 border border-slate-200 focus:border-[#e9522d] focus:bg-white px-4 py-2.5 rounded-lg text-sm outline-none transition-colors" placeholder="Destino de Entrega final">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label for="modal-service" class="text-xs font-bold text-slate-700 uppercase">Modalidad de Servicio Operativo</label>
+                    <select id="modal-service" class="w-full bg-slate-50 border border-slate-200 focus:border-[#e9522d] focus:bg-white px-4 py-2.5 rounded-lg text-sm outline-none transition-colors text-slate-700">
+                        <option>Carga Pesada / Estructural Sobredimensionada</option>
+                        <option>Transporte Ejecutivo Corporativo Premium</option>
+                        <option>Distribución Distribución de Última Milla</option>
+                        <option>Monitoreo Dedicado y Resguardo de Carga</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-submit">Enviar Solicitud Técnica</button>
+
+                <button 
+                    type="submit"
+                    class="bg-[#0b3b80] hover:bg-[#072857] text-white font-bold py-3 px-4 rounded-lg text-sm transition-colors mt-2 shadow-md cursor-pointer"
+                >
+                    Consolidar Requerimiento Técnico
+                </button>
             </form>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p style="font-weight: 700; margin-bottom: 0.5rem; color: white;">RUZTMAR TRANSPORTE & LOGÍSTICA S.A.</p>
-            <p>&copy; 2026 Todos los derechos reservados. Eficiencia, trayectoria y control total en ruta.</p>
-        </div>
-    </footer>
-
     <script>
-        // Elementos de la Animación
-        const scrollSection = document.getElementById('inicio');
+        // Elementos interactivos del scroll
+        const heroSection = document.getElementById('inicio');
         const truckLeft = document.getElementById('truckLeft');
         const truckRight = document.getElementById('truckRight');
-        const mainBrandBlock = document.getElementById('mainBrandBlock');
+        const mainTitleBlock = document.getElementById('mainTitleBlock');
         const infoBlock = document.getElementById('infoBlock');
-        const scrollerText = document.getElementById('scrollerText');
+        const scrollerIndicator = document.getElementById('scrollerIndicator');
 
-        // Elementos de la Ventana Emergente (Overlay Form)
+        // Elementos del Modal
         const modalOverlay = document.getElementById('modalOverlay');
-        const openModalBtn = document.getElementById('openModalBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalBox = document.getElementById('modalBox');
+        const mobileMenu = document.getElementById('mobileMenu');
 
-        // --- MANEJO DEL EVENTO SCROLL ---
+        // Control de Animación del Scroll
         window.addEventListener('scroll', () => {
-            const sectionTop = scrollSection.offsetTop;
-            const sectionHeight = scrollSection.offsetHeight - window.innerHeight;
-            const scrollPosition = window.scrollY - sectionTop;
-
-            let progress = scrollPosition / sectionHeight;
+            if (!heroSection) return;
+            const rect = heroSection.getBoundingClientRect();
+            const elementHeight = heroSection.offsetHeight;
+            
+            const scrolled = -rect.top;
+            const totalScrollable = elementHeight - window.innerHeight;
+            
+            let progress = scrolled / totalScrollable;
             if (progress < 0) progress = 0;
             if (progress > 1) progress = 1;
 
-            // 1. Desplazamiento acelerado de los camiones hacia los lados exteriores
+            // Física de los camiones acelerando a los extremos
             const driveDistance = progress * (window.innerWidth / 1.3);
             truckLeft.style.transform = `translateX(-${driveDistance}px)`;
             truckRight.style.transform = `translateX(${driveDistance}px)`;
 
-            // Desvanecimiento de camiones al avanzar
-            const objectOpacity = 1 - (progress * 2.2);
-            truckLeft.style.opacity = objectOpacity < 0 ? 0 : objectOpacity;
-            truckRight.style.opacity = objectOpacity < 0 ? 0 : objectOpacity;
+            // Opacidades progresivas
+            const truckOpacity = Math.max(0, 1 - progress * 2.5);
+            truckLeft.style.opacity = truckOpacity;
+            truckRight.style.opacity = truckOpacity;
 
-            // 2. Ocultar el Título Gigante Central original de la captura
-            const brandOpacity = 1 - (progress * 3.2);
-            mainBrandBlock.style.opacity = brandOpacity < 0 ? 0 : brandOpacity;
-            mainBrandBlock.style.transform = `scale(${1 - (progress * 0.12)})`;
-            
-            // Ocultar texto "Desliza"
-            scrollerText.style.opacity = 1 - (progress * 4);
+            // Desvanecimiento del título principal
+            const titleOpacity = Math.max(0, 1 - progress * 3.5);
+            const titleScale = 1 - progress * 0.12;
+            mainTitleBlock.style.opacity = titleOpacity;
+            mainTitleBlock.style.transform = `scale(${titleScale})`;
 
-            // 3. Traer al frente la información de la empresa con suavidad
+            // Ocultar indicador "Desliza"
+            scrollerIndicator.style.opacity = Math.max(0, 1 - progress * 4);
+
+            // Aparición fluida del bloque informativo de reemplazo
             if (progress > 0.28) {
-                const infoProgress = (progress - 0.28) / 0.72;
-                infoBlock.classList.add('active');
+                const infoProgress = Math.min(1, (progress - 0.28) / 0.6);
                 infoBlock.style.opacity = infoProgress;
-                infoBlock.style.transform = `translateY(${50 - (infoProgress * 50)}px)`;
+                infoBlock.style.pointerEvents = 'auto';
+                infoBlock.style.transform = `translateY(${Math.max(0, 50 - infoProgress * 50)}px)`;
             } else {
-                infoBlock.classList.remove('active');
                 infoBlock.style.opacity = 0;
+                infoBlock.style.pointerEvents = 'none';
                 infoBlock.style.transform = 'translateY(50px)';
             }
         });
 
-        // --- MANEJO DEL OVERLAY / MODAL ---
-        openModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.add('open');
-        });
+        // Eventos del Modal (Abrir/Cerrar)
+        const openModal = () => {
+            modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            modalOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            modalBox.classList.remove('scale-95', '-translate-y-4');
+            modalBox.classList.add('scale-100', 'translate-y-0');
+        };
 
-        closeModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.remove('open');
-        });
+        const closeModal = () => {
+            modalOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+            modalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-100', 'translate-y-0');
+            modalBox.classList.add('scale-95', '-translate-y-4');
+        };
 
-        // Cerrar si se hace clic fuera de la caja blanca del formulario
+        document.getElementById('openModalBtn').addEventListener('click', openModal);
+        document.getElementById('openModalBtnMobile').addEventListener('click', openModal);
+        document.getElementById('openModalBtnContact').addEventListener('click', openModal);
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        
         modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('open');
-            }
+            if (e.target === modalOverlay) closeModal();
         });
+
+        // Menú Móvil toggle
+        const toggleMobileMenu = () => {
+            mobileMenu.classList.toggle('hidden');
+        };
+
+        // Submit Formulario
+        const handleFormSubmit = (e) => {
+            e.preventDefault();
+            alert('Solicitud de cotización consolidada con éxito. Nuestro despacho técnico se pondrá en contacto en un rango de 30 minutos.');
+            closeModal();
+        };
     </script>
 </body>
 </html>
