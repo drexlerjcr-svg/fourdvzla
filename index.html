@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruztmar | Transporte y Logística de Carga Pesada</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#003785',   // Azul exacto de tu logo
+                            accent: '#FF4200', // Naranja/Rojo de tu logo
+                            gray: '#475569'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(0, 55, 133, 0.1);
+        }
+        .liquid-glass-dark {
+            background: rgba(0, 55, 133, 0.82);
+            backdrop-filter: blur(25px) saturate(160%);
+            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glossy-overlay {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+        }
+        html { scroll-behavior: smooth; }
+        .hero-gradient {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 55, 133, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, rgba(255, 66, 0, 0.05) 0%, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans selection:bg-brand-accent selection:text-white">
+
+    <!-- Navegación -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 py-6">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg border border-slate-100">
+                    <span class="text-brand-accent font-black text-2xl">R</span>
+                </div>
+                <span class="font-display font-bold text-2xl tracking-tighter text-brand-blue uppercase">RUZTMAR</span>
+            </div>
+            <div class="hidden md:flex items-center gap-10">
+                <a href="#inicio" class="text-sm font-bold hover:text-brand-accent transition-colors">Inicio</a>
+                <a href="#servicios" class="text-sm font-bold hover:text-brand-accent transition-colors">Servicios</a>
+                <a href="#contacto" class="bg-brand-accent hover:bg-red-600 text-white px-6 py-3 rounded-full text-sm font-black transition-all shadow-lg shadow-brand-accent/20">Cotizar Envío</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative min-h-screen flex items-center pt-20 overflow-hidden hero-gradient">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div>
+                <span class="inline-block py-2 px-4 bg-brand-accent/10 text-brand-accent rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-6 border border-brand-accent/20">
+                    Logística Inteligente & Pesada
+                </span>
+                <h1 class="text-6xl md:text-8xl font-black text-brand-blue leading-[0.9] mb-8 tracking-tighter">
+                   Carga que <span class="text-brand-accent">Impulsa</span> Naciones
+                </h1>
+                <p class="text-lg text-slate-500 font-medium mb-12 max-w-lg leading-relaxed">
+                    Soluciones integrales de transporte de carga pesada y logística premium. Seguridad, puntualidad y tecnología en cada ruta.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="toggleModal()" class="bg-brand-accent text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-red-600 transition-all shadow-xl shadow-brand-accent/30 group">
+                        COTIZAR AHORA
+                    </button>
+                    <button class="bg-white/80 backdrop-blur-md border border-white p-5 rounded-2xl font-black text-slate-600 hover:text-brand-blue transition-colors">
+                        VER FLOTA
+                    </button>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="w-full aspect-square bg-white rounded-[4rem] liquid-glass flex items-center justify-center p-8 relative overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=1000" class="rounded-[3rem] w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 shadow-2xl" alt="Ruztmar Camion">
+                    <div class="absolute inset-0 glossy-overlay pointer-events-none"></div>
+                </div>
+                <!-- Mini Stats Badge -->
+                <div class="absolute -bottom-6 -right-6 bg-brand-blue text-white p-8 rounded-[2.5rem] shadow-2xl liquid-glass-dark border border-white/20">
+                    <div class="text-4xl font-black mb-1">100%</div>
+                    <div class="text-[10px] uppercase font-black tracking-widest opacity-70">Seguridad Garantizada</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section id="servicios" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24 uppercase">
+                <span class="text-brand-accent font-black tracking-[0.5em] text-xs">Nuestros Servicios</span>
+                <h2 class="text-4xl md:text-5xl font-black text-brand-blue mt-4">Soluciones de Clase Mundial</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="liquid-glass p-10 rounded-[3rem] hover:border-brand-accent transition-all duration-500 group">
+                    <div class="w-16 h-16 bg-brand-accent/10 rounded-2xl flex items-center justify-center mb-8 text-brand-accent group-hover:bg-brand-accent group-hover:text-white transition-all">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-brand-blue mb-4 leading-tight">Carga Pesada Nacional</h3>
+                    <p class="text-slate-500 font-medium mb-8">Transporte especializado para maquinaria pesada y grandes volúmenes en todo el país.</p>
+                </div>
+                <!-- Card 2 (Taxi Ejecutivo) -->
+                <div class="liquid-glass p-10 rounded-[3rem] border-brand-accent border-2 transition-all duration-500 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4">
+                        <span class="px-3 py-1 bg-brand-accent text-white text-[9px] font-black rounded-full">PREMIUM</span>
+                    </div>
+                    <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mb-8 text-brand-blue group-hover:bg-brand-blue group-hover:text-white transition-all">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-brand-blue mb-4 leading-tight">Transporte Ejecutivo</h3>
+                    <p class="text-slate-500 font-medium mb-8">Servicio VIP de traslados ejecutivos. Conductores profesionales y vehículos de alta gama para personal corporativo.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="liquid-glass p-10 rounded-[3rem] hover:border-brand-accent transition-all duration-500 group">
+                    <div class="w-16 h-16 bg-brand-accent/10 rounded-2xl flex items-center justify-center mb-8 text-brand-accent group-hover:bg-brand-accent group-hover:text-white transition-all">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-brand-blue mb-4 leading-tight">Distribución Industrial</h3>
+                    <p class="text-slate-500 font-medium mb-8">Soluciones de última milla y distribución directa para centros de producción y plantas industriales.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Formulario -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div onclick="toggleModal()" class="absolute inset-0 bg-brand-blue/60 backdrop-blur-xl"></div>
+        <div class="relative w-full max-w-2xl bg-white/90 backdrop-blur-2xl rounded-[3rem] shadow-3xl p-8 md:p-12 overflow-y-auto max-h-[90vh] liquid-glass">
+            <button onclick="toggleModal()" class="absolute top-8 right-8 text-slate-400 hover:text-brand-accent"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            <div class="text-center mb-10">
+                <span class="px-4 py-1 bg-brand-accent/10 text-brand-accent text-[9px] font-black rounded-full uppercase mb-4 inline-block">Solicitud de Servicio</span>
+                <h3 class="text-4xl font-black text-brand-blue">Cotiza tu Envío</h3>
+            </div>
+            <form class="space-y-6" onsubmit="return false;">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <input type="text" placeholder="Tu Nombre" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-accent font-bold">
+                    <input type="text" placeholder="Empresa" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-accent font-bold">
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <input type="text" placeholder="Origen" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-accent font-bold">
+                    <input type="text" placeholder="Destino" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-accent font-bold">
+                </div>
+                <select class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-accent font-bold">
+                    <option>Carga Pesada</option>
+                    <option>Transporte Ejecutivo (VIP)</option>
+                    <option>Carga de Volumen</option>
+                </select>
+                <button class="w-full bg-brand-accent text-white py-5 rounded-2xl font-black text-xl hover:bg-black transition-all shadow-xl">ENVIAR SOLICITUD</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-brand-blue py-20 text-white">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 border-b border-white/10 pb-20">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center"><span class="text-brand-accent font-black text-2xl">R</span></div>
+                    <span class="font-display font-bold text-3xl tracking-tighter uppercase">RUZTMAR</span>
+                </div>
+                <p class="text-slate-300 max-w-sm font-medium">Líderes en logística y transporte de carga pesada a nivel nacional. Seguridad, tecnología y eficiencia en cada kilómetro.</p>
+            </div>
+            <div>
+                <h5 class="font-black text-sm uppercase tracking-widest mb-8 text-brand-accent">Contacto</h5>
+                <p class="font-bold mb-2">+(57) 300 000 0000</p>
+                <p class="text-slate-300 font-medium">contacto@ruztmar.com</p>
+            </div>
+            <div>
+                <h5 class="font-black text-sm uppercase tracking-widest mb-8 text-brand-accent">Sede</h5>
+                <p class="text-slate-300 font-medium">Parque Industrial Principal,<br/>Colombia</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 pt-10 flex justify-between items-center text-[10px] font-black uppercase tracking-widest opacity-50">
+            <span>© 2024 RUZTMAR TRANSPORTATION</span>
+            <span>By AI Studio</span>
+        </div>
+    </footer>
+
+    <script>
+        // Cambiar Navbar en Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-white/80', 'backdrop-blur-xl', 'shadow-xl', 'py-4');
+                nav.classList.remove('py-6');
+            } else {
+                nav.classList.remove('bg-white/80', 'backdrop-blur-xl', 'shadow-xl', 'py-4');
+                nav.classList.add('py-6');
+            }
+        });
+
+        // Alternar Modal
+        function toggleModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+    </script>
+</body>
+</html>
