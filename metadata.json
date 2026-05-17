@@ -1,8 +1,0 @@
-{
-  "name": "Logística y Transporte Ruztmar",
-  "description": "Landing page empresarial de Logística y Transporte Ruztmar, especializada en carga pesada con experiencia visual impactante.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
