@@ -32,13 +32,13 @@
             overflow-x: hidden;
         }
 
-        /* NAVEGACIÓN RESPONSIVE */
+        /* HEADER CORREGIDO */
         header {
             background-color: var(--primary-blue);
             color: var(--white);
-            padding: 1rem 5%;
+            padding: 0 5%;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Logo a un lado, Menú al otro */
             align-items: center;
             position: sticky;
             top: 0;
@@ -52,9 +52,11 @@
             font-weight: 800;
             letter-spacing: 1px;
             white-space: nowrap;
+            z-index: 1100;
         }
         .logo-text span { color: var(--accent-orange); }
 
+        /* Menú Desktop */
         nav ul {
             display: flex;
             align-items: center;
@@ -80,12 +82,15 @@
             color: white !important;
         }
 
-        /* Hamburguesa */
+        /* Hamburguesa corregida a la derecha */
         .menu-toggle {
             display: none;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             cursor: pointer;
+            z-index: 1100;
+            padding: 10px;
+            margin-right: -10px; /* Alineación perfecta al borde */
         }
         .menu-toggle span {
             width: 30px;
@@ -139,7 +144,7 @@
         }
         .btn-main:hover { transform: scale(1.05); background: #f05400; }
 
-        /* SECCIONES COMUNES */
+        /* SECCIONES */
         section { padding: 80px 8%; }
         .section-title {
             text-align: center;
@@ -152,7 +157,7 @@
             content: ''; display: block; width: 60px; height: 4px; background: var(--accent-orange); margin: 15px auto 0;
         }
 
-        /* IDENTIDAD GRID */
+        /* GRID NOSOTROS */
         .about-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -179,7 +184,7 @@
             border-left: 4px solid var(--accent-orange);
         }
 
-        /* SERVICIOS GRID */
+        /* SERVICIOS */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -197,11 +202,8 @@
         }
         .service-body { padding: 20px; flex-grow: 1; }
         .service-item { margin-bottom: 15px; }
-        .service-item h4 { color: var(--accent-orange); font-size: 1rem; margin-bottom: 5px; }
-        .service-item p { font-size: 0.9rem; color: #666; }
-
-        /* CTA FINAL */
-        .cta-section { text-align: center; background: #eceff3; }
+        .service-item h4 { color: var(--accent-orange); font-size: 1.1rem; margin-bottom: 5px; }
+        .service-item p { font-size: 0.95rem; color: #666; }
 
         /* FOOTER */
         footer { background: #051329; color: white; padding: 60px 8% 20px; text-align: center; }
@@ -209,17 +211,14 @@
             display: flex; justify-content: center; flex-wrap: wrap;
             gap: 20px 50px; margin-bottom: 40px;
         }
-        .info-box strong { color: var(--accent-orange); display: block; }
 
-        /* WHATSAPP FLOTANTE */
+        /* WHATSAPP */
         .whatsapp-float {
             position: fixed; bottom: 20px; right: 20px;
             background: var(--whatsapp-green); width: 55px; height: 55px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1001; transition: 0.3s;
         }
-        .whatsapp-float:hover { transform: translateY(-5px); }
-        .whatsapp-float svg { fill: white; width: 30px; height: 30px; }
 
         /* MODAL */
         .modal {
@@ -231,41 +230,54 @@
         .modal-content {
             background: white; margin: 20px auto; padding: 30px;
             border-radius: 15px; width: 100%; max-width: 550px;
-            position: relative; animation: slideDown 0.4s ease;
+            position: relative;
         }
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
         .close-btn { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #999; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--primary-blue); font-size: 0.9rem; }
         .form-group input, .form-group textarea {
             width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
         }
         .btn-submit {
             background: var(--primary-blue); color: white; border: none; padding: 15px;
-            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
+            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer;
         }
 
-        /* MEDIA QUERIES */
+        /* CORRECCIÓN MEDIA QUERIES (MENÚ LATERAL) */
         @media (max-width: 992px) {
-            header { padding: 0 5%; }
-            nav ul {
-                position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
-                background: var(--primary-blue); flex-direction: column; padding: 40px;
-                transition: 0.4s; z-index: 999;
+            .menu-toggle {
+                display: flex; /* Aparece a la derecha */
             }
-            nav ul.active { left: 0; }
-            .menu-toggle { display: flex; }
+
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Panel lateral oculto */
+                width: 75%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--primary-blue);
+                flex-direction: column;
+                justify-content: center;
+                gap: 30px;
+                padding: 40px;
+                transition: 0.4s ease-in-out;
+                z-index: 1050;
+                box-shadow: -10px 0 20px rgba(0,0,0,0.3);
+            }
+
+            nav ul.active {
+                right: 0; /* Aparece al hacer click */
+            }
         }
+
         .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (max-width: 480px) { .grid-2-col { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- WhatsApp Flotante -->
     <a href="https://wa.me/584265729963?text=Hola,%20deseo%20solicitar%20una%20cotización." class="whatsapp-float" target="_blank">
-        <svg viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.7 17.8 69.7 27.2 106.2 27.2 122.4 0 222-99.6 222-222 0-59.3-23-115.1-65-157.1zM223.9 446.3c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 365.7l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.5 5.6-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+        <svg style="width:30px;height:30px" viewBox="0 0 448 512"><path fill="white" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.7 17.8 69.7 27.2 106.2 27.2 122.4 0 222-99.6 222-222 0-59.3-23-115.1-65-157.1zM223.9 446.3c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 365.7l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.5 5.6-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
     </a>
 
     <header>
@@ -287,7 +299,7 @@
     <section id="inicio" class="hero">
         <h2>BIENVENIDOS A</h2>
         <h1>RUZTMAR C.A.</h1>
-        <p class="rif">J-508314921</p>
+        <p class="rif">RIF: J-508314921</p>
         <h3>"Conectamos tus sueños, transportamos tu éxito"</h3>
         <div class="quote">LOS GRANDES CAMBIOS EMPIEZAN, CUANDO DEJAMOS DE REPETIR UN MISMO PATRÓN</div>
         <button class="btn-main" onclick="openModal()">Cotizar Servicio</button>
@@ -297,11 +309,11 @@
         <h2 class="section-title">Nuestra Identidad</h2>
         <div class="about-grid">
             <div class="about-card">
-                <h3 style="color:var(--primary-blue); margin-bottom:15px;">MISIÓN</h3>
+                <h3>MISIÓN</h3>
                 <p>Mover mercancías de forma segura, ordenada y responsable, apoyando a cada sector con servicios de transporte y manejo confiables.</p>
             </div>
             <div class="about-card">
-                <h3 style="color:var(--primary-blue); margin-bottom:15px;">VISIÓN</h3>
+                <h3>VISIÓN</h3>
                 <p>Ser una empresa moderna y en crecimiento constante, reconocida por atender cargas de todo tipo con cuidado y precisión.</p>
             </div>
         </div>
@@ -320,6 +332,7 @@
     <section id="servicios">
         <h2 class="section-title">Servicios Prestados</h2>
         <div class="services-grid">
+            <!-- 5 bloques de servicios restaurados -->
             <div class="service-card">
                 <div class="service-header">Transporte de Carga Pesada</div>
                 <div class="service-body">
@@ -356,8 +369,8 @@
         </div>
     </section>
 
-    <section class="cta-section">
-        <h2 style="margin-bottom:20px;">¿Necesitas una tarifa personalizada?</h2>
+    <section class="cta-section" style="text-align: center; background: #eceff3; padding: 60px 8%;">
+        <h2 style="margin-bottom:20px; color: var(--primary-blue);">¿Necesitas una tarifa personalizada?</h2>
         <button class="btn-main" onclick="openModal()" style="background: var(--primary-blue);">Obtener Cotización Ahora</button>
     </section>
 
@@ -369,7 +382,6 @@
         <p style="font-size: 0.8rem; opacity: 0.6;">&copy; 2026 RUZTMAR C.A. - J-508314921. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- MODAL DE COTIZACIÓN -->
     <div id="quoteModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -381,17 +393,14 @@
                 </div>
                 <div class="grid-2-col">
                     <div class="form-group">
-                        <label>Ciudad Origen</label>
-                        <input type="text" id="form_origen" placeholder="Ej: Valencia" required>
+                        <input type="text" id="form_origen" placeholder="Ciudad Origen" required>
                     </div>
                     <div class="form-group">
-                        <label>Ciudad Destino</label>
-                        <input type="text" id="form_destino" placeholder="Ej: Caracas" required>
+                        <input type="text" id="form_destino" placeholder="Ciudad Destino" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>¿Qué desea transportar?</label>
-                    <textarea id="form_carga" rows="3" placeholder="Descripción y peso aproximado..." required></textarea>
+                    <textarea id="form_carga" rows="3" placeholder="Descripción de la carga y peso aprox..." required></textarea>
                 </div>
                 <button type="submit" class="btn-submit">ENVIAR A WHATSAPP</button>
             </form>
@@ -403,7 +412,7 @@
         const navList = document.getElementById('nav-list');
         const quoteForm = document.getElementById('quoteForm');
 
-        // Menú Hamburguesa
+        // Menú Hamburguesa corregido
         menuToggle.addEventListener('click', () => navList.classList.toggle('active'));
         document.querySelectorAll('nav ul li a').forEach(link => {
             link.addEventListener('click', () => navList.classList.remove('active'));
@@ -418,26 +427,21 @@
         function closeModal() {
             document.getElementById('quoteModal').style.display = 'none';
             document.body.style.overflow = 'auto';
-            quoteForm.reset(); // Limpia campos al cerrar el modal
+            quoteForm.reset();
         }
 
         window.onclick = function(event) {
             if (event.target == document.getElementById('quoteModal')) closeModal();
         }
 
-        // Envío de Formulario
         quoteForm.onsubmit = function(e) {
             e.preventDefault();
             const nombre = document.getElementById('form_nombre').value;
             const origen = document.getElementById('form_origen').value;
             const destino = document.getElementById('form_destino').value;
             const carga = document.getElementById('form_carga').value;
-            
-            const mensaje = `Hola RUZTMAR, solicito una cotización:%0A*Nombre:* ${nombre}%0A*Origen:* ${origen}%0A*Destino:* ${destino}%0A*Carga:* ${carga}`;
-            
+            const mensaje = `Hola RUZTMAR, solicito cotización:%0A*Nombre:* ${nombre}%0A*Origen:* ${origen}%0A*Destino:* ${destino}%0A*Carga:* ${carga}`;
             window.open(`https://wa.me/584265729963?text=${mensaje}`, '_blank');
-            
-            // Limpiar campos inmediatamente después de enviar
             this.reset();
             closeModal();
         }
