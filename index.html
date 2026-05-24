@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RUZTMAR C.A. | Logística y Transporte</title>
     <style>
-        /* Variables de color */
+        /* VARIABLES Y BASE */
         :root {
             --primary-blue: #0f2c59;
             --secondary-blue: #1a4a98;
@@ -20,16 +20,19 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
             color: var(--dark-text);
             line-height: 1.6;
             background-color: var(--light-bg);
+            overflow-x: hidden;
         }
 
-        /* Navegación */
+        /* NAVEGACIÓN RESPONSIVE */
         header {
             background-color: var(--primary-blue);
             color: var(--white);
@@ -41,191 +44,264 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            height: 70px;
         }
 
         .logo-text {
             font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
-        
         .logo-text span { color: var(--accent-orange); }
 
         nav ul {
-            list-style: none;
             display: flex;
-            gap: 20px;
             align-items: center;
+            gap: 20px;
+            list-style: none;
         }
 
         nav ul li a {
             color: var(--white);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            transition: color 0.3s;
+            transition: 0.3s;
         }
 
         nav ul li a:hover { color: var(--accent-orange); }
 
-        /* Botón Cotizar Nav */
         .btn-cotizar-nav {
             background-color: var(--accent-orange);
-            padding: 8px 20px !important;
+            padding: 8px 18px !important;
             border-radius: 5px;
             color: white !important;
         }
 
-        /* Hero */
+        /* Hamburguesa */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* HERO SECTION */
         .hero {
-            background: linear-gradient(rgba(15, 44, 89, 0.8), rgba(15, 44, 89, 0.7)), url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            background: linear-gradient(rgba(15, 44, 89, 0.85), rgba(15, 44, 89, 0.75)), 
+                        url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1920&q=80') center/cover;
             color: var(--white);
             text-align: center;
-            padding: 100px 20px;
-            min-height: 85vh;
+            padding: 60px 20px;
+            min-height: calc(100vh - 70px);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
 
-        .hero h1 { font-size: 3.5rem; text-transform: uppercase; margin-bottom: 10px; }
-        .hero h2 { font-size: 2rem; color: var(--accent-orange); margin-bottom: 20px; }
-        .hero .rif { font-size: 1.2rem; margin-bottom: 30px; }
+        .hero h2 { font-size: 1.2rem; color: var(--accent-orange); letter-spacing: 2px; margin-bottom: 10px; }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 4rem); text-transform: uppercase; line-height: 1.1; margin-bottom: 10px; }
+        .hero .rif { font-size: 1.1rem; opacity: 0.9; margin-bottom: 25px; }
+        .hero h3 { font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 300; font-style: italic; max-width: 800px; }
+
         .hero .quote {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 15px 30px;
-            border-left: 4px solid var(--accent-orange);
-            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-left: 5px solid var(--accent-orange);
+            margin: 30px 0;
             max-width: 600px;
-            margin: 20px auto;
-            transform: rotate(-1deg);
+            font-weight: bold;
+            font-size: 0.9rem;
         }
 
-        /* Secciones */
-        section { padding: 80px 5%; }
+        /* BOTONES */
+        .btn-main {
+            background: var(--accent-orange);
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(209, 73, 0, 0.3);
+        }
+        .btn-main:hover { transform: scale(1.05); background: #f05400; }
+
+        /* SECCIONES COMUNES */
+        section { padding: 80px 8%; }
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             color: var(--primary-blue);
             margin-bottom: 50px;
             text-transform: uppercase;
         }
         .section-title::after {
-            content: ''; display: block; width: 80px; height: 4px; background-color: var(--accent-orange); margin: 15px auto 0;
+            content: ''; display: block; width: 60px; height: 4px; background: var(--accent-orange); margin: 15px auto 0;
         }
 
-        /* Nosotros */
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        /* IDENTIDAD GRID */
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
         .about-card {
-            background: var(--white); padding: 40px; border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--secondary-blue); text-align: center;
+            background: white; padding: 40px 30px; border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--secondary-blue);
+            text-align: center;
         }
 
-        /* Objetivos */
-        .objectives { background-color: var(--primary-blue); color: var(--white); }
-        .objectives .section-title { color: var(--white); }
-        .objectives-list { max-width: 800px; margin: 0 auto; list-style: none; }
-        .objectives-list li {
-            background: rgba(255,255,255,0.1); margin-bottom: 15px; padding: 20px;
-            border-radius: 8px; display: flex; align-items: center; border-left: 4px solid var(--accent-orange);
+        /* OBJETIVOS */
+        .objectives { background: var(--primary-blue); color: white; }
+        .objectives .section-title { color: white; }
+        .objectives-list { max-width: 700px; margin: 0 auto; }
+        .objective-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--accent-orange);
         }
-        .objectives-list li::before { content: '✓'; color: var(--accent-orange); margin-right: 15px; font-weight: bold; }
 
-        /* Servicios */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .service-card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .service-header { background: var(--secondary-blue); color: var(--white); padding: 20px; font-weight: bold; font-size: 1.2rem; }
-        .service-body { padding: 25px; }
+        /* SERVICIOS GRID */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .service-card {
+            background: white; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        .service-header {
+            background: var(--secondary-blue); color: white;
+            padding: 20px; font-weight: bold; text-align: center;
+        }
+        .service-body { padding: 20px; flex-grow: 1; }
         .service-item { margin-bottom: 15px; }
-        .service-item h4 { color: var(--accent-orange); margin-bottom: 5px; }
+        .service-item h4 { color: var(--accent-orange); font-size: 1rem; margin-bottom: 5px; }
+        .service-item p { font-size: 0.9rem; color: #666; }
 
-        /* Botón Cotizar Final */
-        .cta-container { text-align: center; padding: 60px 5%; background: #eef2f7; }
-        .btn-main {
-            background: var(--primary-blue); color: white; padding: 18px 40px;
-            border: none; border-radius: 50px; font-weight: bold; font-size: 1.2rem;
-            cursor: pointer; transition: 0.3s;
+        /* CTA FINAL */
+        .cta-section { text-align: center; background: #eceff3; }
+
+        /* FOOTER */
+        footer { background: #051329; color: white; padding: 60px 8% 20px; text-align: center; }
+        .contact-info {
+            display: flex; justify-content: center; flex-wrap: wrap;
+            gap: 20px 50px; margin-bottom: 40px;
         }
-        .btn-main:hover { background: var(--accent-orange); transform: translateY(-3px); }
+        .info-box strong { color: var(--accent-orange); display: block; }
 
-        /* Footer */
-        footer { background: #051329; color: white; padding: 50px 5% 20px; text-align: center; }
-        .contact-info { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; flex-wrap: wrap; }
-
-        /* WhatsApp Flotante */
-        .whatsapp-btn {
-            position: fixed; bottom: 30px; right: 30px; background: var(--whatsapp-green);
-            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000;
-            transition: 0.3s;
+        /* WHATSAPP FLOTANTE */
+        .whatsapp-float {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--whatsapp-green); width: 55px; height: 55px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1001; transition: 0.3s;
         }
-        .whatsapp-btn:hover { transform: scale(1.1); }
+        .whatsapp-float:hover { transform: translateY(-5px); }
+        .whatsapp-float svg { fill: white; width: 30px; height: 30px; }
 
-        /* Modal Formulario */
+        /* MODAL */
         .modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); overflow-y: auto;
+            display: none; position: fixed; z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            padding: 20px;
         }
         .modal-content {
-            background: white; margin: 5% auto; padding: 30px; border-radius: 10px;
-            width: 90%; max-width: 600px; position: relative;
+            background: white; margin: 20px auto; padding: 30px;
+            border-radius: 15px; width: 100%; max-width: 550px;
+            position: relative; animation: slideDown 0.4s ease;
         }
-        .close { position: absolute; right: 20px; top: 10px; font-size: 28px; cursor: pointer; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #999; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--primary-blue); }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; }
-        .btn-submit { background: var(--accent-orange); color: white; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 5px; cursor: pointer; font-size: 1.1rem; }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.3rem; }
-            .about-grid { grid-template-columns: 1fr; }
-            nav ul { display: none; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--primary-blue); font-size: 0.9rem; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
         }
+        .btn-submit {
+            background: var(--primary-blue); color: white; border: none; padding: 15px;
+            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 992px) {
+            header { padding: 0 5%; }
+            nav ul {
+                position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
+                background: var(--primary-blue); flex-direction: column; padding: 40px;
+                transition: 0.4s; z-index: 999;
+            }
+            nav ul.active { left: 0; }
+            .menu-toggle { display: flex; }
+        }
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 480px) { .grid-2-col { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- WhatsApp -->
-    <a href="https://wa.me/584265729963?text=Hola,%20deseo%20solicitar%20una%20cotización." class="whatsapp-btn" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="35" alt="WhatsApp">
+    <!-- WhatsApp Flotante -->
+    <a href="https://wa.me/584265729963?text=Hola,%20deseo%20solicitar%20una%20cotización." class="whatsapp-float" target="_blank">
+        <svg viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.7 17.8 69.7 27.2 106.2 27.2 122.4 0 222-99.6 222-222 0-59.3-23-115.1-65-157.1zM223.9 446.3c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 365.7l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.5 5.6-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
     </a>
 
     <header>
-        <div class="logo-container">
-            <div class="logo-text">RUZT<span>MAR</span></div>
+        <div class="logo-text">RUZT<span>MAR</span></div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span></span><span></span><span></span>
         </div>
         <nav>
-            <ul>
+            <ul id="nav-list">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#nosotros">Nosotros</a></li>
                 <li><a href="#objetivos">Objetivos</a></li>
                 <li><a href="#servicios">Servicios</a></li>
-                <li><a href="#contacto">Contacto</a></li>
                 <li><a href="javascript:void(0)" class="btn-cotizar-nav" onclick="openModal()">Cotizar</a></li>
             </ul>
         </nav>
     </header>
 
     <section id="inicio" class="hero">
-        <h2>LOGÍSTICA Y TRANSPORTE</h2>
+        <h2>BIENVENIDOS A</h2>
         <h1>RUZTMAR C.A.</h1>
-        <p class="rif">J-508314921</p>
-        <h3>Conectamos tus sueños, transportamos tu éxito.</h3>
-        <div class="quote">LOS GRANDES CAMBIOS EMPIEZAN, CUANDO DEJAMOS DE REPETIR UN MISMO PATRON</div>
-        <button class="btn-main" style="margin-top:20px; background: var(--accent-orange);" onclick="openModal()">SOLICITAR COTIZACIÓN</button>
+        <p class="rif">RIF: J508314921</p>
+        <h3>"Conectamos tus sueños, transportamos tu éxito"</h3>
+        <div class="quote">LOS GRANDES CAMBIOS EMPIEZAN, CUANDO DEJAMOS DE REPETIR UN MISMO PATRÓN</div>
+        <button class="btn-main" onclick="openModal()">Cotizar Servicio</button>
     </section>
 
     <section id="nosotros">
         <h2 class="section-title">Nuestra Identidad</h2>
         <div class="about-grid">
             <div class="about-card">
-                <h3>Misión</h3>
+                <h3 style="color:var(--primary-blue); margin-bottom:15px;">MISIÓN</h3>
                 <p>Mover mercancías de forma segura, ordenada y responsable, apoyando a cada sector con servicios de transporte y manejo confiables.</p>
             </div>
             <div class="about-card">
-                <h3>Visión</h3>
+                <h3 style="color:var(--primary-blue); margin-bottom:15px;">VISIÓN</h3>
                 <p>Ser una empresa moderna y en crecimiento constante, reconocida por atender cargas de todo tipo con cuidado y precisión.</p>
             </div>
         </div>
@@ -233,176 +309,136 @@
 
     <section id="objetivos" class="objectives">
         <h2 class="section-title">Objetivos Estratégicos</h2>
-        <ul class="objectives-list">
-            <li>Elevar la calidad del servicio.</li>
-            <li>Expandir operaciones y rutas.</li>
-            <li>Fortalecer el manejo de productos delicados.</li>
-            <li>Optimizar procesos para brindar un servicio más fluido.</li>
-        </ul>
+        <div class="objectives-list">
+            <div class="objective-item">Elevar la calidad del servicio al cliente.</div>
+            <div class="objective-item">Expandir operaciones y rutas nacionales.</div>
+            <div class="objective-item">Fortalecer el manejo de productos delicados.</div>
+            <div class="objective-item">Optimizar procesos para mayor fluidez.</div>
+        </div>
     </section>
 
     <section id="servicios">
         <h2 class="section-title">Servicios Prestados</h2>
         <div class="services-grid">
-            <!-- Servicio 1 -->
             <div class="service-card">
-                <div class="service-header">1. Transporte de Carga Pesada</div>
+                <div class="service-header">Transporte de Carga Pesada</div>
                 <div class="service-body">
-                    <div class="service-item">
-                        <h4>Transporte de maquinaria</h4>
-                        <p>Movilización de equipos pesados y maquinaria industrial.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Carga sobredimensionada</h4>
-                        <p>Manejo de cargas que exceden las dimensiones estándar.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Materiales de construcción</h4>
-                        <p>Entrega de materiales pesados como cemento, acero, etc.</p>
-                    </div>
+                    <div class="service-item"><h4>Maquinaria</h4><p>Movilización de equipos pesados e industriales.</p></div>
+                    <div class="service-item"><h4>Sobredimensionada</h4><p>Manejo de cargas de dimensiones especiales.</p></div>
+                    <div class="service-item"><h4>Construcción</h4><p>Cemento, acero y materiales pesados.</p></div>
                 </div>
             </div>
-            <!-- Servicio 2 -->
             <div class="service-card">
-                <div class="service-header">2. Encomiendas y Paquetería</div>
+                <div class="service-header">Encomiendas y Paquetería</div>
                 <div class="service-body">
-                    <div class="service-item">
-                        <h4>Envíos nacionales</h4>
-                        <p>Servicio de envío de paquetes a cualquier parte del país.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Seguimiento en tiempo real</h4>
-                        <p>Herramientas para rastrear el estado de los envíos.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Entrega express</h4>
-                        <p>Opciones rápidas para paquetes urgentes.</p>
-                    </div>
+                    <div class="service-item"><h4>Nacional</h4><p>Envíos seguros a todo el territorio venezolano.</p></div>
+                    <div class="service-item"><h4>Express</h4><p>Servicios de urgencia con tiempos récord.</p></div>
                 </div>
             </div>
-            <!-- Servicio 3 -->
             <div class="service-card">
-                <div class="service-header">3. Transporte Ejecutivo</div>
+                <div class="service-header">Transporte Ejecutivo</div>
                 <div class="service-body">
-                    <div class="service-item">
-                        <h4>Transporte de ejecutivos</h4>
-                        <p>Servicio privado para personal de alto nivel.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Grupos corporativos</h4>
-                        <p>Transporte para eventos y reuniones empresariales.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Vehículos de lujo</h4>
-                        <p>Disponibilidad de vehículos premium para clientes VIP.</p>
-                    </div>
+                    <div class="service-item"><h4>VIP / Corporativo</h4><p>Traslado de personal de alto nivel y grupos empresariales.</p></div>
                 </div>
             </div>
-            <!-- Servicio 4 -->
             <div class="service-card">
-                <div class="service-header">4. Almacenamiento y Distribución</div>
+                <div class="service-header">Almacén y Distribución</div>
                 <div class="service-body">
-                    <div class="service-item">
-                        <h4>Almacenamiento seguro</h4>
-                        <p>Espacios adecuados para resguardo de mercancías.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Gestión de inventarios</h4>
-                        <p>Servicios de control y gestión de stock.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Distribución</h4>
-                        <p>Entrega de productos a tiendas y puntos de venta.</p>
-                    </div>
+                    <div class="service-item"><h4>Gestión Logística</h4><p>Control de inventario, almacenamiento y distribución.</p></div>
                 </div>
             </div>
-            <!-- Servicio 5 -->
             <div class="service-card">
-                <div class="service-header">5. Servicios Adicionales</div>
+                <div class="service-header">Servicios Adicionales</div>
                 <div class="service-body">
-                    <div class="service-item">
-                        <h4>Carga y descarga</h4>
-                        <p>Personal capacitado para el manejo de mercancías.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Embalaje y etiquetado</h4>
-                        <p>Embalaje profesional y etiquetado de productos.</p>
-                    </div>
-                    <div class="service-item">
-                        <h4>Asesoría logística</h4>
-                        <p>Consultoría para optimizar sus procesos de transporte.</p>
-                    </div>
+                    <div class="service-item"><h4>Manejo de Carga</h4><p>Carga, descarga, embalaje profesional y asesoría.</p></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Botón al Final -->
-    <section class="cta-container">
-        <h2 style="color: var(--primary-blue); margin-bottom: 20px;">¿Listo para realizar un envío?</h2>
-        <button class="btn-main" onclick="openModal()">COTIZAR SERVICIO AHORA</button>
+    <section class="cta-section">
+        <h2 style="margin-bottom:20px;">¿Necesitas una tarifa personalizada?</h2>
+        <button class="btn-main" onclick="openModal()" style="background: var(--primary-blue);">Obtener Cotización Ahora</button>
     </section>
 
     <footer id="contacto">
-        <h2 style="margin-bottom: 30px; font-size: 2rem;">Contáctanos</h2>
         <div class="contact-info">
-            <div><strong>TELÉFONO:</strong> 0426-5729963</div>
-            <div><strong>EMAIL:</strong> RUZTMAR.T.L.C.A@GMAIL.COM</div>
+            <div class="info-box"><strong>TELÉFONO</strong>0426-5729963</div>
+            <div class="info-box"><strong>EMAIL</strong>RUZTMAR.T.L.C.A@GMAIL.COM</div>
         </div>
-        <div style="font-size: 0.9rem; color: #aaa; border-top: 1px solid #222; padding-top: 20px;">
-            &copy; 2026 LOGÍSTICA Y TRANSPORTE RUZTMAR C.A. (J-508314921)
-        </div>
+        <p style="font-size: 0.8rem; opacity: 0.6;">&copy; 2026 RUZTMAR C.A. - J508314921. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- MODAL -->
-    <div id="modalCotizar" class="modal">
+    <!-- MODAL DE COTIZACIÓN -->
+    <div id="quoteModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="text-align: center; color: var(--primary-blue); margin-bottom: 20px;">Solicitud de Cotización</h2>
-            <form id="formCotizar">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 style="text-align:center; color:var(--primary-blue); margin-bottom:25px;">Cotizar Servicio</h2>
+            <form id="quoteForm">
                 <div class="form-group">
-                    <label>Nombre o Empresa:</label>
-                    <input type="text" id="nombre" required placeholder="Su nombre">
+                    <label>Nombre Completo / Empresa</label>
+                    <input type="text" id="form_nombre" required>
                 </div>
-                <div class="form-group">
-                    <label>Teléfono:</label>
-                    <input type="tel" id="tel" required placeholder="Ej: 04261234567">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="grid-2-col">
                     <div class="form-group">
-                        <label>Ciudad Origen (Venezuela):</label>
-                        <input type="text" id="origen" required placeholder="Ej: Valencia">
+                        <label>Ciudad Origen</label>
+                        <input type="text" id="form_origen" placeholder="Ej: Valencia" required>
                     </div>
                     <div class="form-group">
-                        <label>Ciudad Destino (Venezuela):</label>
-                        <input type="text" id="destino" required placeholder="Ej: Caracas">
+                        <label>Ciudad Destino</label>
+                        <input type="text" id="form_destino" placeholder="Ej: Caracas" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>¿Qué lleva? (Carga y Peso aprox.):</label>
-                    <textarea id="carga" rows="3" required placeholder="Ej: 5 paletas de repuestos, aprox 2 toneladas"></textarea>
+                    <label>¿Qué desea transportar?</label>
+                    <textarea id="form_carga" rows="3" placeholder="Descripción y peso aproximado..." required></textarea>
                 </div>
-                <button type="submit" class="btn-submit">ENVIAR POR WHATSAPP</button>
+                <button type="submit" class="btn-submit">ENVIAR A WHATSAPP</button>
             </form>
         </div>
     </div>
 
     <script>
-        function openModal() { document.getElementById('modalCotizar').style.display = 'block'; }
-        function closeModal() { document.getElementById('modalCotizar').style.display = 'none'; }
-        window.onclick = function(event) { if (event.target == document.getElementById('modalCotizar')) closeModal(); }
+        const menuToggle = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+        const quoteForm = document.getElementById('quoteForm');
 
-        document.getElementById('formCotizar').onsubmit = function(e) {
+        // Menú Hamburguesa
+        menuToggle.addEventListener('click', () => navList.classList.toggle('active'));
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', () => navList.classList.remove('active'));
+        });
+
+        // Lógica Modal
+        function openModal() {
+            document.getElementById('quoteModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('quoteModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            quoteForm.reset(); // Limpia campos al cerrar el modal
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('quoteModal')) closeModal();
+        }
+
+        // Envío de Formulario
+        quoteForm.onsubmit = function(e) {
             e.preventDefault();
-            const nombre = document.getElementById('nombre').value;
-            const tel = document.getElementById('tel').value;
-            const origen = document.getElementById('origen').value;
-            const destino = document.getElementById('destino').value;
-            const carga = document.getElementById('carga').value;
+            const nombre = document.getElementById('form_nombre').value;
+            const origen = document.getElementById('form_origen').value;
+            const destino = document.getElementById('form_destino').value;
+            const carga = document.getElementById('form_carga').value;
             
-            const texto = `Hola RUZTMAR, solicito cotización:\n\n*Nombre:* ${nombre}\n*Tel:* ${tel}\n*Origen:* ${origen}\n*Destino:* ${destino}\n*Carga:* ${carga}`;
-            const url = `https://wa.me/584265729963?text=${encodeURIComponent(texto)}`;
-            window.open(url, '_blank');
+            const mensaje = `Hola RUZTMAR, solicito una cotización:%0A*Nombre:* ${nombre}%0A*Origen:* ${origen}%0A*Destino:* ${destino}%0A*Carga:* ${carga}`;
+            
+            window.open(`https://wa.me/584265729963?text=${mensaje}`, '_blank');
+            
+            // Limpiar campos inmediatamente después de enviar
+            this.reset();
             closeModal();
         }
     </script>
