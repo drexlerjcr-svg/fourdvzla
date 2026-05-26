@@ -1,89 +1,999 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGF | Sistema de Gestión Fiscal - Venezuela</title>
-    <!-- Tailwind & Fonts -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Nacional de Fiscalización</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SheetJS para lectura y escritura de Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    /* Estilos personalizados para inyectar la paleta de colores exacta */
+    .bg-corporate-blue { background-color: #012A8C; }
+    .text-corporate-blue { color: #012A8C; }
+    .border-corporate-blue { border-color: #012A8C; }
     
-    <style>
-        :root { --azul: #012A8C; --amarillo: #F4A41C; --rojo: #A92631; }
-        .bg-azul { background-color: var(--azul); }
-        .text-azul { color: var(--azul); }
-        .border-amarillo { border-color: var(--amarillo); }
-        .sidebar-item:hover { background-color: rgba(244, 164, 28, 0.1); border-left: 4px solid var(--amarillo); }
-        .active-link { background-color: rgba(244, 164, 28, 0.2); border-left: 4px solid var(--amarillo); }
-    </style>
+    .bg-corporate-yellow { background-color: #F4A41C; }
+    .text-corporate-yellow { color: #F4A41C; }
+    .border-corporate-yellow { border-color: #F4A41C; }
+    
+    .bg-corporate-red { background-color: #A92631; }
+    .text-corporate-red { color: #A92631; }
+    .border-corporate-red { border-color: #A92631; }
+
+    .glass {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased overflow-hidden">
+<body class="h-full font-sans antialiased">
 
-    <!-- Pantalla de Login (Overlay) -->
-    <div id="login-overlay" class="fixed inset-0 z-[100] bg-azul flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all">
-            <div class="text-center mb-8">
-                <div class="bg-azul inline-block p-4 rounded-full mb-4">
-                    <i class="fas fa-shield-halved text-white text-4xl"></i>
-                </div>
-                <h1 class="text-2xl font-bold text-azul">Fiscalización Venezuela</h1>
-                <p class="text-gray-500 text-sm">Ingrese sus credenciales seguras</p>
+  <!-- ================= PANTALLA DE AUTENTICACIÓN (LOGIN) ================= -->
+  <div id="login-screen" class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+      <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-corporate-blue text-white text-3xl font-bold shadow-lg mb-4">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2 class="text-2xl font-bold tracking-tight text-white">Sistema de Fiscalización</h2>
+      <p class="mt-2 text-sm text-slate-400">Ingrese sus credenciales de seguridad institucional</p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div class="glass px-8 py-10 rounded-2xl shadow-2xl">
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-300">Correo Electrónico</label>
+            <div class="mt-2">
+              <input id="email" type="email" required class="block w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2.5 text-white focus:outline-none focus:border-corporate-blue transition-colors">
             </div>
-            <form id="login-form" class="space-y-6">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Correo Electrónico</label>
-                    <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-azul outline-none transition" placeholder="usuario@fiscal.gob.ve" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Contraseña</label>
-                    <input type="password" id="password" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-azul outline-none transition" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="w-full bg-azul text-white font-bold py-3 rounded-lg hover:opacity-90 transition shadow-lg">
-                    INICIAR SESIÓN
-                </button>
-            </form>
-            <p id="login-error" class="text-rojo text-center mt-4 text-sm hidden font-bold"></p>
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium text-slate-300">Contraseña</label>
+            <div class="mt-2">
+              <input id="password" type="password" required class="block w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2.5 text-white focus:outline-none focus:border-corporate-blue transition-colors">
+            </div>
+          </div>
+
+          <div id="login-error" class="text-sm text-corporate-red font-semibold hidden flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span id="error-message">Credenciales inválidas</span>
+          </div>
+
+          <div>
+            <button type="submit" class="flex w-full justify-center rounded-lg bg-corporate-blue px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-opacity-90 focus:outline-none transition-all">
+              <i class="fa-solid fa-lock-open mr-2 mt-0.5"></i> Autenticar Ingreso
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ENTORNO PRINCIPAL DE LA APLICACIÓN ================= -->
+  <div id="app-screen" class="hidden h-full flex flex-col md:flex-row">
+    
+    <!-- BARRA LATERAL DE NAVEGACIÓN -->
+    <aside class="w-full md:w-64 glass flex flex-col justify-between border-r border-slate-800">
+      <div class="p-6">
+        <div class="flex items-center gap-3 pb-6 border-b border-slate-800">
+          <div class="h-10 w-10 rounded-lg bg-corporate-blue flex items-center justify-center text-xl font-bold text-white">
+            <i class="fa-solid fa-gavel"></i>
+          </div>
+          <div>
+            <h1 class="text-md font-bold tracking-wide">FISCALIZACIÓN</h1>
+            <span id="user-role-badge" class="inline-block text-[10px] uppercase tracking-widest bg-corporate-yellow text-slate-950 font-extrabold px-2 py-0.5 rounded-full mt-0.5">Rol: Cargando...</span>
+          </div>
         </div>
-    </div>
 
-    <!-- Layout Principal (Post-Login) -->
-    <div id="main-layout" class="flex h-screen hidden">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-azul text-white flex flex-col shadow-xl">
-            <div class="p-6 border-b border-blue-900">
-                <span class="text-xl font-black tracking-tighter">SISTEMA <span class="text-amarillo">FISCAL</span></span>
-            </div>
-            <nav class="flex-1 mt-4 px-2 space-y-1" id="nav-menu">
-                <!-- Se inyecta según rol -->
-            </nav>
-            <div class="p-4 border-t border-blue-900">
-                <button id="btn-logout" class="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-red-800 transition text-[#A92631] font-bold bg-white shadow">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Cerrar Sesión</span>
-                </button>
-            </div>
-        </aside>
+        <nav class="mt-6 space-y-2">
+          <button id="btn-nav-monitoreo" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-corporate-blue text-white font-medium transition-all text-left">
+            <i class="fa-solid fa-map-location-dot text-lg"></i> Monitoreo Activo
+          </button>
+          <button id="btn-nav-actuaciones" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-medium transition-all text-left hidden">
+            <i class="fa-solid fa-folder-plus text-lg"></i> Carga de Actuaciones
+          </button>
+          <button id="btn-nav-fiscales" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-medium transition-all text-left hidden">
+            <i class="fa-solid fa-users-gear text-lg"></i> Registro de Fiscales
+          </button>
+          <button id="btn-nav-reportes" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-medium transition-all text-left hidden">
+            <i class="fa-solid fa-file-invoice text-lg"></i> Reportes y Descargas
+          </button>
+        </nav>
+      </div>
 
-        <!-- Contenido Principal -->
-        <main class="flex-1 flex flex-col overflow-hidden">
-            <!-- Header superior -->
-            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
-                <div id="breadcrumb" class="text-gray-500 font-medium">Dashboard / Monitoreo</div>
-                <div class="flex items-center space-x-4">
-                    <span id="user-role-badge" class="bg-amarillo text-azul text-[10px] font-bold px-2 py-1 rounded-full">ROL: ANALISTA</span>
-                    <span id="user-email-display" class="text-sm font-semibold text-azul italic">usuario@fiscal.gob.ve</span>
+      <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+        <div class="text-xs text-slate-400 mb-2 truncate" id="user-email-display">usuario@institucion.gob.ve</div>
+        <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 border border-corporate-red text-corporate-red font-semibold hover:bg-corporate-red hover:text-white transition-all text-sm">
+          <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO DINÁMICO -->
+    <main class="flex-1 overflow-y-auto p-6 lg:p-10 bg-slate-900/40">
+
+      <!-- PANEL 1: MONITOREO ACTIVO -->
+      <section id="panel-monitoreo" class="space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight">Despliegue Operativo Territorial</h2>
+            <p class="text-sm text-slate-400">Consulte la localización en tiempo real e históricos de los fiscales.</p>
+          </div>
+        </div>
+
+        <!-- FILTROS GEOGRÁFICOS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 glass p-4 rounded-xl">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Estado de la República</label>
+            <select id="filtro-estado" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue">
+              <option value="">Seleccione un Estado...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Municipio (Sub-filtro)</label>
+            <select id="filtro-municipio" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue" disabled>
+              <option value="">Seleccione un Municipio...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- LISTA DE FISCALES FILTRADOS -->
+          <div class="glass rounded-xl overflow-hidden flex flex-col h-[500px]">
+            <div class="bg-slate-950/60 px-4 py-3 border-b border-slate-800 font-semibold text-sm flex justify-between items-center">
+              <span>Personal Desplegado</span>
+              <span id="fiscales-count" class="bg-corporate-blue text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+            </div>
+            <div id="lista-fiscales" class="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 space-y-1">
+              <p class="text-sm text-slate-400 text-center py-10">Seleccione un estado para cargar fiscales.</p>
+            </div>
+          </div>
+
+          <!-- FICHA DETALLADA DEL FISCAL -->
+          <div id="detalle-fiscal-card" class="lg:col-span-2 glass rounded-xl p-6 hidden flex flex-col justify-between h-[500px]">
+            <div class="overflow-y-auto space-y-6">
+              <div class="flex items-start gap-4 pb-4 border-b border-slate-800">
+                <div class="h-14 w-14 rounded-full bg-slate-800 border-2 border-corporate-blue flex items-center justify-center text-2xl text-corporate-blue">
+                  <i class="fa-solid fa-user-tie"></i>
                 </div>
-            </header>
+                <div>
+                  <h3 id="det-nombre" class="text-xl font-bold text-white">---</h3>
+                  <p class="text-sm text-slate-400 flex items-center gap-4 mt-0.5">
+                    <span><i class="fa-solid fa-id-card mr-1"></i> <span id="det-cedula">---</span></span>
+                    <span><i class="fa-solid fa-envelope mr-1"></i> <span id="det-correo">---</span></span>
+                  </p>
+                </div>
+              </div>
 
-            <!-- Vista Dinámica -->
-            <section id="content-area" class="flex-1 overflow-y-auto p-8 bg-gray-50">
-                <!-- Aquí se cargan las vistas -->
-            </section>
-        </main>
-    </div>
+              <!-- UBICACIÓN HOY -->
+              <div>
+                <h4 class="text-xs font-semibold uppercase tracking-wider text-corporate-yellow flex items-center gap-2 mb-2">
+                  <span class="flex h-2 w-2 rounded-full bg-corporate-yellow animate-pulse"></span> Ubicación de Hoy (Actual)
+                </h4>
+                <div id="box-ubicacion-actual" class="p-4 rounded-xl bg-slate-950/50 border border-slate-800">
+                  <!-- Dinámico -->
+                </div>
+              </div>
 
-    <!-- Scripts de Firebase y Lógica -->
-    <script type="module" src="main.js"></script>
+              <!-- HISTORIAL PASADO -->
+              <div>
+                <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-clock-rotate-left"></i> Historial de Actuaciones Pasadas
+                </h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-sm">
+                    <thead class="text-xs uppercase bg-slate-950 text-slate-400">
+                      <tr>
+                        <th class="px-4 py-2">Fecha</th>
+                        <th class="px-4 py-2">Ubicación Territorial</th>
+                        <th class="px-4 py-2">Actuación Ejecutada</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tabla-historial" class="divide-y divide-slate-800">
+                      <!-- Dinámico -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CONTENEDOR TEMPORAL CUANDO NO SE HA SELECCIONADO FISCAL -->
+          <div id="detalle-placeholder" class="lg:col-span-2 glass rounded-xl flex items-center justify-center text-slate-500 h-[500px]">
+            <div class="text-center">
+              <i class="fa-solid fa-street-view text-4xl mb-2 text-slate-700"></i>
+              <p class="text-sm">Seleccione un fiscal de la lista para auditar sus movimientos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 2: CARGA DE ACTUACIONES -->
+      <section id="panel-actuaciones" class="space-y-6 hidden">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">Procesamiento de Actuaciones Fiscales</h2>
+          <p class="text-sm text-slate-400">Registre los despliegues territoriales de forma manual o consolidada por Excel.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- FORMULARIO MANUAL -->
+          <div class="glass p-6 rounded-xl space-y-4">
+            <h3 class="text-md font-bold text-corporate-blue flex items-center gap-2 border-b border-slate-800 pb-2">
+              <i class="fa-solid fa-pen-to-square"></i> Registro Manual Individual
+            </h3>
+            <form id="form-registro-actuacion" class="space-y-4">
+              <div class="relative">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Buscar Fiscal (Nombre o Cédula)</label>
+                <input id="act-buscar-fiscal" type="text" autocomplete="off" placeholder="Escriba para filtrar..." class="w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2 text-white focus:outline-none focus:border-corporate-blue">
+                <div id="act-dropdown-sugerencias" class="absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-lg max-h-40 overflow-y-auto hidden z-50 divide-y divide-slate-800"></div>
+                <input id="act-fiscal-seleccionado-id" type="hidden" required>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1">Municipio de Actuación</label>
+                  <select id="act-municipio" required class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+                    <!-- Cargado dinámicamente según el estado del fiscal seleccionado -->
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de Ejecución</label>
+                  <input id="act-fecha" type="date" required class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Detalles de la Gestión Operativa</label>
+                <textarea id="act-detalle" rows="3" required placeholder="Escriba los pormenores de la fiscalización..." class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue"></textarea>
+              </div>
+              <button type="submit" class="w-full bg-corporate-blue text-white py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
+                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Guardar Actuación
+              </button>
+            </form>
+          </div>
+
+          <!-- CARGA MASIVA EXCEL -->
+          <div class="glass p-6 rounded-xl flex flex-col justify-between">
+            <div class="space-y-4">
+              <h3 class="text-md font-bold text-corporate-yellow flex items-center gap-2 border-b border-slate-800 pb-2">
+                <i class="fa-solid fa-file-excel"></i> Carga Masiva desde Plantilla Excel
+              </h3>
+              <p class="text-sm text-slate-400">
+                Optimice el procesamiento cargando cientos de registros de una sola vez. El archivo debe poseer obligatoriamente los siguientes encabezados en la primera fila:
+              </p>
+              <div class="bg-slate-950 p-3 rounded-lg overflow-x-auto text-xs font-mono text-corporate-yellow">
+                cedula_fiscal | nombre_fiscal | estado | municipio | fecha_actuacion | detalle_actuacion
+              </div>
+              <p class="text-xs text-slate-400 italic">*Nota: La fecha debe cumplir el formato estricto AAAA-MM-DD o DD/MM/AAAA de forma homogénea.*</p>
+              
+              <div class="border-2 border-dashed border-slate-700 hover:border-corporate-yellow rounded-xl p-8 text-center cursor-pointer bg-slate-950/30 transition-all relative mt-4">
+                <input type="file" id="excel-actuaciones-file" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer">
+                <i class="fa-solid fa-file-arrow-up text-3xl text-slate-500 mb-2"></i>
+                <p class="text-sm text-slate-300 font-medium">Arrastre el archivo Excel aquí o haga clic para explorar</p>
+                <span id="excel-actuaciones-name" class="block text-xs text-corporate-yellow mt-2 font-semibold"></span>
+              </div>
+            </div>
+            <button id="btn-procesar-excel-actuaciones" class="w-full bg-corporate-yellow text-slate-950 py-2.5 rounded-lg font-bold hover:bg-opacity-90 transition-all mt-6">
+              <i class="fa-solid fa-play mr-1"></i> Procesar Bloque de Actuaciones
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 3: REGISTRO DE FISCALES -->
+      <section id="panel-fiscales" class="space-y-6 hidden">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">Fichaje y Registro de Fiscales</h2>
+          <p class="text-sm text-slate-400">Administre el alta de los funcionarios públicos asignados a las regiones.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- REGISTRO INDIVIDUAL -->
+          <div class="glass p-6 rounded-xl space-y-4">
+            <h3 class="text-md font-bold text-corporate-blue flex items-center gap-2 border-b border-slate-800 pb-2">
+              <i class="fa-solid fa-user-plus"></i> Alta Individual de Funcionario
+            </h3>
+            <form id="form-registro-fiscal" class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1">Cédula de Identidad</label>
+                  <input id="fisc-cedula" type="text" required placeholder="Ej: V-12345678" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1">Nombre Completo</label>
+                  <input id="fisc-nombre" type="text" required placeholder="Nombres y Apellidos" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Correo Electrónico Institucional</label>
+                <input id="fisc-correo" type="email" required placeholder="usuario@sundde.gob.ve" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1">Estado de Adscripción</label>
+                  <select id="fisc-estado" required class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+                    <!-- Dinámico -->
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1">Municipio Base (Opcional)</label>
+                  <select id="fisc-municipio" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
+                    <!-- Dinámico -->
+                  </select>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 italic">*Nota: Si no se asigna Municipio Base, el funcionario aparecerá directamente listado a nivel de todo el Estado.*</p>
+              <button type="submit" class="w-full bg-corporate-blue text-white py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
+                <i class="fa-solid fa-user-check mr-1"></i> Incorporar Fiscal
+              </button>
+            </form>
+          </div>
+
+          <!-- CARGA MASIVA DE FISCALES -->
+          <div class="glass p-6 rounded-xl flex flex-col justify-between">
+            <div class="space-y-4">
+              <h3 class="text-md font-bold text-corporate-yellow flex items-center gap-2 border-b border-slate-800 pb-2">
+                <i class="fa-solid fa-users"></i> Migración Masiva de Fiscales (Excel)
+              </h3>
+              <p class="text-sm text-slate-400">
+                Cargue la nómina de fiscales de manera masiva. El documento de Excel debe contener estrictamente la siguiente cabecera en su primera fila:
+              </p>
+              <div class="bg-slate-950 p-3 rounded-lg overflow-x-auto text-xs font-mono text-corporate-yellow">
+                cedula_fiscal | nombre_fiscal | correo_fiscal | estado | municipio | rol
+              </div>
+              <p class="text-xs text-slate-400 mt-2">
+                *El rol por defecto recomendado es <span class="font-mono text-white">Fiscal</span>. Si se deja la columna municipio vacía, se asume adscripción global de estado.*
+              </p>
+
+              <div class="border-2 border-dashed border-slate-700 hover:border-corporate-yellow rounded-xl p-8 text-center cursor-pointer bg-slate-950/30 transition-all relative mt-4">
+                <input type="file" id="excel-fiscales-file" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer">
+                <i class="fa-solid fa-users-viewfinder text-3xl text-slate-500 mb-2"></i>
+                <p class="text-sm text-slate-300 font-medium">Arrastre el archivo Excel de fiscales aquí</p>
+                <span id="excel-fiscales-name" class="block text-xs text-corporate-yellow mt-2 font-semibold"></span>
+              </div>
+            </div>
+            <button id="btn-procesar-excel-fiscales" class="w-full bg-corporate-yellow text-slate-950 py-2.5 rounded-lg font-bold hover:bg-opacity-90 transition-all mt-6">
+              <i class="fa-solid fa-users-gear mr-1"></i> Dar de Alta Bloque de Personal
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 4: REPORTES Y DESCARGAS -->
+      <section id="panel-reportes" class="space-y-6 hidden">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">Centro de Inteligencia y Descarga de Data</h2>
+          <p class="text-sm text-slate-400">Genere y exporte reportes estructurados de las actuaciones del cuerpo de fiscales.</p>
+        </div>
+
+        <div class="glass p-6 rounded-xl max-w-2xl space-y-6">
+          <h3 class="text-md font-bold text-corporate-blue flex items-center gap-2 border-b border-slate-800 pb-2">
+            <i class="fa-solid fa-filter"></i> Parámetros de Extracción
+          </h3>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de Consulta Específica</label>
+              <input id="rep-fecha" type="date" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1">Ámbito de Selección de Funcionario</label>
+              <select id="rep-fiscal-select" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue">
+                <option value="TODOS">-- Descargar Todos los Fiscales --</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="btn-descargar-reporte" class="w-full bg-corporate-blue text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-file-arrow-down text-lg"></i> Exportar Reporte de Actuaciones (CSV)
+          </button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODULO JAVASCRIPT DE LOGICA DE NEGOCIO E INTEGRACIÓN FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    // Configuración de Firebase provista
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMuTiISxhnz2V7X1F6gBYOl4Sxsu97QRQ",
+      authDomain: "fiscalizacion-f15d3.firebaseapp.com",
+      projectId: "fiscalizacion-f15d3",
+      storageBucket: "fiscalizacion-f15d3.firebasestorage.app",
+      messagingSenderId: "586168804795",
+      appId: "1:586168804795:web:f87c12d3fe9f6bf3ce509e",
+      measurementId: "G-LR4Y03SM4M"
+    };
+
+    // Inicializaciones
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Memoria interna temporal (Cache) de datos para agilizar el rendimiento de filtros complejos sin provocar re-lecturas masivas
+    let cacheFiscales = [];
+    let cacheActuaciones = [];
+    let currentUserRole = "Fiscal";
+
+    // Data Estructurada de División Político-Territorial de Venezuela (Muestra Operativa)
+    const geoVenezuela = {
+      "Miranda": ["Los Teques", "Chacao", "Sucre", "Baruta", "Plaza", "Zamora"],
+      "Distrito Capital": ["Municipio Libertador"],
+      "Zulia": ["Maracaibo", "San Francisco", "Cabimas", "Lagunillas"],
+      "Carabobo": ["Valencia", "Puerto Cabello", "Naguanagua", "San Diego"],
+      "Aragua": ["Maracay", "Turmero", "La Victoria"]
+    };
+
+    // Obtener la fecha del día actual local en formato ISO de comparación (AAAA-MM-DD)
+    const obtenerFechaHoyString = () => {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+
+    // ================= INTERRUPTORES DE VISTAS (SPA MANIPULATION) =================
+    const elements = {
+      loginScreen: document.getElementById('login-screen'),
+      appScreen: document.getElementById('app-screen'),
+      loginForm: document.getElementById('login-form'),
+      loginError: document.getElementById('login-error'),
+      errorMessage: document.getElementById('error-message'),
+      userRoleBadge: document.getElementById('user-role-badge'),
+      userEmailDisplay: document.getElementById('user-email-display'),
+      btnLogout: document.getElementById('btn-logout'),
+      
+      // Nav buttons
+      navMonitoreo: document.getElementById('btn-nav-monitoreo'),
+      navActuaciones: document.getElementById('btn-nav-actuaciones'),
+      navFiscales: document.getElementById('btn-nav-fiscales'),
+      navReportes: document.getElementById('btn-nav-reportes'),
+      
+      // Paneles
+      panelMonitoreo: document.getElementById('panel-monitoreo'),
+      panelActuaciones: document.getElementById('panel-actuaciones'),
+      panelFiscales: document.getElementById('panel-fiscales'),
+      panelReportes: document.getElementById('panel-reportes')
+    };
+
+    const switches = [elements.panelMonitoreo, elements.panelActuaciones, elements.panelFiscales, elements.panelReportes];
+    const navButtons = [elements.navMonitoreo, elements.navActuaciones, elements.navFiscales, elements.navReportes];
+
+    function showPanel(panelToShow, activeBtn) {
+      switches.forEach(p => p.classList.add('hidden'));
+      panelToShow.classList.remove('hidden');
+      
+      navButtons.forEach(b => {
+        b.classList.remove('bg-corporate-blue', 'text-white');
+        b.classList.add('hover:bg-slate-800', 'text-slate-300');
+      });
+      activeBtn.classList.remove('hover:bg-slate-800', 'text-slate-300');
+      activeBtn.classList.add('bg-corporate-blue', 'text-white');
+    }
+
+    elements.navMonitoreo.addEventListener('click', () => showPanel(elements.panelMonitoreo, elements.navMonitoreo));
+    elements.navActuaciones.addEventListener('click', () => showPanel(elements.panelActuaciones, elements.navActuaciones));
+    elements.navFiscales.addEventListener('click', () => showPanel(elements.panelFiscales, elements.navFiscales));
+    elements.navReportes.addEventListener('click', () => showPanel(elements.panelReportes, elements.navReportes));
+
+    // ================= CAPA DE CONTROL DE AUTENTICACIÓN Y ROLES =================
+    elements.loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      elements.loginError.classList.add('hidden');
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        elements.errorMessage.innerText = "Error de acceso: " + err.message;
+        elements.loginError.classList.remove('hidden');
+      }
+    });
+
+    elements.btnLogout.addEventListener('click', () => signOut(auth));
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        elements.userEmailDisplay.innerText = user.email;
+        // Consultar el rol del usuario en la base de datos
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        if (userDoc.exists()) {
+          currentUserRole = userDoc.data().rol;
+        } else {
+          // Si no existe el documento de roles explícito, por seguridad se asigna el rol base
+          currentUserRole = "Fiscal"; 
+        }
+
+        elements.userRoleBadge.innerText = `Rol: ${currentUserRole}`;
+        configurarPermisosPorRol(currentUserRole);
+
+        elements.loginScreen.classList.add('hidden');
+        elements.appScreen.classList.remove('hidden');
+
+        // Carga inicial sincronizada de datos a memoria dinámica
+        await descargarDataAFirestoreCache();
+        inicializarComponentesGeograficos();
+      } else {
+        elements.appScreen.classList.add('hidden');
+        elements.loginScreen.classList.remove('hidden');
+      }
+    });
+
+    function configurarPermisosPorRol(rol) {
+      // Resetear visibilidades de navegación corporativa
+      elements.navActuaciones.classList.add('hidden');
+      elements.navFiscales.classList.add('hidden');
+      elements.navReportes.classList.add('hidden');
+
+      if (rol === "Administrador") {
+        elements.navActuaciones.classList.remove('hidden');
+        elements.navFiscales.classList.remove('hidden');
+        elements.navReportes.classList.remove('hidden');
+      } else if (rol === "Analista") {
+        elements.navActuaciones.classList.remove('hidden');
+        elements.navFiscales.classList.remove('hidden');
+        elements.navReportes.classList.remove('hidden');
+      }
+      showPanel(elements.panelMonitoreo, elements.navMonitoreo);
+    }
+
+    // Sincronizador de datos remoto de Firestore a memoria para filtros y cruces eficientes
+    async function descargarDataAFirestoreCache() {
+      try {
+        const fiscalesSnap = await getDocs(collection(db, "fiscales"));
+        cacheFiscales = [];
+        fiscalesSnap.forEach(d => cacheFiscales.push(d.data()));
+
+        const actuacionesSnap = await getDocs(collection(db, "actuaciones"));
+        cacheActuaciones = [];
+        actuacionesSnap.forEach(d => cacheActuaciones.push(d.data()));
+
+        actualizarContadoresYListas();
+        renderizarSelectReportes();
+      } catch (err) {
+        console.error("Error sincronizando cache local: ", err);
+      }
+    }
+
+    // ================= INICIALIZACIÓN E INYECCIÓN GEOGRÁFICA =================
+    function inicializarComponentesGeograficos() {
+      const fillSelect = (selectId, states) => {
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">Seleccione un Estado...</option>';
+        states.forEach(st => {
+          select.innerHTML += `<option value="${st}">${st}</option>`;
+        });
+      };
+
+      const estados = Object.keys(geoVenezuela);
+      fillSelect('filtro-estado', estados);
+      fillSelect('fisc-estado', estados);
+
+      // Manejador del cambio de estado en la sección de monitoreo
+      document.getElementById('filtro-estado').addEventListener('change', (e) => {
+        const estadoSel = e.target.value;
+        const municipioSelect = document.getElementById('filtro-municipio');
+        
+        if (estadoSel && geoVenezuela[estadoSel]) {
+          municipioSelect.innerHTML = '<option value="">Todos los Municipios / Ver Fiscales de Estado</option>';
+          geoVenezuela[estadoSel].forEach(m => {
+            municipioSelect.innerHTML += `<option value="${m}">${m}</option>`;
+          });
+          municipioSelect.disabled = false;
+        } else {
+          municipioSelect.innerHTML = '<option value="">Seleccione un Municipio...</option>';
+          municipioSelect.disabled = true;
+        }
+        filtrarYRenderizarFiscales();
+      });
+
+      document.getElementById('filtro-municipio').addEventListener('change', filtrarYRenderizarFiscales);
+
+      // Vincular select para formularios de creación manual
+      document.getElementById('fisc-estado').addEventListener('change', (e) => {
+        const est = e.target.value;
+        const munSel = document.getElementById('fisc-municipio');
+        munSel.innerHTML = '<option value="">Asignar globalmente al Estado (Vacio)</option>';
+        if (est && geoVenezuela[est]) {
+          geoVenezuela[est].forEach(m => { munSel.innerHTML += `<option value="${m}">${m}</option>`; });
+        }
+      });
+    }
+
+    // ================= PANEL MONITOREO: LÓGICA DE FILTRADO AVANZADO =================
+    function filtrarYRenderizarFiscales() {
+      const estadoSelected = document.getElementById('filtro-estado').value;
+      const municipioSelected = document.getElementById('filtro-municipio').value;
+      const contenedor = document.getElementById('lista-fiscales');
+
+      if (!estadoSelected) {
+        contenedor.innerHTML = '<p class="text-sm text-slate-400 text-center py-10">Seleccione un estado para cargar fiscales.</p>';
+        document.getElementById('fiscales-count').innerText = "0";
+        return;
+      }
+
+      // Regla Crítica: Si está seleccionado un Estado, listar fiscales adscritos a dicho estado.
+      // Si un fiscal no posee municipio o coincide con el sub-filtro de municipios, se muestra en pantalla.
+      const filtrados = cacheFiscales.filter(f => {
+        const matchEstado = f.estado === estadoSelected;
+        if (!matchEstado) return false;
+
+        if (!municipioSelected) {
+          // Si no hay filtro de municipio específico, se listan todos los del estado (tengan o no municipio cargado)
+          return true;
+        } else {
+          // Si hay municipio seleccionado, salen los que coincidan o los que pertenezcan genéricamente al estado sin municipio cargado
+          return f.municipio === municipioSelected || !f.municipio;
+        }
+      });
+
+      document.getElementById('fiscales-count').innerText = filtrados.length;
+
+      if (filtrados.length === 0) {
+        contenedor.innerHTML = '<p class="text-sm text-slate-400 text-center py-10">No se detectó personal asignado bajo estos filtros.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = "";
+      filtrados.forEach(f => {
+        const item = document.createElement('button');
+        item.className = "w-full text-left p-3 rounded-lg hover:bg-slate-800/80 transition-all flex justify-between items-center group";
+        item.innerHTML = `
+          <div>
+            <div class="font-semibold text-sm group-hover:text-corporate-yellow transition-colors">${f.nombre}</div>
+            <div class="text-xs text-slate-400">${f.cedula} | Base: ${f.municipio ? f.municipio : 'Ámbito de Estado'}</div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-corporate-yellow transition-colors"></i>
+        `;
+        item.addEventListener('click', () => desplegarDetalleFiscal(f));
+        contenedor.appendChild(item);
+      });
+    }
+
+    function desplegarDetalleFiscal(fiscal) {
+      document.getElementById('detalle-placeholder').classList.add('hidden');
+      const card = document.getElementById('detalle-fiscal-card');
+      card.classList.remove('hidden');
+
+      document.getElementById('det-nombre').innerText = fiscal.nombre;
+      document.getElementById('det-cedula').innerText = fiscal.cedula;
+      document.getElementById('det-correo').innerText = fiscal.correo;
+
+      const hoyString = obtenerFechaHoyString();
+
+      // Buscar si el fiscal tiene una actuación registrada en la fecha actual (Hoy)
+      const actuacionHoy = cacheActuaciones.find(a => a.cedula_fiscal === fiscal.cedula && a.fecha === hoyString);
+      const boxHoy = document.getElementById('box-ubicacion-actual');
+
+      if (actuacionHoy) {
+        boxHoy.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white"><i class="fa-solid fa-location-dot text-corporate-yellow mr-1"></i> ${actuacionHoy.estado} - ${actuacionHoy.municipio}</span>
+            <span class="text-xs bg-corporate-blue text-white font-mono px-2 py-0.5 rounded">${actuacionHoy.fecha}</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-2 bg-slate-900 p-2 rounded border border-slate-800">${actuacionHoy.detalle}</p>
+        `;
+      } else {
+        boxHoy.innerHTML = `
+          <div class="text-sm text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-circle-minus text-corporate-red"></i> Sin ruta de actuación cargada para la fecha actual.
+          </div>
+        `;
+      }
+
+      // Procesar e inyectar el histórico de actuaciones pasadas (excluyendo hoy o incluyendo todas de forma cronológica descendente)
+      const historial = cacheActuaciones.filter(a => a.cedula_fiscal === fiscal.cedula && a.fecha !== hoyString)
+                                        .sort((a, b) => b.fecha.localeCompare(a.fecha));
+
+      const tablaHistorial = document.getElementById('tabla-historial');
+      tablaHistorial.innerHTML = "";
+
+      if (historial.length === 0) {
+        tablaHistorial.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-xs text-slate-500">No se registran antecedentes operativos en el sistema.</td></tr>`;
+      } else {
+        historial.forEach(act => {
+          tablaHistorial.innerHTML += `
+            <tr class="hover:bg-slate-950/40 transition-colors">
+              <td class="px-4 py-2 text-xs font-mono">${act.fecha}</td>
+              <td class="px-4 py-2 text-xs font-semibold text-slate-300">${act.estado} -> ${act.municipio}</td>
+              <td class="px-4 py-2 text-xs text-slate-400 max-w-xs truncate" title="${act.detalle}">${act.detalle}</td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    function actualizarContadoresYListas() {
+      filtrarYRenderizarFiscales();
+    }
+
+    // ================= PANEL 2: CARGA DE ACTUACIONES (MANUAL / EXCEL) =================
+    const inputBuscarFiscal = document.getElementById('act-buscar-fiscal');
+    const dropdownSugerencias = document.getElementById('act-dropdown-sugerencias');
+    const hiddenFiscalId = document.getElementById('act-fiscal-seleccionado-id');
+    const selectActMunicipio = document.getElementById('act-municipio');
+
+    inputBuscarFiscal.addEventListener('input', (e) => {
+      const txt = e.target.value.toLowerCase().trim();
+      dropdownSugerencias.innerHTML = "";
+      if (!txt) {
+        dropdownSugerencias.classList.add('hidden');
+        return;
+      }
+
+      const sugerencias = cacheFiscales.filter(f => f.nombre.toLowerCase().includes(txt) || f.cedula.toLowerCase().includes(txt));
+      
+      if (sugerencias.length === 0) {
+        dropdownSugerencias.classList.add('hidden');
+        return;
+      }
+
+      dropdownSugerencias.classList.remove('hidden');
+      sugerencias.forEach(f => {
+        const dItem = document.createElement('button');
+        dItem.type = "button";
+        dItem.className = "w-full text-left px-4 py-2 text-xs hover:bg-corporate-blue text-white transition-colors block";
+        dItem.innerText = `${f.nombre} (${f.cedula})`;
+        dItem.addEventListener('click', () => {
+          inputBuscarFiscal.value = f.nombre;
+          hiddenFiscalId.value = f.cedula;
+          dropdownSugerencias.classList.add('hidden');
+          
+          // Cargar los municipios del estado al que pertenece el fiscal automáticamente
+          selectActMunicipio.innerHTML = "";
+          if (geoVenezuela[f.estado]) {
+            geoVenezuela[f.estado].forEach(m => {
+              selectActMunicipio.innerHTML += `<option value="${m}">${m}</option>`;
+            });
+          }
+        });
+        dropdownSugerencias.appendChild(dItem);
+      });
+    });
+
+    // Envío del formulario manual de actuaciones
+    document.getElementById('form-registro-actuacion').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const cedula = hiddenFiscalId.value;
+      const fiscalObject = cacheFiscales.find(f => f.cedula === cedula);
+      
+      if (!fiscalObject) {
+        alert("Por favor, seleccione un fiscal válido de la lista predictiva.");
+        return;
+      }
+
+      const nuevaActuacion = {
+        cedula_fiscal: fiscalObject.cedula,
+        nombre_fiscal: fiscalObject.nombre,
+        estado: fiscalObject.estado,
+        municipio: document.getElementById('act-municipio').value,
+        fecha: document.getElementById('act-fecha').value,
+        detalle: document.getElementById('act-detalle').value
+      };
+
+      try {
+        await addDoc(collection(db, "actuaciones"), nuevaActuacion);
+        alert("Actuación de fiscalización guardada de forma segura.");
+        document.getElementById('form-registro-actuacion').reset();
+        hiddenFiscalId.value = "";
+        await descargarDataAFirestoreCache();
+      } catch (err) {
+        alert("Error guardando actuación: " + err.message);
+      }
+    });
+
+    // Controladores de archivos Excel (Actuaciones)
+    const fileActuaciones = document.getElementById('excel-actuaciones-file');
+    fileActuaciones.addEventListener('change', (e) => {
+      if(e.target.files.length > 0) {
+        document.getElementById('excel-actuaciones-name').innerText = `Archivo cargado: ${e.target.files[0].name}`;
+      }
+    });
+
+    document.getElementById('btn-procesar-excel-actuaciones').addEventListener('click', () => {
+      const file = fileActuaciones.files[0];
+      if (!file) { alert("Debe adjuntar un archivo Excel (.xlsx)."); return; }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        const batch = writeBatch(db);
+        let count = 0;
+
+        json.forEach(row => {
+          // Normalización homogénea de llaves del Excel
+          const cedula = row.cedula_fiscal?.toString().trim();
+          const nombre = row.nombre_fiscal?.toString().trim();
+          const estado = row.estado?.toString().trim();
+          const municipio = row.municipio?.toString().trim();
+          let fecha = row.fecha_actuacion?.toString().trim();
+          const detalle = row.detalle_actuacion?.toString().trim();
+
+          if (cedula && estado && fecha) {
+            // Conversión rápida en caso de venir con barra inclinada /
+            if (fecha.includes('/')) {
+              const parts = fecha.split('/');
+              if (parts[2].length === 4) fecha = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            }
+
+            const docRef = doc(collection(db, "actuaciones"));
+            batch.set(docRef, {
+              cedula_fiscal: cedula,
+              nombre_fiscal: nombre || "Desconocido",
+              estado: estado,
+              municipio: municipio || "",
+              fecha: fecha,
+              detalle: detalle || "Sin detalles cargados masivamente."
+            });
+            count++;
+          }
+        });
+
+        if (count > 0) {
+          await batch.commit();
+          alert(`Éxito: Se han procesado e inyectado ${count} actuaciones fiscales.`);
+          document.getElementById('excel-actuaciones-name').innerText = "";
+          fileActuaciones.value = "";
+          await descargarDataAFirestoreCache();
+        } else {
+          alert("No se detectaron registros válidos que procesar. Verifique las cabeceras.");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+
+    // ================= PANEL 3: ALTA DE FISCALES (MANUAL / EXCEL) =================
+    document.getElementById('form-registro-fiscal').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const cedula = document.getElementById('fisc-cedula').value.trim();
+      
+      const nuevoFiscal = {
+        cedula: cedula,
+        nombre: document.getElementById('fisc-nombre').value.trim(),
+        correo: document.getElementById('fisc-correo').value.trim(),
+        estado: document.getElementById('fisc-estado').value,
+        municipio: document.getElementById('fisc-municipio').value || "",
+        fecha_registro: obtenerFechaHoyString()
+      };
+
+      try {
+        // Guardar documento usando la Cédula como ID para evitar duplicidad de funcionarios
+        await setDoc(doc(db, "fiscales", cedula), nuevoFiscal);
+        alert(`Funcionario ${nuevoFiscal.nombre} incorporado con éxito de forma correcta.`);
+        document.getElementById('form-registro-fiscal').reset();
+        await descargarDataAFirestoreCache();
+      } catch (err) {
+        alert("Error al guardar fiscal: " + err.message);
+      }
+    });
+
+    const fileFiscales = document.getElementById('excel-fiscales-file');
+    fileFiscales.addEventListener('change', (e) => {
+      if(e.target.files.length > 0) {
+        document.getElementById('excel-fiscales-name').innerText = `Archivo cargado: ${e.target.files[0].name}`;
+      }
+    });
+
+    document.getElementById('btn-procesar-excel-fiscales').addEventListener('click', () => {
+      const file = fileFiscales.files[0];
+      if (!file) { alert("Debe adjuntar un archivo Excel (.xlsx)."); return; }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        const batch = writeBatch(db);
+        let count = 0;
+
+        json.forEach(row => {
+          const cedula = row.cedula_fiscal?.toString().trim();
+          const nombre = row.nombre_fiscal?.toString().trim();
+          const correo = row.correo_fiscal?.toString().trim();
+          const estado = row.estado?.toString().trim();
+          const municipio = row.municipio?.toString().trim();
+          const rol = row.rol?.toString().trim() || "Fiscal";
+
+          if (cedula && nombre && estado) {
+            const docFiscalRef = doc(db, "fiscales", cedula);
+            batch.set(docFiscalRef, {
+              cedula: cedula,
+              nombre: nombre,
+              correo: correo || "",
+              estado: estado,
+              municipio: municipio || "",
+              fecha_registro: obtenerFechaHoyString()
+            });
+
+            // Adicionalmente se deja preparado el mapeo del rol para cuando inicien sesión en el sistema
+            if (correo) {
+              // Se simula la vinculación en la colección cruzada de usuarios por correo/id si fuera necesario
+              const docUserRef = doc(db, "usuarios_pre_registrados", cedula);
+              batch.set(docUserRef, { correo: correo, rol: rol });
+            }
+            count++;
+          }
+        });
+
+        if (count > 0) {
+          await batch.commit();
+          alert(`Éxito: Base de datos actualizada. ${count} fiscales dados de alta masivamente.`);
+          document.getElementById('excel-fiscales-name').innerText = "";
+          fileFiscales.value = "";
+          await descargarDataAFirestoreCache();
+        } else {
+          alert("Archivo inválido o sin datos consistentes.");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    // ================= PANEL 4: CENTRO DE REPORTES Y DESCARGAS =================
+    function renderizarSelectReportes() {
+      const select = document.getElementById('rep-fiscal-select');
+      select.innerHTML = '<option value="TODOS">-- Descargar Todos los Fiscales --</option>';
+      cacheFiscales.forEach(f => {
+        select.innerHTML += `<option value="${f.cedula}">${f.nombre} (${f.cedula})</option>`;
+      });
+    }
+
+    document.getElementById('btn-descargar-reporte').addEventListener('click', () => {
+      const fechaFiltro = document.getElementById('rep-fecha').value;
+      const fiscalFiltro = document.getElementById('rep-fiscal-select').value;
+
+      if (!fechaFiltro) {
+        alert("Debe seleccionar una fecha específica para realizar la extracción.");
+        return;
+      }
+
+      let filtrados = cacheActuaciones.filter(a => a.fecha === fechaFiltro);
+
+      if (fiscalFiltro !== "TODOS") {
+        filtrados = filtrados.filter(a => a.cedula_fiscal === fiscalFiltro);
+      }
+
+      if (filtrados.length === 0) {
+        alert("No se hallaron actuaciones en el sistema para la fecha y criterio seleccionados.");
+        return;
+      }
+
+      // Convertir la data a formato CSV e iniciar la descarga directa por navegador
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Cedula Fiscal,Nombre Fiscal,Estado,Municipio,Fecha,Detalle Actuacion\n";
+
+      filtrados.forEach(row => {
+        const detalleLimpio = row.detalle.replace(/"/g, '""');
+        csvContent += `"${row.cedula_fiscal}","${row.nombre_fiscal}","${row.estado}","${row.municipio}","${row.fecha}","${detalleLimpio}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Reporte_Actuaciones_${fechaFiltro}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+  </script>
 </body>
 </html>
