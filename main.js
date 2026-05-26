@@ -51,26 +51,39 @@ const Views = {
 };
 
 // --- CONTROL DE ACCESO (SECURITY GATE) ---
+// MODIFICACIÓN SEGURA EN main.js
 onAuthStateChanged(auth, async (user) => {
     const loginOverlay = document.getElementById('login-overlay');
     const mainLayout = document.getElementById('main-layout');
 
     if (user) {
-        // Obtener Rol de Firestore
-        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        if (userDoc.exists()) {
-            currentUserRole = userDoc.data().rol;
-            document.getElementById('user-role-badge').innerText = `ROL: ${currentUserRole}`;
-            document.getElementById('user-email-display').innerText = user.email;
+        try {
+            // REGLA DE ORO: Intentamos buscar por UID (Estándar de Firebase)
+            let userDoc = await getDoc(doc(db, "usuarios", user.uid));
             
-            // UI Update
-            loginOverlay.classList.add('hidden');
-            mainLayout.classList.remove('hidden');
-            renderMenu(currentUserRole);
-            loadView('monitoreo');
-        } else {
-            alert("Usuario no autorizado en base de datos.");
-            signOut(auth);
+            // Si no existe por UID, lo buscamos por CORREO (Por si lo creaste así en la migración)
+            if (!userDoc.exists()) {
+                userDoc = await getDoc(doc(db, "usuarios", user.email));
+            }
+
+            if (userDoc.exists()) {
+                currentUserRole = userDoc.data().rol;
+                document.getElementById('user-role-badge').innerText = `ROL: ${currentUserRole}`;
+                document.getElementById('user-email-display').innerText = user.email;
+                
+                loginOverlay.classList.add('hidden');
+                mainLayout.classList.remove('hidden');
+                renderMenu(currentUserRole);
+                loadView('monitoreo');
+            } else {
+                // Si el usuario existe en Auth pero no tiene documento en Firestore
+                console.error("Error: El usuario no tiene un perfil/rol asignado en la colección /usuarios");
+                alert("Acceso Denegado: Su usuario no tiene un rol asignado. Contacte al Administrador.");
+                signOut(auth);
+            }
+        } catch (error) {
+            console.error("Error de Permisos Firestore:", error);
+            // Esto evita que la pantalla se quede pegada si hay error de permisos
         }
     } else {
         loginOverlay.classList.remove('hidden');
