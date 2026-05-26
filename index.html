@@ -3,467 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUZTMAR C.A. | Logística y Transporte</title>
+    <title>SGF | Sistema de Gestión Fiscal - Venezuela</title>
+    <!-- Tailwind & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    
     <style>
-        /* VARIABLES Y BASE */
-        :root {
-            --primary-blue: #0f2c59;
-            --secondary-blue: #1a4a98;
-            --accent-orange: #d14900;
-            --light-bg: #f8f9fa;
-            --dark-text: #333333;
-            --white: #ffffff;
-            --whatsapp-green: #25d366;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            color: var(--dark-text);
-            line-height: 1.6;
-            background-color: var(--light-bg);
-            overflow-x: hidden;
-        }
-
-        /* HEADER CORREGIDO */
-        header {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            padding: 0 5%;
-            display: flex;
-            justify-content: space-between; /* Logo a la izq, Hamburguesa a la der */
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            height: 70px;
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-        .logo-text span { color: var(--accent-orange); }
-
-        /* Menú Desktop */
-        nav ul {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            list-style: none;
-        }
-
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        nav ul li a:hover { color: var(--accent-orange); }
-
-        .btn-cotizar-nav {
-            background-color: var(--accent-orange);
-            padding: 8px 18px !important;
-            border-radius: 5px;
-            color: white !important;
-        }
-
-        /* Hamburguesa corregida (Z-index alto para que no se pierda) */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 30px;
-            height: 20px;
-            cursor: pointer;
-            z-index: 1100;
-        }
-        .menu-toggle span {
-            width: 100%;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-            transition: 0.3s;
-        }
-
-        /* Animación Hamburguesa a X */
-        .menu-toggle.active span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
-        .menu-toggle.active span:nth-child(2) { opacity: 0; }
-        .menu-toggle.active span:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); }
-
-        /* HERO SECTION */
-        .hero {
-            background: linear-gradient(rgba(15, 44, 89, 0.85), rgba(15, 44, 89, 0.75)), 
-                        url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1920&q=80') center/cover;
-            color: var(--white);
-            text-align: center;
-            padding: 60px 20px;
-            min-height: calc(100vh - 70px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero h2 { font-size: 1.2rem; color: var(--accent-orange); letter-spacing: 2px; margin-bottom: 10px; }
-        .hero h1 { font-size: clamp(2.2rem, 8vw, 4rem); text-transform: uppercase; line-height: 1.1; margin-bottom: 10px; }
-        .hero .rif { font-size: 1.1rem; opacity: 0.9; margin-bottom: 25px; }
-        .hero h3 { font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 300; font-style: italic; max-width: 800px; }
-
-        .hero .quote {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-left: 5px solid var(--accent-orange);
-            margin: 30px 0;
-            max-width: 600px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        /* BOTONES */
-        .btn-main {
-            background: var(--accent-orange);
-            color: white;
-            padding: 15px 35px;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(209, 73, 0, 0.3);
-        }
-        .btn-main:hover { transform: scale(1.05); background: #f05400; }
-
-        /* SECCIONES */
-        section { padding: 80px 8%; }
-        .section-title {
-            text-align: center;
-            font-size: clamp(1.8rem, 5vw, 2.5rem);
-            color: var(--primary-blue);
-            margin-bottom: 50px;
-            text-transform: uppercase;
-        }
-        .section-title::after {
-            content: ''; display: block; width: 60px; height: 4px; background: var(--accent-orange); margin: 15px auto 0;
-        }
-
-        /* NOSOTROS */
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        .about-card {
-            background: white; padding: 40px 30px; border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--secondary-blue);
-            text-align: center;
-        }
-
-        /* OBJETIVOS */
-        .objectives { background: var(--primary-blue); color: white; }
-        .objectives .section-title { color: white; }
-        .objectives-list { max-width: 700px; margin: 0 auto; }
-        .objective-item {
-            background: rgba(255,255,255,0.05);
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            border-left: 4px solid var(--accent-orange);
-        }
-
-        /* SERVICIOS */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        .service-card {
-            background: white; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-        }
-        .service-header {
-            background: var(--secondary-blue); color: white;
-            padding: 20px; font-weight: bold; text-align: center;
-        }
-        .service-body { padding: 20px; flex-grow: 1; }
-        .service-item { margin-bottom: 15px; }
-        .service-item h4 { color: var(--accent-orange); font-size: 1.1rem; margin-bottom: 5px; }
-        .service-item p { font-size: 0.95rem; color: #666; }
-
-        /* FOOTER */
-        footer { background: #051329; color: white; padding: 60px 8% 20px; text-align: center; }
-        .contact-info {
-            display: flex; justify-content: center; flex-wrap: wrap;
-            gap: 20px 50px; margin-bottom: 40px;
-        }
-
-        /* WHATSAPP */
-        .whatsapp-float {
-            position: fixed; bottom: 20px; right: 20px;
-            background: var(--whatsapp-green); width: 55px; height: 55px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 1001; transition: 0.3s;
-        }
-
-        /* MODAL */
-        .modal {
-            display: none; position: fixed; z-index: 2000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            padding: 20px;
-        }
-        .modal-content {
-            background: white; margin: 20px auto; padding: 30px;
-            border-radius: 15px; width: 100%; max-width: 550px;
-            position: relative;
-        }
-        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #999; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--primary-blue); font-size: 0.9rem; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
-        }
-        .btn-submit {
-            background: var(--primary-blue); color: white; border: none; padding: 15px;
-            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer;
-        }
-
-        /* MEDIA QUERIES CORREGIDOS */
-        @media (max-width: 992px) {
-            .menu-toggle {
-                display: flex; /* Ahora aparece a la derecha */
-            }
-
-            /* Nav ya no ocupa espacio en el flujo central */
-            nav {
-                display: contents; 
-            }
-
-            nav ul {
-                position: fixed;
-                top: 0;
-                right: -100%; /* Panel lateral que sale de la derecha */
-                width: 75%;
-                max-width: 300px;
-                height: 100vh;
-                background: var(--primary-blue);
-                flex-direction: column;
-                justify-content: center;
-                padding: 40px;
-                gap: 30px;
-                transition: 0.4s ease-in-out;
-                z-index: 1050;
-                box-shadow: -10px 0 20px rgba(0,0,0,0.3);
-            }
-
-            nav ul.active {
-                right: 0; /* Aparece */
-            }
-        }
-
-        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 480px) { .grid-2-col { grid-template-columns: 1fr; } }
+        :root { --azul: #012A8C; --amarillo: #F4A41C; --rojo: #A92631; }
+        .bg-azul { background-color: var(--azul); }
+        .text-azul { color: var(--azul); }
+        .border-amarillo { border-color: var(--amarillo); }
+        .sidebar-item:hover { background-color: rgba(244, 164, 28, 0.1); border-left: 4px solid var(--amarillo); }
+        .active-link { background-color: rgba(244, 164, 28, 0.2); border-left: 4px solid var(--amarillo); }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 font-sans antialiased overflow-hidden">
 
-    <!-- WhatsApp Flotante -->
-    <a href="https://wa.me/584265729963?text=Hola,%20deseo%20solicitar%20una%20cotización." class="whatsapp-float" target="_blank">
-        <svg style="width:30px;height:30px" viewBox="0 0 448 512"><path fill="white" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.7 17.8 69.7 27.2 106.2 27.2 122.4 0 222-99.6 222-222 0-59.3-23-115.1-65-157.1zM223.9 446.3c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 365.7l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.5 5.6-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-    </a>
-
-    <header>
-        <div class="logo-text">RUZT<span>MAR</span></div>
-        
-        <!-- Hamburguesa fuera del nav para controlarla mejor en móvil -->
-        <div class="menu-toggle" id="mobile-menu">
-            <span></span><span></span><span></span>
-        </div>
-
-        <nav>
-            <ul id="nav-list">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#objetivos">Objetivos</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-                <li><a href="javascript:void(0)" class="btn-cotizar-nav" onclick="openModal()">Cotizar</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="inicio" class="hero">
-        <h2>BIENVENIDOS A</h2>
-        <h1>RUZTMAR C.A.</h1>
-        <p class="rif">RIF: J-508314921</p>
-        <h3>"Conectamos tus sueños, transportamos tu éxito"</h3>
-        <div class="quote">LOS GRANDES CAMBIOS EMPIEZAN, CUANDO DEJAMOS DE REPETIR UN MISMO PATRÓN</div>
-        <button class="btn-main" onclick="openModal()">Cotizar Servicio</button>
-    </section>
-
-    <section id="nosotros">
-        <h2 class="section-title">Nuestra Identidad</h2>
-        <div class="about-grid">
-            <div class="about-card">
-                <h3>MISIÓN</h3>
-                <p>Mover mercancías de forma segura, ordenada y responsable, apoyando a cada sector con servicios de transporte y manejo confiables.</p>
+    <!-- Pantalla de Login (Overlay) -->
+    <div id="login-overlay" class="fixed inset-0 z-[100] bg-azul flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all">
+            <div class="text-center mb-8">
+                <div class="bg-azul inline-block p-4 rounded-full mb-4">
+                    <i class="fas fa-shield-halved text-white text-4xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-azul">Fiscalización Venezuela</h1>
+                <p class="text-gray-500 text-sm">Ingrese sus credenciales seguras</p>
             </div>
-            <div class="about-card">
-                <h3>VISIÓN</h3>
-                <p>Ser una empresa moderna y en crecimiento constante, reconocida por atender cargas de todo tipo con cuidado y precisión.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="objetivos" class="objectives">
-        <h2 class="section-title">Objetivos Estratégicos</h2>
-        <div class="objectives-list">
-            <div class="objective-item">Elevar la calidad del servicio al cliente.</div>
-            <div class="objective-item">Expandir operaciones y rutas nacionales.</div>
-            <div class="objective-item">Fortalecer el manejo de productos delicados.</div>
-            <div class="objective-item">Optimizar procesos para mayor fluidez.</div>
-        </div>
-    </section>
-
-    <section id="servicios">
-        <h2 class="section-title">Servicios Prestados</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-header">Transporte de Carga Pesada</div>
-                <div class="service-body">
-                    <div class="service-item"><h4>Maquinaria</h4><p>Movilización de equipos pesados e industriales.</p></div>
-                    <div class="service-item"><h4>Sobredimensionada</h4><p>Manejo de cargas de dimensiones especiales.</p></div>
-                    <div class="service-item"><h4>Construcción</h4><p>Cemento, acero y materiales pesados.</p></div>
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Correo Electrónico</label>
+                    <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-azul outline-none transition" placeholder="usuario@fiscal.gob.ve" required>
                 </div>
-            </div>
-            <div class="service-card">
-                <div class="service-header">Encomiendas y Paquetería</div>
-                <div class="service-body">
-                    <div class="service-item"><h4>Nacional</h4><p>Envíos seguros a todo el territorio venezolano.</p></div>
-                    <div class="service-item"><h4>Express</h4><p>Servicios de urgencia con tiempos récord.</p></div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Contraseña</label>
+                    <input type="password" id="password" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-azul outline-none transition" placeholder="••••••••" required>
                 </div>
-            </div>
-            <div class="service-card">
-                <div class="service-header">Transporte Ejecutivo</div>
-                <div class="service-body">
-                    <div class="service-item"><h4>VIP / Corporativo</h4><p>Traslado de personal de alto nivel y grupos empresariales.</p></div>
-                </div>
-            </div>
-            <div class="service-card">
-                <div class="service-header">Almacén y Distribución</div>
-                <div class="service-body">
-                    <div class="service-item"><h4>Gestión Logística</h4><p>Control de inventario, almacenamiento y distribución.</p></div>
-                </div>
-            </div>
-            <div class="service-card">
-                <div class="service-header">Servicios Adicionales</div>
-                <div class="service-body">
-                    <div class="service-item"><h4>Manejo de Carga</h4><p>Carga, descarga, embalaje profesional y asesoría.</p></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contacto">
-        <div class="contact-info">
-            <div class="info-box"><strong>TELÉFONO</strong>0426-5729963</div>
-            <div class="info-box"><strong>EMAIL</strong>RUZTMAR.T.L.C.A@GMAIL.COM</div>
-        </div>
-        <p style="font-size: 0.8rem; opacity: 0.6;">&copy; 2026 RUZTMAR C.A. - J-508314921. Todos los derechos reservados.</p>
-    </footer>
-
-    <!-- MODAL -->
-    <div id="quoteModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2 style="text-align:center; color:var(--primary-blue); margin-bottom:25px;">Cotizar Servicio</h2>
-            <form id="quoteForm">
-                <div class="form-group">
-                    <label>Nombre Completo / Empresa</label>
-                    <input type="text" id="form_nombre" required>
-                </div>
-                <div class="grid-2-col">
-                    <div class="form-group">
-                        <label>Ciudad Origen</label>
-                        <input type="text" id="form_origen" placeholder="Ej: Valencia" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Ciudad Destino</label>
-                        <input type="text" id="form_destino" placeholder="Ej: Caracas" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>¿Qué desea transportar?</label>
-                    <textarea id="form_carga" rows="3" placeholder="Descripción y peso aproximado..." required></textarea>
-                </div>
-                <button type="submit" class="btn-submit">ENVIAR A WHATSAPP</button>
+                <button type="submit" class="w-full bg-azul text-white font-bold py-3 rounded-lg hover:opacity-90 transition shadow-lg">
+                    INICIAR SESIÓN
+                </button>
             </form>
+            <p id="login-error" class="text-rojo text-center mt-4 text-sm hidden font-bold"></p>
         </div>
     </div>
 
-    <script>
-        const menuToggle = document.getElementById('mobile-menu');
-        const navList = document.getElementById('nav-list');
-        const quoteForm = document.getElementById('quoteForm');
+    <!-- Layout Principal (Post-Login) -->
+    <div id="main-layout" class="flex h-screen hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-azul text-white flex flex-col shadow-xl">
+            <div class="p-6 border-b border-blue-900">
+                <span class="text-xl font-black tracking-tighter">SISTEMA <span class="text-amarillo">FISCAL</span></span>
+            </div>
+            <nav class="flex-1 mt-4 px-2 space-y-1" id="nav-menu">
+                <!-- Se inyecta según rol -->
+            </nav>
+            <div class="p-4 border-t border-blue-900">
+                <button id="btn-logout" class="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-red-800 transition text-[#A92631] font-bold bg-white shadow">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
 
-        // Menú Hamburguesa corregido
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navList.classList.toggle('active');
-        });
+        <!-- Contenido Principal -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header superior -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
+                <div id="breadcrumb" class="text-gray-500 font-medium">Dashboard / Monitoreo</div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-role-badge" class="bg-amarillo text-azul text-[10px] font-bold px-2 py-1 rounded-full">ROL: ANALISTA</span>
+                    <span id="user-email-display" class="text-sm font-semibold text-azul italic">usuario@fiscal.gob.ve</span>
+                </div>
+            </header>
 
-        document.querySelectorAll('nav ul li a').forEach(link => {
-            link.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                navList.classList.remove('active');
-            });
-        });
+            <!-- Vista Dinámica -->
+            <section id="content-area" class="flex-1 overflow-y-auto p-8 bg-gray-50">
+                <!-- Aquí se cargan las vistas -->
+            </section>
+        </main>
+    </div>
 
-        // Lógica Modal
-        function openModal() {
-            document.getElementById('quoteModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('quoteModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            quoteForm.reset();
-        }
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('quoteModal')) closeModal();
-        }
-
-        quoteForm.onsubmit = function(e) {
-            e.preventDefault();
-            const nombre = document.getElementById('form_nombre').value;
-            const origen = document.getElementById('form_origen').value;
-            const destino = document.getElementById('form_destino').value;
-            const carga = document.getElementById('form_carga').value;
-            const mensaje = `Hola RUZTMAR, solicito una cotización:%0A*Nombre:* ${nombre}%0A*Origen:* ${origen}%0A*Destino:* ${destino}%0A*Carga:* ${carga}`;
-            window.open(`https://wa.me/584265729963?text=${mensaje}`, '_blank');
-            this.reset();
-            closeModal();
-        }
-    </script>
+    <!-- Scripts de Firebase y Lógica -->
+    <script type="module" src="main.js"></script>
 </body>
 </html>
