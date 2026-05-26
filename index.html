@@ -928,10 +928,12 @@
         const sheetName = workbook.SheetNames[0];
         const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-        const batch = writeBatch(db);
+        // --- MODIFICACIÓN DE LOGICA PARA EL LÍMITE DE BATCH ---
+        let batch = writeBatch(db);
         let count = 0;
+        let operationsInBatch = 0;
 
-        json.forEach(row => {
+        for (const row of json) {
           const cedula = row.cedula_fiscal?.toString().trim();
           const nombre = row.nombre_fiscal?.toString().trim();
           const correo = row.correo_fiscal?.toString().trim();
@@ -940,6 +942,13 @@
           const rol = row.rol?.toString().trim() || "Fiscal";
 
           if (cedula && nombre && estado) {
+            // Si el lote se acerca al límite de 500 operaciones, lo enviamos y creamos uno nuevo
+            if (operationsInBatch >= 400) {
+              await batch.commit();
+              batch = writeBatch(db);
+              operationsInBatch = 0;
+            }
+
             const docFiscalRef = doc(db, "fiscales", cedula);
             batch.set(docFiscalRef, {
               cedula: cedula,
@@ -949,17 +958,24 @@
               municipio: municipio || "",
               fecha_registro: obtenerFechaHoyString()
             });
+            operationsInBatch++;
 
             if (correo) {
               const docUserRef = doc(db, "usuarios_pre_registrados", cedula);
               batch.set(docUserRef, { correo: correo, rol: rol });
+              operationsInBatch++;
             }
             count++;
           }
-        });
+        }
+
+        // Enviamos el último lote remanente si contiene operaciones
+        if (operationsInBatch > 0) {
+          await batch.commit();
+        }
+        // --- FIN DE LA MODIFICACIÓN ---
 
         if (count > 0) {
-          await batch.commit();
           alert(`Éxito: Base de datos actualizada. ${count} fiscales dados de alta masivamente.`);
           document.getElementById('excel-fiscales-name').innerText = "";
           fileFiscales.value = "";
