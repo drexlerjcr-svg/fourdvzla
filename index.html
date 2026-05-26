@@ -511,7 +511,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (err) {
-        elements.errorMessage.innerText = "Error de acceso: " + err.message;
+        elements.errorMessage.innerText = "Error de acceso: " + "Verifica tus credenciales";
         elements.loginError.classList.remove('hidden');
       }
     });
