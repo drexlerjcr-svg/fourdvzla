@@ -1,1038 +1,589 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Nacional de Fiscalización</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <style>
-    /* Estilos personalizados para inyectar la paleta de colores exacta */
-    .bg-corporate-blue { background-color: #012A8C; }
-    .text-corporate-blue { color: #012A8C; }
-    .border-corporate-blue { border-color: #012A8C; }
-    
-    .bg-corporate-yellow { background-color: #F4A41C; }
-    .text-corporate-yellow { color: #F4A41C; }
-    .border-corporate-yellow { border-color: #F4A41C; }
-    
-    .bg-corporate-red { background-color: #A92631; }
-    .text-corporate-red { color: #A92631; }
-    .border-corporate-red { border-color: #A92631; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Gestión - Liquid Glass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* === VARIABLES Y RESET === */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --text-color: #000000;
+            --accent-color: rgba(255, 255, 255, 0.3);
+        }
 
-    .glass {
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-  </style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-image: url('https://i.ibb.co/Z1phdF8M/fondo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* === CLASES BASE LIQUID GLASS === */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+        }
+
+        /* === PANTALLA DE LOGIN === */
+        #login-view {
+            width: 90%;
+            max-width: 400px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .app-logo {
+            width: 160px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: block;
+            opacity: 0.9;
+        }
+
+        input[type="email"], input[type="password"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        #login-view button.btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #000000;
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        #login-view button.btn-primary:hover {
+            background: #222222;
+            transform: translateY(-2px);
+        }
+
+        /* === PANTALLA DASHBOARD === */
+        #dashboard-view {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            border-radius: 0 0 24px 24px;
+            margin-bottom: 20px;
+        }
+
+        .header-logo {
+            height: 50px;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-profile {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(220, 53, 69, 0.8);
+            border-color: rgba(220, 53, 69, 1);
+        }
+
+        .cards-container {
+            flex: 1;
+            padding: 0 5% 30px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        .denuncia-card {
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .denuncia-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-pendiente { background: rgba(255, 193, 7, 0.8); color: black; }
+        .status-revisado { background: rgba(40, 167, 69, 0.8); color: white; }
+
+        /* === MODAL FLOTANTE === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            color: #000000;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: none;
+            border: none;
+            color: #000000;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .decision-box {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #dddddd;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-content button.btn-primary {
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            flex: 1;
+        }
+        
+        .modal-content button.btn-primary:hover {
+            background: #333333;
+        }
+        
+        .modal-content button.btn-primary:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #explanation-box {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .modal-content textarea {
+            background: #f5f5f5;
+            color: #000;
+            border: 1px solid #ccc;
+        }
+        .modal-content textarea:focus {
+            background: #fff;
+            border-color: #000;
+        }
+
+        .loader {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+    </style>
 </head>
-<body class="h-full font-sans antialiased">
+<body>
 
-  <div id="login-screen" class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
-      <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-corporate-blue text-white text-3xl font-bold shadow-lg mb-4">
-        <i class="fa-solid fa-shield-halved"></i>
-      </div>
-      <h2 class="text-2xl font-bold tracking-tight text-white">Sistema de Fiscalización</h2>
-      <p class="mt-2 text-sm text-slate-400">Ingrese sus credenciales de seguridad institucional</p>
-    </div>
-
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="glass px-8 py-10 rounded-2xl shadow-2xl">
-        <form id="login-form" class="space-y-6">
-          <div>
-            <label for="email" class="block text-sm font-medium text-slate-300">Correo Electrónico</label>
-            <div class="mt-2">
-              <input id="email" type="email" required class="block w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2.5 text-white focus:outline-none focus:border-corporate-blue transition-colors">
-            </div>
-          </div>
-
-          <div>
-            <label for="password" class="block text-sm font-medium text-slate-300">Contraseña</label>
-            <div class="mt-2">
-              <input id="password" type="password" required class="block w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2.5 text-white focus:outline-none focus:border-corporate-blue transition-colors">
-            </div>
-          </div>
-
-          <div id="login-error" class="text-sm text-corporate-red font-semibold hidden flex items-center gap-2">
-            <i class="fa-solid fa-triangle-exclamation"></i> <span id="error-message">Credenciales inválidas</span>
-          </div>
-
-          <div>
-            <button type="submit" class="flex w-full justify-center rounded-lg bg-corporate-blue px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-opacity-90 focus:outline-none transition-all">
-              <i class="fa-solid fa-lock-open mr-2 mt-0.5"></i> Autenticar Ingreso
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div id="app-screen" class="hidden h-full flex overflow-hidden">
-    
-    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-950/80 z-40 hidden transition-opacity backdrop-blur-sm"></div>
-
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 glass flex flex-col justify-between border-r border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out">
-      <div class="p-6 relative">
-        <button id="btn-close-sidebar" class="absolute top-4 right-4 text-slate-400 hover:text-corporate-red transition-colors">
-          <i class="fa-solid fa-xmark text-2xl"></i>
-        </button>
-
-        <div class="flex items-center gap-3 pb-6 border-b border-slate-800 mt-4">
-          <div class="h-10 w-10 rounded-lg bg-corporate-blue flex items-center justify-center text-xl font-bold text-white shadow-md">
-            <i class="fa-solid fa-gavel"></i>
-          </div>
-          <div>
-            <h1 class="text-md font-bold tracking-wide text-white">FISCALIZACIÓN</h1>
-          </div>
-        </div>
-
-        <nav class="mt-6 space-y-2">
-          <button id="btn-nav-monitoreo" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-corporate-blue text-white font-medium transition-all text-left">
-            <i class="fa-solid fa-map-location-dot text-lg"></i> Monitoreo Activo
-          </button>
-          <button id="btn-nav-actuaciones" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-medium transition-all text-left hidden">
-            <i class="fa-solid fa-folder-plus text-lg"></i> Carga de Actuaciones
-          </button>
-          <button id="btn-nav-fiscales" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-medium transition-all text-left hidden">
-            <i class="fa-solid fa-users-gear text-lg"></i> Registro de Fiscales
-          </button>
-          <button id="btn-nav-reportes" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 font-medium transition-all text-left hidden">
-            <i class="fa-solid fa-file-invoice text-lg"></i> Reportes y Descargas
-          </button>
-        </nav>
-      </div>
-
-      <div class="p-4 border-t border-slate-800 bg-slate-950/60">
-        <div class="text-xs text-slate-400 mb-2 truncate text-center" id="user-email-display">usuario@institucion.gob.ve</div>
-        <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 border border-corporate-red text-corporate-red font-semibold hover:bg-corporate-red hover:text-white transition-all text-sm shadow-md">
-          <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
-        </button>
-      </div>
-    </aside>
-
-    <div class="flex-1 flex flex-col min-w-0 h-full relative">
-      
-      <header class="glass border-b border-slate-800 px-4 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <div class="flex items-center gap-4">
-          <button id="btn-menu-toggle" class="text-slate-300 hover:text-white bg-slate-800 hover:bg-corporate-blue p-2 rounded-lg transition-all focus:outline-none">
-            <i class="fa-solid fa-bars text-xl w-6 h-6 flex items-center justify-center"></i>
-          </button>
-          <h2 class="text-lg font-bold tracking-wide text-white hidden sm:block">Sistema Nacional de Fiscalización</h2>
-        </div>
-        <span id="user-role-badge" class="inline-flex items-center gap-1 text-xs uppercase tracking-widest bg-corporate-yellow text-slate-950 font-extrabold px-3 py-1 rounded-full shadow-sm">
-          <i class="fa-solid fa-id-badge"></i> Rol: Cargando...
-        </span>
-      </header>
-
-      <main class="flex-1 overflow-y-auto p-4 lg:p-8 bg-slate-900/40">
+    <div id="login-view" class="glass-panel">
+        <img src="https://i.ibb.co/1f607SYR/logosundde.png" alt="Logo" class="app-logo">
+        <h2>Iniciar Sesión</h2>
+        <p style="font-size: 0.85rem; margin-bottom: 25px; opacity: 0.8;">Portal de Sujetos de Aplicación</p>
         
-        <section id="panel-monitoreo" class="space-y-6">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h2 class="text-2xl font-bold tracking-tight">Despliegue Operativo Territorial</h2>
-              <p class="text-sm text-slate-400">Consulte la localización en tiempo real e históricos de los fiscales.</p>
-            </div>
-          </div>
+        <div class="input-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="email" placeholder="usuario@empresa.com">
+        </div>
+        <div class="input-group">
+            <label>Contraseña (Opcional por ahora)</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+        
+        <button class="btn-primary" id="btn-login" onclick="ingresar()">Acceder al Sistema</button>
+        <div id="login-loader" style="display:none; margin-top:15px;"><div class="loader"></div></div>
+        <p id="login-error" style="color:#ff6b6b; font-size:0.85rem; margin-top:10px; display:none;"></p>
+    </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 glass p-4 rounded-xl">
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Estado de la República</label>
-              <select id="filtro-estado" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue">
-                <option value="">Seleccione un Estado...</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Municipio (Sub-filtro)</label>
-              <select id="filtro-municipio" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue" disabled>
-                <option value="">Seleccione un Municipio...</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="glass rounded-xl overflow-hidden flex flex-col h-[500px]">
-              <div class="bg-slate-950/60 px-4 py-3 border-b border-slate-800 font-semibold text-sm flex justify-between items-center">
-                <span>Personal Desplegado</span>
-                <span id="fiscales-count" class="bg-corporate-blue text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-              </div>
-              <div id="lista-fiscales" class="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 space-y-1">
-                <p class="text-sm text-slate-400 text-center py-10">Seleccione un estado para cargar fiscales.</p>
-              </div>
-            </div>
-
-            <div id="detalle-fiscal-card" class="lg:col-span-2 glass rounded-xl p-6 hidden flex flex-col justify-between h-[500px]">
-              <div class="overflow-y-auto space-y-6">
-                <div class="flex items-start gap-4 pb-4 border-b border-slate-800">
-                  <div class="h-14 w-14 rounded-full bg-slate-800 border-2 border-corporate-blue flex items-center justify-center text-2xl text-corporate-blue">
-                    <i class="fa-solid fa-user-tie"></i>
-                  </div>
-                  <div>
-                    <h3 id="det-nombre" class="text-xl font-bold text-white">---</h3>
-                    <p class="text-sm text-slate-400 flex items-center gap-4 mt-0.5">
-                      <span><i class="fa-solid fa-id-card mr-1"></i> <span id="det-cedula">---</span></span>
-                      <span><i class="fa-solid fa-envelope mr-1"></i> <span id="det-correo">---</span></span>
-                    </p>
-                  </div>
+    <div id="dashboard-view">
+        <header class="glass-panel dashboard-header">
+            <img src="https://i.ibb.co/1f607SYR/logosundde.png" alt="Logo Pequeño" class="header-logo">
+            <div class="user-profile-container">
+                <div class="user-profile">
+                    <strong id="perfil-email">Usuario</strong><br>
+                    <span id="perfil-empresa" style="opacity: 0.8;">Empresa</span>
                 </div>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </header>
 
-                <div>
-                  <h4 class="text-xs font-semibold uppercase tracking-wider text-corporate-yellow flex items-center gap-2 mb-2">
-                    <span class="flex h-2 w-2 rounded-full bg-corporate-yellow animate-pulse"></span> Ubicación de Hoy (Actual)
-                  </h4>
-                  <div id="box-ubicacion-actual" class="p-4 rounded-xl bg-slate-950/50 border border-slate-800">
-                    </div>
-                </div>
+        <div id="dashboard-loader" style="display:none; text-align:center; padding: 40px;"><div class="loader"></div><p>Cargando denuncias...</p></div>
+        
+        <main class="cards-container" id="cards-container">
+            </main>
+    </div>
 
-                <div>
-                  <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Historial de Actuaciones Pasadas
-                  </h4>
-                  <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                      <thead class="text-xs uppercase bg-slate-950 text-slate-400">
-                        <tr>
-                          <th class="px-4 py-2">Fecha</th>
-                          <th class="px-4 py-2">Ubicación Territorial</th>
-                          <th class="px-4 py-2">Actuación Ejecutada</th>
-                        </tr>
-                      </thead>
-                      <tbody id="tabla-historial" class="divide-y divide-slate-800">
-                        </tbody>
-                    </table>
-                  </div>
+    <div id="details-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="cerrarModal()">&times;</button>
+            <h2 id="modal-titulo" style="margin-bottom: 15px;">Detalles de la Denuncia</h2>
+            
+            <div style="font-size: 0.95rem; line-height: 1.5; opacity: 0.9;">
+                <p><strong>Denunciante:</strong> <span id="modal-denunciante"></span></p>
+                <p><strong>Cédula:</strong> <span id="modal-cedula"></span></p>
+                <p><strong>Teléfono:</strong> <span id="modal-telefono"></span></p>
+                <p><strong>Producto:</strong> <span id="modal-producto"></span></p>
+                <p><strong>Motivo de la denuncia:</strong> <span id="modal-motivo"></span></p>
+            </div>
+
+            <div class="decision-box" id="decision-box">
+                <p style="font-weight: 600;">¿Cumple con las garantías?</p>
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="mostrarExplicacion('Sí PROCEDE')">Sí</button>
+                    <button class="btn-primary" onclick="mostrarExplicacion('NO PROCEDE')">No procede</button>
                 </div>
-              </div>
+            </div>
+
+            <div id="explanation-box">
+                <label id="explanation-label" style="display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600;"></label>
+                <textarea id="respuesta-texto" rows="4" placeholder="Escriba detalladamente su respuesta aquí..."></textarea>
+                <button class="btn-primary" id="btn-enviar-respuesta" style="margin-top: 15px; width: 100%;" onclick="enviarRespuesta()">Enviar Respuesta</button>
             </div>
             
-            <div id="detalle-placeholder" class="lg:col-span-2 glass rounded-xl flex items-center justify-center text-slate-500 h-[500px]">
-              <div class="text-center">
-                <i class="fa-solid fa-street-view text-4xl mb-2 text-slate-700"></i>
-                <p class="text-sm">Seleccione un fiscal de la lista para auditar sus movimientos.</p>
-              </div>
-            </div>
-          </div>
-        </section>
+            <p id="mensaje-exito" style="color: green; font-weight: bold; margin-top: 15px; display: none; text-align: center;"></p>
+        </div>
+    </div>
 
-        <section id="panel-actuaciones" class="space-y-6 hidden">
-          <div>
-            <h2 class="text-2xl font-bold tracking-tight">Procesamiento de Actuaciones Fiscales</h2>
-            <p class="text-sm text-slate-400">Registre los despliegues territoriales de forma manual o consolidada por Excel.</p>
-          </div>
+    <script>
+        // URL EXACTA DE TU WEB APP
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLPFaUEDcH3EOMGykhCkk7UeufZjFSgJiNQRMwsi1FSKJA9eWVEbGB40cxExd9Z6U/exec";
+        
+        let usuarioActual = {};
+        let denunciaSeleccionada = null;
+        let prefijoDecision = ""; // Guardará si es "Sí PROCEDE" o "NO PROCEDE"
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass p-6 rounded-xl space-y-4">
-              <h3 class="text-md font-bold text-corporate-blue flex items-center gap-2 border-b border-slate-800 pb-2">
-                <i class="fa-solid fa-pen-to-square"></i> Registro Manual Individual
-              </h3>
-              <form id="form-registro-actuacion" class="space-y-4">
-                <div class="relative">
-                  <label class="block text-sm font-medium text-slate-300 mb-1">Buscar Fiscal (Nombre o Cédula)</label>
-                  <input id="act-buscar-fiscal" type="text" autocomplete="off" placeholder="Escriba para filtrar..." class="w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2 text-white focus:outline-none focus:border-corporate-blue">
-                  <div id="act-dropdown-sugerencias" class="absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-lg max-h-40 overflow-y-auto hidden z-50 divide-y divide-slate-800"></div>
-                  <input id="act-fiscal-seleccionado-id" type="hidden" required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Municipio de Actuación</label>
-                    <select id="act-municipio" required class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                      </select>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de Ejecución</label>
-                    <input id="act-fecha" type="date" required class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-slate-300 mb-1">Detalles de la Gestión Operativa</label>
-                  <textarea id="act-detalle" rows="3" required placeholder="Escriba los pormenores de la fiscalización..." class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-corporate-blue text-white py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
-                  <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Guardar Actuación
-                </button>
-              </form>
-            </div>
+        // === 1. LÓGICA DE LOGIN ===
+        async function ingresar() {
+            const email = document.getElementById('email').value;
+            const errorMsg = document.getElementById('login-error');
+            const btn = document.getElementById('btn-login');
+            const loader = document.getElementById('login-loader');
 
-            <div class="glass p-6 rounded-xl flex flex-col justify-between">
-              <div class="space-y-4">
-                <h3 class="text-md font-bold text-corporate-yellow flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <i class="fa-solid fa-file-excel"></i> Carga Masiva desde Plantilla Excel
-                </h3>
-                <p class="text-sm text-slate-400">
-                  Optimice el procesamiento cargando cientos de registros de una sola vez. El archivo debe poseer obligatoriamente los siguientes encabezados en la primera fila:
-                </p>
-                <div class="bg-slate-950 p-3 rounded-lg overflow-x-auto text-xs font-mono text-corporate-yellow">
-                  cedula_fiscal | nombre_fiscal | estado | municipio | fecha_actuacion | detalle_actuacion
-                </div>
-                <p class="text-xs text-slate-400 italic">*Nota: La fecha debe cumplir el formato estricto AAAA-MM-DD o DD/MM/AAAA de forma homogénea.*</p>
+            if (!email) {
+                errorMsg.innerText = "Por favor ingrese su correo electrónico.";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+            btn.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                // Hacer petición a Google Apps Script
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "login", email: email })
+                });
                 
-                <div class="border-2 border-dashed border-slate-700 hover:border-corporate-yellow rounded-xl p-8 text-center cursor-pointer bg-slate-950/30 transition-all relative mt-4">
-                  <input type="file" id="excel-actuaciones-file" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer">
-                  <i class="fa-solid fa-file-arrow-up text-3xl text-slate-500 mb-2"></i>
-                  <p class="text-sm text-slate-300 font-medium">Arrastre el archivo Excel aquí o haga clic para explorar</p>
-                  <span id="excel-actuaciones-name" class="block text-xs text-corporate-yellow mt-2 font-semibold"></span>
-                </div>
-              </div>
-              <button id="btn-procesar-excel-actuaciones" class="w-full bg-corporate-yellow text-slate-950 py-2.5 rounded-lg font-bold hover:bg-opacity-90 transition-all mt-6">
-                <i class="fa-solid fa-play mr-1"></i> Procesar Bloque de Actuaciones
-              </button>
-            </div>
-          </div>
-        </section>
+                const result = await response.json();
 
-        <section id="panel-fiscales" class="space-y-6 hidden">
-          <div>
-            <h2 class="text-2xl font-bold tracking-tight">Fichaje y Registro de Fiscales</h2>
-            <p class="text-sm text-slate-400">Administre el alta de los funcionarios públicos asignados a las regiones.</p>
-          </div>
+                if (result.success) {
+                    usuarioActual = result;
+                    // Actualizar Header
+                    document.getElementById('perfil-email').innerText = result.email;
+                    document.getElementById('perfil-empresa').innerText = result.empresa;
+                    
+                    // Cambiar Vista
+                    document.getElementById('login-view').style.display = 'none';
+                    document.getElementById('dashboard-view').style.display = 'flex';
+                    
+                    // Cargar los datos de esa empresa
+                    cargarDenuncias();
+                } else {
+                    errorMsg.innerText = result.message;
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.innerText = "Error de conexión con el servidor.";
+                errorMsg.style.display = 'block';
+            } finally {
+                btn.style.display = 'block';
+                loader.style.display = 'none';
+            }
+        }
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass p-6 rounded-xl space-y-4">
-              <h3 class="text-md font-bold text-corporate-blue flex items-center gap-2 border-b border-slate-800 pb-2">
-                <i class="fa-solid fa-user-plus"></i> Alta Individual de Funcionario
-              </h3>
-              <form id="form-registro-fiscal" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Cédula de Identidad</label>
-                    <input id="fisc-cedula" type="text" required placeholder="Ej: V-12345678" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Nombre Completo</label>
-                    <input id="fisc-nombre" type="text" required placeholder="Nombres y Apellidos" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-slate-300 mb-1">Correo Electrónico Institucional</label>
-                  <input id="fisc-correo" type="email" required placeholder="usuario@sundde.gob.ve" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Estado de Adscripción</label>
-                    <select id="fisc-estado" required class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                      </select>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Municipio Base (Opcional)</label>
-                    <select id="fisc-municipio" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2 text-white focus:outline-none focus:border-corporate-blue">
-                      </select>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-400 italic">*Nota: Si no se asigna Municipio Base, el funcionario aparecerá directamente listado a nivel de todo el Estado.*</p>
-                <button type="submit" class="w-full bg-corporate-blue text-white py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
-                  <i class="fa-solid fa-user-check mr-1"></i> Incorporar Fiscal
-                </button>
-              </form>
-            </div>
+        function cerrarSesion() {
+            usuarioActual = {};
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('login-view').style.display = 'block';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('cards-container').innerHTML = '';
+        }
 
-            <div class="glass p-6 rounded-xl flex flex-col justify-between">
-              <div class="space-y-4">
-                <h3 class="text-md font-bold text-corporate-yellow flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <i class="fa-solid fa-users"></i> Migración Masiva de Fiscales (Excel)
-                </h3>
-                <p class="text-sm text-slate-400">
-                  Cargue la nómina de fiscales de manera masiva. El documento de Excel debe contener estrictamente la siguiente cabecera en su primera fila:
-                </p>
-                <div class="bg-slate-950 p-3 rounded-lg overflow-x-auto text-xs font-mono text-corporate-yellow">
-                  cedula_fiscal | nombre_fiscal | correo_fiscal | estado | municipio | rol
-                </div>
-                <p class="text-xs text-slate-400 mt-2">
-                  *El rol por defecto recomendado es <span class="font-mono text-white">Fiscal</span>. Si se deja la columna municipio vacía, se asume adscripción global de estado.*
-                </p>
-
-                <div class="border-2 border-dashed border-slate-700 hover:border-corporate-yellow rounded-xl p-8 text-center cursor-pointer bg-slate-950/30 transition-all relative mt-4">
-                  <input type="file" id="excel-fiscales-file" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer">
-                  <i class="fa-solid fa-users-viewfinder text-3xl text-slate-500 mb-2"></i>
-                  <p class="text-sm text-slate-300 font-medium">Arrastre el archivo Excel de fiscales aquí</p>
-                  <span id="excel-fiscales-name" class="block text-xs text-corporate-yellow mt-2 font-semibold"></span>
-                </div>
-              </div>
-              <button id="btn-procesar-excel-fiscales" class="w-full bg-corporate-yellow text-slate-950 py-2.5 rounded-lg font-bold hover:bg-opacity-90 transition-all mt-6">
-                <i class="fa-solid fa-users-gear mr-1"></i> Dar de Alta Bloque de Personal
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <section id="panel-reportes" class="space-y-6 hidden">
-          <div>
-            <h2 class="text-2xl font-bold tracking-tight">Centro de Inteligencia y Descarga de Data</h2>
-            <p class="text-sm text-slate-400">Genere y exporte reportes estructurados de las actuaciones del cuerpo de fiscales.</p>
-          </div>
-
-          <div class="glass p-6 rounded-xl max-w-2xl space-y-6">
-            <h3 class="text-md font-bold text-corporate-blue flex items-center gap-2 border-b border-slate-800 pb-2">
-              <i class="fa-solid fa-filter"></i> Parámetros de Extracción
-            </h3>
+        // === 2. LÓGICA PARA CARGAR DENUNCIAS ===
+        async function cargarDenuncias() {
+            const container = document.getElementById('cards-container');
+            const loader = document.getElementById('dashboard-loader');
             
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de Consulta Específica</label>
-                <input id="rep-fecha" type="date" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue">
-              </div>
+            container.innerHTML = '';
+            loader.style.display = 'block';
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-1">Ámbito de Selección de Funcionario</label>
-                <select id="rep-fiscal-select" class="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-corporate-blue">
-                  <option value="TODOS">-- Descargar Todos los Fiscales --</option>
-                </select>
-              </div>
-            </div>
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "getDenuncias", empresa: usuarioActual.empresa })
+                });
+                
+                const result = await response.json();
+                loader.style.display = 'none';
 
-            <button id="btn-descargar-reporte" class="w-full bg-corporate-blue text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 flex items-center justify-center gap-2 transition-all">
-              <i class="fa-solid fa-file-arrow-down text-lg"></i> Exportar Reporte de Actuaciones (CSV)
-            </button>
-          </div>
-        </section>
+                if (result.success && result.data.length > 0) {
+                    result.data.forEach(denuncia => {
+                        // Determinar si ya tiene respuesta para cambiar el color de la etiqueta
+                        let estadoClase = denuncia.Respuesta_Empresa ? "status-revisado" : "status-pendiente";
+                        let estadoTexto = denuncia.Respuesta_Empresa ? "Revisado / Respondido" : "Pendiente de Revisión";
 
-      </main>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-
-    // Configuración de Firebase provista
-    const firebaseConfig = {
-      apiKey: "AIzaSyAMuTiISxhnz2V7X1F6gBYOl4Sxsu97QRQ",
-      authDomain: "fiscalizacion-f15d3.firebaseapp.com",
-      projectId: "fiscalizacion-f15d3",
-      storageBucket: "fiscalizacion-f15d3.firebasestorage.app",
-      messagingSenderId: "586168804795",
-      appId: "1:586168804795:web:f87c12d3fe9f6bf3ce509e",
-      measurementId: "G-LR4Y03SM4M"
-    };
-
-    // Inicializaciones
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Memoria interna temporal (Cache) de datos para agilizar el rendimiento de filtros complejos sin provocar re-lecturas masivas
-    let cacheFiscales = [];
-    let cacheActuaciones = [];
-    let currentUserRole = "Fiscal";
-
-    // Data Estructurada de División Político-Territorial de Venezuela (Muestra Operativa)
-    const geoVenezuela = {
-      "Amazonas": ["Alto Orinoco", "Atabapo", "Atures", "Autana", "Manapiare", "Maroa", "Río Negro"],
-      "Anzoátegui": ["Anaco", "Aragua", "Diego Bautista Urbaneja", "Fernando de Peñalver", "Francisco del Carmen Carvajal", "Francisco de Miranda", "Guanta", "Independencia", "José Gregorio Monagas", "Juan Antonio Sotillo", "Juan Manuel Cajigal", "Libertad", "Manuel Ezequiel Bruzual", "Pedro María Freites", "Píritu", "San Juan de Capistrano", "Santa Ana", "Simón Bolívar", "Simón Rodríguez", "Sir Arthur McGregor", "Valle de Guanape"],
-      "Apure": ["Achaguas", "Biruaca", "Muñoz", "Páez", "Pedro Camejo", "Rómulo Gallegos", "San Fernando"],
-      "Aragua": ["Bolívar", "Camatagua", "Francisco Linares Alcántara", "Girardot", "José Ángel Lamas", "José Félix Ribas", "José Rafael Revenga", "Libertador", "Mario Briceño Iragorry", "Ocumare de la Costa de Oro", "San Casimiro", "San Sebastián", "Santiago Mariño", "Santos Michelena", "Sucre", "Tovar", "Urdaneta", "Zamora"],
-      "Barinas": ["Alberto Arvelo Torrealba", "Andrés Eloy Blanco", "Antonio José de Sucre", "Arismendi", "Barinas", "Bolívar", "Cruz Paredes", "Ezequiel Zamora", "Obispos", "Pedraza", "Rojas", "Sosa"],
-      "Bolívar": ["Angostura (Raúl Leoni)", "Caroní", "Cedeño", "El Callao", "Gran Sabana", "Heres (Angostura del Orinoco)", "Padre Pedro Chien", "Piar", "Roscio", "Sifontes", "Sucre"],
-      "Carabobo": ["Bejuma", "Carlos Arvelo", "Diego Ibarra", "Guacara", "Juan José Mora", "Libertador", "Los Guayos", "Miranda", "Montalbán", "Naguanagua", "Puerto Cabello", "San Diego", "San Joaquín", "Valencia"],
-      "Cojedes": ["Anzoátegui", "Ezequiel Zamora", "Girardot", "Lima Blanco", "Pao de San Juan Bautista", "Ricaurte", "Rómulo Gallegos", "San Carlos", "Tinaco"],
-      "Delta Amacuro": ["Antonio Díaz", "Casacoima", "Pedernales", "Tucupita"],
-      "Distrito Capital": ["Libertador"],
-      "Falcón": ["Acosta", "Bolívar", "Buchivacoa", "Cacique Manaure", "Carirubana", "Colina", "Dabajuro", "Democracia", "Falcón", "Federación", "Jacura", "Los Taques", "Mauroa", "Miranda", "Monseñor Iturriza", "Palmasola", "Petit", "Píritu", "San Francisco", "Silva", "Sucre", "Tocópero", "Unión", "Urumaco", "Zamora"],
-      "Guárico": ["Camaguán", "Chaguaramas", "El Socorro", "Francisco de Miranda", "José Félix Ribas", "José Tadeo Monagas", "Juan Germán Roscio", "Las Mercedes", "Leonardo Infante", "Pedro Zaraza", "Ortiz", "San Gerónimo de Guayabal", "San José de Guaribe", "Santa María de Ipire", "Julián Mellado"],
-      "La Guaira": ["Municipio Vargas"],
-      "Lara": ["Andrés Eloy Blanco", "Crespo", "Iribarren", "Jiménez", "Morán", "Palavecino", "Simón Planas", "Torres", "Urdaneta"],
-      "Mérida": ["Alberto Adriani", "Andrés Eloy Blanco", "Aricagua", "Arzobispo Chacón", "Campo Elías", "Caracciolo Parra Olmedo", "Cardenal Quintero", "Guaraque", "Julio César Salas", "Justo Briceño", "Libertador", "Miranda", "Obispo Ramos de Lora", "Padre Noguera", "Pueblo Llano", "Rangel", "Rivas Dávila", "Santos Marquina", "Sucre", "Tovar", "Tulio Febres Cordero", "Zea"],
-      "Miranda": ["Acevedo", "Andrés Bello", "Baruta", "Brión", "Buroz", "Carrizal", "Chacao", "Cristóbal Rojas", "El Hatillo", "Guaicaipuro", "Independencia", "Lander", "Los Salias", "Páez", "Paz Castillo", "Pedro Gual", "Plaza", "Simón Bolívar", "Sucre", "Urdaneta", "Zamora"],
-      "Monagas": ["Acosta", "Aguasay", "Bolívar", "Cedeño", "Ezequiel Zamora", "Libertador", "Maturín", "Piar", "Punceres", "Santa Bárbara", "Sotillo", "Uracoa", "Caripe"],
-      "Nueva Esparta": ["Antolín del Campo", "Arismendi", "Díaz", "García", "Gómez", "Maneiro", "Marcano", "Mariño", "Península de Macanao", "Tubores", "Villalba"],
-      "Portuguesa": ["Agua Blanca", "Araure", "Esteller", "Guanare", "Guanarito", "Monseñor José Vicente de Unda", "Ospino", "Páez", "Papelón", "San Genaro de Boconoíto", "San Rafael de Onoto", "Santa Rosalía", "Sucre", "Turén"],
-      "Sucre": ["Andrés Eloy Blanco", "Andrés Bello", "Arismendi", "Benítez", "Bermúdez", "Bolívar", "Cajigal", "Cruz Salmerón Acosta", "Libertador", "Mariño", "Mejía", "Montes", "Ribero", "Sucre", "Valdez"],
-      "Táchira": ["Andrés Bello", "Antonio Rómulo Costa", "Ayacucho", "Bolívar", "Cárdenas", "Córdoba", "Fernández Feo", "Francisco de Miranda", "García de Hevia", "Guásimos", "Jáuregui", "José María Vargas", "Junín", "Libertad", "Libertador", "Lobatera", "Michelena", "Panamericano", "Pedro María Ureña", "Rafael Urdaneta", "Samuel Darío Maldonado", "San Cristóbal", "San Judas Tadeo", "Seboruco", "Simón Rodríguez", "Sucre", "Torbes", "Uribante", "San José de Bolívar"],
-      "Trujillo": ["Andrés Bello", "Boconó", "Bolívar", "Candelaria", "Carache", "Escuque", "José Felipe Márquez Cañizalez", "Juan Vicente Campos Elías", "La Ceiba", "Miranda", "Monte Carmelo", "Motatán", "Pampán", "Pampanito", "Rafael Rangel", "San Rafael de Carvajal", "Sucre", "Trujillo", "Urdaneta", "Valera"],
-      "Yaracuy": ["Arístides Bastidas", "Bolívar", "Bruzual", "Cocorote", "Independencia", "José Antonio Páez", "La Trinidad", "Manuel Monge", "Nirgua", "Peña", "San Felipe", "Sucre", "Urachiche", "Veroes"],
-      "Zulia": ["Almirante Padilla", "Baralt", "Cabimas", "Catatumbo", "Colón", "Francisco Javier Pulgar", "Jesús Enrique Lossada", "Jesús María Semprún", "La Cañada de Urdaneta", "Lagunillas", "Machiques de Perijá", "Mara", "Maracaibo", "Miranda", "Guajira", "Rosario de Perijá", "San Francisco", "Santa Rita", "Simón Bolívar", "Sucre", "Valmore Rodríguez"]
-    };
-
-    // Obtener la fecha del día actual local en formato ISO de comparación (AAAA-MM-DD)
-    const obtenerFechaHoyString = () => {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    };
-
-    // ================= INTERRUPTORES DE VISTAS (SPA MANIPULATION) =================
-    const elements = {
-      loginScreen: document.getElementById('login-screen'),
-      appScreen: document.getElementById('app-screen'),
-      loginForm: document.getElementById('login-form'),
-      loginError: document.getElementById('login-error'),
-      errorMessage: document.getElementById('error-message'),
-      userRoleBadge: document.getElementById('user-role-badge'),
-      userEmailDisplay: document.getElementById('user-email-display'),
-      btnLogout: document.getElementById('btn-logout'),
-      
-      // Nav buttons
-      navMonitoreo: document.getElementById('btn-nav-monitoreo'),
-      navActuaciones: document.getElementById('btn-nav-actuaciones'),
-      navFiscales: document.getElementById('btn-nav-fiscales'),
-      navReportes: document.getElementById('btn-nav-reportes'),
-      
-      // Paneles
-      panelMonitoreo: document.getElementById('panel-monitoreo'),
-      panelActuaciones: document.getElementById('panel-actuaciones'),
-      panelFiscales: document.getElementById('panel-fiscales'),
-      panelReportes: document.getElementById('panel-reportes')
-    };
-
-    const switches = [elements.panelMonitoreo, elements.panelActuaciones, elements.panelFiscales, elements.panelReportes];
-    const navButtons = [elements.navMonitoreo, elements.navActuaciones, elements.navFiscales, elements.navReportes];
-
-    function showPanel(panelToShow, activeBtn) {
-      switches.forEach(p => p.classList.add('hidden'));
-      panelToShow.classList.remove('hidden');
-      
-      navButtons.forEach(b => {
-        b.classList.remove('bg-corporate-blue', 'text-white');
-        b.classList.add('hover:bg-slate-800', 'text-slate-300');
-      });
-      activeBtn.classList.remove('hover:bg-slate-800', 'text-slate-300');
-      activeBtn.classList.add('bg-corporate-blue', 'text-white');
-    }
-
-    elements.navMonitoreo.addEventListener('click', () => showPanel(elements.panelMonitoreo, elements.navMonitoreo));
-    elements.navActuaciones.addEventListener('click', () => showPanel(elements.panelActuaciones, elements.navActuaciones));
-    elements.navFiscales.addEventListener('click', () => showPanel(elements.panelFiscales, elements.navFiscales));
-    elements.navReportes.addEventListener('click', () => showPanel(elements.panelReportes, elements.navReportes));
-
-    // ================= LÓGICA DEL MENÚ DE HAMBURGUESA =================
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebar-overlay');
-    const btnMenuToggle = document.getElementById('btn-menu-toggle');
-    const btnCloseSidebar = document.getElementById('btn-close-sidebar');
-
-    function toggleMenu() {
-      sidebar.classList.toggle('-translate-x-full');
-      sidebarOverlay.classList.toggle('hidden');
-    }
-
-    btnMenuToggle.addEventListener('click', toggleMenu);
-    btnCloseSidebar.addEventListener('click', toggleMenu);
-    sidebarOverlay.addEventListener('click', toggleMenu);
-
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (!sidebar.classList.contains('-translate-x-full')) {
-          toggleMenu();
-        }
-      });
-    });
-
-    // ================= CAPA DE CONTROL DE AUTENTICACIÓN Y ROLES =================
-    elements.loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      elements.loginError.classList.add('hidden');
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        elements.errorMessage.innerText = "Error de acceso: " + "Verifica tus credenciales";
-        elements.loginError.classList.remove('hidden');
-      }
-    });
-
-    elements.btnLogout.addEventListener('click', () => signOut(auth));
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        elements.userEmailDisplay.innerText = user.email;
-        // Consultar el rol del usuario en la base de datos
-        const userDocRef = doc(db, "usuarios", user.uid);
-        const userDoc = await getDoc(userDocRef);
-        
-        if (userDoc.exists()) {
-          currentUserRole = userDoc.data().rol;
-        } else {
-          // Si no existe el documento de roles explícito, por seguridad se asigna el rol base
-          currentUserRole = "Fiscal"; 
+                        // Crear tarjeta HTML dinámicamente
+                        const card = document.createElement('div');
+                        card.className = 'glass-panel denuncia-card';
+                        card.onclick = () => abrirModal(denuncia);
+                        
+                        card.innerHTML = `
+                            <span class="status-badge ${estadoClase}">${estadoTexto}</span>
+                            <h3 style="margin-bottom: 10px;">ID: ${denuncia.ID_Denuncia}</h3>
+                            <p><strong>Denunciante:</strong> ${denuncia.Denunciante}</p>
+                            <p><strong>Producto:</strong> ${denuncia.Producto}</p>
+                            <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Hacer clic para ver detalles y gestionar.</p>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align:center; width: 100%;">No hay denuncias registradas para esta empresa.</p>';
+                }
+            } catch (error) {
+                loader.style.display = 'none';
+                container.innerHTML = '<p style="color:red; text-align:center; width: 100%;">Error al cargar los datos.</p>';
+            }
         }
 
-        elements.userRoleBadge.innerHTML = `<i class="fa-solid fa-id-badge"></i> Rol: ${currentUserRole}`;
-        configurarPermisosPorRol(currentUserRole);
+        // === 3. LÓGICA DEL MODAL FLOTANTE ===
+        function abrirModal(denuncia) {
+            denunciaSeleccionada = denuncia;
+            
+            // Llenar información
+            document.getElementById('modal-titulo').innerText = "Detalles del Caso " + denuncia.ID_Denuncia;
+            document.getElementById('modal-denunciante').innerText = denuncia.Denunciante;
+            document.getElementById('modal-cedula').innerText = denuncia.Cedula_Denunciante;
+            document.getElementById('modal-telefono').innerText = denuncia.Telefono;
+            document.getElementById('modal-producto').innerText = denuncia.Producto;
+            document.getElementById('modal-motivo').innerText = denuncia.Motivo_De_La_Denuncia;
 
-        elements.loginScreen.classList.add('hidden');
-        elements.appScreen.classList.remove('hidden');
+            // Limpiar caja de texto y mensajes
+            document.getElementById('respuesta-texto').value = '';
+            document.getElementById('explanation-box').style.display = 'none';
+            document.getElementById('mensaje-exito').style.display = 'none';
+            document.getElementById('btn-enviar-respuesta').innerText = "Enviar Respuesta";
+            document.getElementById('btn-enviar-respuesta').disabled = false;
 
-        // Carga inicial sincronizada de datos a memoria dinámica
-        await descargarDataAFirestoreCache();
-        inicializarComponentesGeograficos();
-      } else {
-        elements.appScreen.classList.add('hidden');
-        elements.loginScreen.classList.remove('hidden');
-      }
-    });
-
-    function configurarPermisosPorRol(rol) {
-      // Resetear visibilidades de navegación corporativa
-      elements.navActuaciones.classList.add('hidden');
-      elements.navFiscales.classList.add('hidden');
-      elements.navReportes.classList.add('hidden');
-
-      if (rol === "Administrador") {
-        elements.navActuaciones.classList.remove('hidden');
-        elements.navFiscales.classList.remove('hidden');
-        elements.navReportes.classList.remove('hidden');
-      } else if (rol === "Analista") {
-        elements.navActuaciones.classList.remove('hidden');
-        elements.navFiscales.classList.remove('hidden');
-        elements.navReportes.classList.remove('hidden');
-      }
-      showPanel(elements.panelMonitoreo, elements.navMonitoreo);
-    }
-
-    // Sincronizador de datos remoto de Firestore a memoria para filtros y cruces eficientes
-    async function descargarDataAFirestoreCache() {
-      try {
-        const fiscalesSnap = await getDocs(collection(db, "fiscales"));
-        cacheFiscales = [];
-        fiscalesSnap.forEach(d => cacheFiscales.push(d.data()));
-
-        const actuacionesSnap = await getDocs(collection(db, "actuaciones"));
-        cacheActuaciones = [];
-        actuacionesSnap.forEach(d => cacheActuaciones.push(d.data()));
-
-        actualizarContadoresYListas();
-        renderizarSelectReportes();
-      } catch (err) {
-        console.error("Error sincronizando cache local: ", err);
-      }
-    }
-
-    // ================= INICIALIZACIÓN E INYECCIÓN GEOGRÁFICA =================
-    function inicializarComponentesGeograficos() {
-      const fillSelect = (selectId, states) => {
-        const select = document.getElementById(selectId);
-        select.innerHTML = '<option value="">Seleccione un Estado...</option>';
-        states.forEach(st => {
-          select.innerHTML += `<option value="${st}">${st}</option>`;
-        });
-      };
-
-      const estados = Object.keys(geoVenezuela);
-      fillSelect('filtro-estado', estados);
-      fillSelect('fisc-estado', estados);
-
-      // Manejador del cambio de estado en la sección de monitoreo
-      document.getElementById('filtro-estado').addEventListener('change', (e) => {
-        const estadoSel = e.target.value;
-        const municipioSelect = document.getElementById('filtro-municipio');
-        
-        if (estadoSel && geoVenezuela[estadoSel]) {
-          municipioSelect.innerHTML = '<option value="">Todos los Municipios / Ver Fiscales de Estado</option>';
-          geoVenezuela[estadoSel].forEach(m => {
-            municipioSelect.innerHTML += `<option value="${m}">${m}</option>`;
-          });
-          municipioSelect.disabled = false;
-        } else {
-          municipioSelect.innerHTML = '<option value="">Seleccione un Municipio...</option>';
-          municipioSelect.disabled = true;
-        }
-        filtrarYRenderizarFiscales();
-      });
-
-      document.getElementById('filtro-municipio').addEventListener('change', filtrarYRenderizarFiscales);
-
-      // Vincular select para formularios de creación manual
-      document.getElementById('fisc-estado').addEventListener('change', (e) => {
-        const est = e.target.value;
-        const munSel = document.getElementById('fisc-municipio');
-        munSel.innerHTML = '<option value="">Asignar globalmente al Estado (Vacio)</option>';
-        if (est && geoVenezuela[est]) {
-          geoVenezuela[est].forEach(m => { munSel.innerHTML += `<option value="${m}">${m}</option>`; });
-        }
-      });
-    }
-
-    // ================= PANEL MONITOREO: LÓGICA DE FILTRADO AVANZADO =================
-    function filtrarYRenderizarFiscales() {
-      const estadoSelected = document.getElementById('filtro-estado').value;
-      const municipioSelected = document.getElementById('filtro-municipio').value;
-      const contenedor = document.getElementById('lista-fiscales');
-
-      if (!estadoSelected) {
-        contenedor.innerHTML = '<p class="text-sm text-slate-400 text-center py-10">Seleccione un estado para cargar fiscales.</p>';
-        document.getElementById('fiscales-count').innerText = "0";
-        return;
-      }
-
-      // Regla Crítica: Si está seleccionado un Estado, listar fiscales adscritos a dicho estado.
-      // Si un fiscal no posee municipio o coincide con el sub-filtro de municipios, se muestra en pantalla.
-      const filtrados = cacheFiscales.filter(f => {
-        const matchEstado = f.estado === estadoSelected;
-        if (!matchEstado) return false;
-
-        if (!municipioSelected) {
-          return true;
-        } else {
-          return f.municipio === municipioSelected || !f.municipio;
-        }
-      });
-
-      document.getElementById('fiscales-count').innerText = filtrados.length;
-
-      if (filtrados.length === 0) {
-        contenedor.innerHTML = '<p class="text-sm text-slate-400 text-center py-10">No se detectó personal asignado bajo estos filtros.</p>';
-        return;
-      }
-
-      contenedor.innerHTML = "";
-      filtrados.forEach(f => {
-        const item = document.createElement('button');
-        item.className = "w-full text-left p-3 rounded-lg hover:bg-slate-800/80 transition-all flex justify-between items-center group";
-        item.innerHTML = `
-          <div>
-            <div class="font-semibold text-sm group-hover:text-corporate-yellow transition-colors">${f.nombre}</div>
-            <div class="text-xs text-slate-400">${f.cedula} | Base: ${f.municipio ? f.municipio : 'Ámbito de Estado'}</div>
-          </div>
-          <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-corporate-yellow transition-colors"></i>
-        `;
-        item.addEventListener('click', () => desplegarDetalleFiscal(f));
-        contenedor.appendChild(item);
-      });
-    }
-
-    function desplegarDetalleFiscal(fiscal) {
-      document.getElementById('detalle-placeholder').classList.add('hidden');
-      const card = document.getElementById('detalle-fiscal-card');
-      card.classList.remove('hidden');
-
-      document.getElementById('det-nombre').innerText = fiscal.nombre;
-      document.getElementById('det-cedula').innerText = fiscal.cedula;
-      document.getElementById('det-correo').innerText = fiscal.correo;
-
-      const hoyString = obtenerFechaHoyString();
-
-      // Buscar si el fiscal tiene una actuación registrada en la fecha actual (Hoy)
-      const actuacionHoy = cacheActuaciones.find(a => a.cedula_fiscal === fiscal.cedula && a.fecha === hoyString);
-      const boxHoy = document.getElementById('box-ubicacion-actual');
-
-      if (actuacionHoy) {
-        boxHoy.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-bold text-white"><i class="fa-solid fa-location-dot text-corporate-yellow mr-1"></i> ${actuacionHoy.estado} - ${actuacionHoy.municipio}</span>
-            <span class="text-xs bg-corporate-blue text-white font-mono px-2 py-0.5 rounded">${actuacionHoy.fecha}</span>
-          </div>
-          <p class="text-xs text-slate-300 mt-2 bg-slate-900 p-2 rounded border border-slate-800">${actuacionHoy.detalle}</p>
-        `;
-      } else {
-        boxHoy.innerHTML = `
-          <div class="text-sm text-slate-400 flex items-center gap-2">
-            <i class="fa-solid fa-circle-minus text-corporate-red"></i> Sin ruta de actuación cargada para la fecha actual.
-          </div>
-        `;
-      }
-
-      // Procesar e inyectar el histórico de actuaciones pasadas
-      const historial = cacheActuaciones.filter(a => a.cedula_fiscal === fiscal.cedula && a.fecha !== hoyString)
-                                        .sort((a, b) => b.fecha.localeCompare(a.fecha));
-
-      const tablaHistorial = document.getElementById('tabla-historial');
-      tablaHistorial.innerHTML = "";
-
-      if (historial.length === 0) {
-        tablaHistorial.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-xs text-slate-500">No se registran antecedentes operativos en el sistema.</td></tr>`;
-      } else {
-        historial.forEach(act => {
-          tablaHistorial.innerHTML += `
-            <tr class="hover:bg-slate-950/40 transition-colors">
-              <td class="px-4 py-2 text-xs font-mono">${act.fecha}</td>
-              <td class="px-4 py-2 text-xs font-semibold text-slate-300">${act.estado} -> ${act.municipio}</td>
-              <td class="px-4 py-2 text-xs text-slate-400 max-w-xs truncate" title="${act.detalle}">${act.detalle}</td>
-            </tr>
-          `;
-        });
-      }
-    }
-
-    function actualizarContadoresYListas() {
-      filtrarYRenderizarFiscales();
-    }
-
-    // ================= PANEL 2: CARGA DE ACTUACIONES (MANUAL / EXCEL) =================
-    const inputBuscarFiscal = document.getElementById('act-buscar-fiscal');
-    const dropdownSugerencias = document.getElementById('act-dropdown-sugerencias');
-    const hiddenFiscalId = document.getElementById('act-fiscal-seleccionado-id');
-    const selectActMunicipio = document.getElementById('act-municipio');
-
-    inputBuscarFiscal.addEventListener('input', (e) => {
-      const txt = e.target.value.toLowerCase().trim();
-      dropdownSugerencias.innerHTML = "";
-      if (!txt) {
-        dropdownSugerencias.classList.add('hidden');
-        return;
-      }
-
-      const sugerencias = cacheFiscales.filter(f => f.nombre.toLowerCase().includes(txt) || f.cedula.toLowerCase().includes(txt));
-      
-      if (sugerencias.length === 0) {
-        dropdownSugerencias.classList.add('hidden');
-        return;
-      }
-
-      dropdownSugerencias.classList.remove('hidden');
-      sugerencias.forEach(f => {
-        const dItem = document.createElement('button');
-        dItem.type = "button";
-        dItem.className = "w-full text-left px-4 py-2 text-xs hover:bg-corporate-blue text-white transition-colors block";
-        dItem.innerText = `${f.nombre} (${f.cedula})`;
-        dItem.addEventListener('click', () => {
-          inputBuscarFiscal.value = f.nombre;
-          hiddenFiscalId.value = f.cedula;
-          dropdownSugerencias.classList.add('hidden');
-          
-          selectActMunicipio.innerHTML = "";
-          if (geoVenezuela[f.estado]) {
-            geoVenezuela[f.estado].forEach(m => {
-              selectActMunicipio.innerHTML += `<option value="${m}">${m}</option>`;
-            });
-          }
-        });
-        dropdownSugerencias.appendChild(dItem);
-      });
-    });
-
-    document.getElementById('form-registro-actuacion').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const cedula = hiddenFiscalId.value;
-      const fiscalObject = cacheFiscales.find(f => f.cedula === cedula);
-      
-      if (!fiscalObject) {
-        alert("Por favor, seleccione un fiscal válido de la lista predictiva.");
-        return;
-      }
-
-      const nuevaActuacion = {
-        cedula_fiscal: fiscalObject.cedula,
-        nombre_fiscal: fiscalObject.nombre,
-        estado: fiscalObject.estado,
-        municipio: document.getElementById('act-municipio').value,
-        fecha: document.getElementById('act-fecha').value,
-        detalle: document.getElementById('act-detalle').value
-      };
-
-      try {
-        await addDoc(collection(db, "actuaciones"), nuevaActuacion);
-        alert("Actuación de fiscalización guardada de forma segura.");
-        document.getElementById('form-registro-actuacion').reset();
-        hiddenFiscalId.value = "";
-        await descargarDataAFirestoreCache();
-      } catch (err) {
-        alert("Error guardando actuación: " + err.message);
-      }
-    });
-
-    const fileActuaciones = document.getElementById('excel-actuaciones-file');
-    fileActuaciones.addEventListener('change', (e) => {
-      if(e.target.files.length > 0) {
-        document.getElementById('excel-actuaciones-name').innerText = `Archivo cargado: ${e.target.files[0].name}`;
-      }
-    });
-
-    document.getElementById('btn-procesar-excel-actuaciones').addEventListener('click', () => {
-      const file = fileActuaciones.files[0];
-      if (!file) { alert("Debe adjuntar un archivo Excel (.xlsx)."); return; }
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-        const batch = writeBatch(db);
-        let count = 0;
-
-        json.forEach(row => {
-          const cedula = row.cedula_fiscal?.toString().trim();
-          const nombre = row.nombre_fiscal?.toString().trim();
-          const estado = row.estado?.toString().trim();
-          const municipio = row.municipio?.toString().trim();
-          let fecha = row.fecha_actuacion?.toString().trim();
-          const detalle = row.detalle_actuacion?.toString().trim();
-
-          if (cedula && estado && fecha) {
-            if (fecha.includes('/')) {
-              const parts = fecha.split('/');
-              if (parts[2].length === 4) fecha = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            // Si ya fue respondida, ocultar botones de decisión y mostrar la respuesta
+            if (denuncia.Respuesta_Empresa) {
+                document.getElementById('decision-box').style.display = 'none';
+                document.getElementById('explanation-label').innerHTML = "Respuesta ya enviada:";
+                document.getElementById('respuesta-texto').value = denuncia.Respuesta_Empresa;
+                document.getElementById('respuesta-texto').readOnly = true;
+                document.getElementById('btn-enviar-respuesta').style.display = 'none';
+                document.getElementById('explanation-box').style.display = 'block';
+            } else {
+                document.getElementById('decision-box').style.display = 'block';
+                document.getElementById('respuesta-texto').readOnly = false;
+                document.getElementById('btn-enviar-respuesta').style.display = 'block';
             }
 
-            const docRef = doc(collection(db, "actuaciones"));
-            batch.set(docRef, {
-              cedula_fiscal: cedula,
-              nombre_fiscal: nombre || "Desconocido",
-              estado: estado,
-              municipio: municipio || "",
-              fecha: fecha,
-              detalle: detalle || "Sin detalles cargados masivamente."
-            });
-            count++;
-          }
-        });
-
-        if (count > 0) {
-          await batch.commit();
-          alert(`Éxito: Se han procesado e inyectado ${count} actuaciones fiscales.`);
-          document.getElementById('excel-actuaciones-name').innerText = "";
-          fileActuaciones.value = "";
-          await descargarDataAFirestoreCache();
-        } else {
-          alert("No se detectaron registros válidos que procesar. Verifique las cabeceras.");
+            document.getElementById('details-modal').style.display = 'flex';
         }
-      };
-      reader.readAsArrayBuffer(file);
-    });
 
-    // ================= PANEL 3: ALTA DE FISCALES (MANUAL / EXCEL) =================
-    document.getElementById('form-registro-fiscal').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const cedula = document.getElementById('fisc-cedula').value.trim();
-      
-      const nuevoFiscal = {
-        cedula: cedula,
-        nombre: document.getElementById('fisc-nombre').value.trim(),
-        correo: document.getElementById('fisc-correo').value.trim(),
-        estado: document.getElementById('fisc-estado').value,
-        municipio: document.getElementById('fisc-municipio').value || "",
-        fecha_registro: obtenerFechaHoyString()
-      };
+        function cerrarModal() {
+            document.getElementById('details-modal').style.display = 'none';
+            denunciaSeleccionada = null;
+        }
 
-      try {
-        await setDoc(doc(db, "fiscales", cedula), nuevoFiscal);
-        alert(`Funcionario ${nuevoFiscal.nombre} incorporado con éxito de forma correcta.`);
-        document.getElementById('form-registro-fiscal').reset();
-        await descargarDataAFirestoreCache();
-      } catch (err) {
-        alert("Error al guardar fiscal: " + err.message);
-      }
-    });
+        function mostrarExplicacion(decision) {
+            prefijoDecision = decision; // Guardamos la decisión del botón
+            const box = document.getElementById('explanation-box');
+            const label = document.getElementById('explanation-label');
+            
+            box.style.display = 'block';
+            document.getElementById('respuesta-texto').focus();
+            
+            if(decision === 'Sí PROCEDE') {
+                label.innerHTML = "Indique las instrucciones para realizar el cambio del producto o reparación:";
+            } else {
+                label.innerHTML = "Explique al denunciante el motivo legal o técnico por el cual NO procede:";
+            }
+        }
 
-    const fileFiscales = document.getElementById('excel-fiscales-file');
-    fileFiscales.addEventListener('change', (e) => {
-      if(e.target.files.length > 0) {
-        document.getElementById('excel-fiscales-name').innerText = `Archivo cargado: ${e.target.files[0].name}`;
-      }
-    });
+        async function enviarRespuesta() {
+            const textoExplicacion = document.getElementById('respuesta-texto').value;
+            const btn = document.getElementById('btn-enviar-respuesta');
+            const msgExito = document.getElementById('mensaje-exito');
 
-    document.getElementById('btn-procesar-excel-fiscales').addEventListener('click', () => {
-      const file = fileFiscales.files[0];
-      if (!file) { alert("Debe adjuntar un archivo Excel (.xlsx)."); return; }
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-        // --- MODIFICACIÓN DE LOGICA PARA EL LÍMITE DE BATCH ---
-        let batch = writeBatch(db);
-        let count = 0;
-        let operationsInBatch = 0;
-
-        for (const row of json) {
-          const cedula = row.cedula_fiscal?.toString().trim();
-          const nombre = row.nombre_fiscal?.toString().trim();
-          const correo = row.correo_fiscal?.toString().trim();
-          const estado = row.estado?.toString().trim();
-          const municipio = row.municipio?.toString().trim();
-          const rol = row.rol?.toString().trim() || "Fiscal";
-
-          if (cedula && nombre && estado) {
-            // Si el lote se acerca al límite de 500 operaciones, lo enviamos y creamos uno nuevo
-            if (operationsInBatch >= 400) {
-              await batch.commit();
-              batch = writeBatch(db);
-              operationsInBatch = 0;
+            if (!textoExplicacion.trim()) {
+                alert("Por favor, escriba una explicación antes de enviar.");
+                return;
             }
 
-            const docFiscalRef = doc(db, "fiscales", cedula);
-            batch.set(docFiscalRef, {
-              cedula: cedula,
-              nombre: nombre,
-              correo: correo || "",
-              estado: estado,
-              municipio: municipio || "",
-              fecha_registro: obtenerFechaHoyString()
-            });
-            operationsInBatch++;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
 
-            if (correo) {
-              const docUserRef = doc(db, "usuarios_pre_registrados", cedula);
-              batch.set(docUserRef, { correo: correo, rol: rol });
-              operationsInBatch++;
+            // Concatenar la decisión (Sí/No) con el texto que escribió el usuario
+            const respuestaFinal = `[${prefijoDecision}] - ${textoExplicacion}`;
+
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        action: "updateRespuesta", 
+                        id: denunciaSeleccionada.ID_Denuncia, 
+                        respuesta: respuestaFinal 
+                    })
+                });
+                
+                const result = await response.json();
+
+                if (result.success) {
+                    msgExito.innerText = "¡Respuesta registrada en la base de datos!";
+                    msgExito.style.display = 'block';
+                    btn.style.display = 'none';
+                    
+                    // Recargar tarjetas en el fondo para que aparezca como "Revisado"
+                    cargarDenuncias();
+                    
+                    // Cerrar modal automáticamente después de 2 segundos
+                    setTimeout(cerrarModal, 2000);
+                } else {
+                    alert("Error al guardar: " + result.message);
+                    btn.innerText = "Intentar de nuevo";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert("Error de conexión al enviar respuesta.");
+                btn.innerText = "Intentar de nuevo";
+                btn.disabled = false;
             }
-            count++;
-          }
         }
-
-        // Enviamos el último lote remanente si contiene operaciones
-        if (operationsInBatch > 0) {
-          await batch.commit();
-        }
-        // --- FIN DE LA MODIFICACIÓN ---
-
-        if (count > 0) {
-          alert(`Éxito: Base de datos actualizada. ${count} fiscales dados de alta masivamente.`);
-          document.getElementById('excel-fiscales-name').innerText = "";
-          fileFiscales.value = "";
-          await descargarDataAFirestoreCache();
-        } else {
-          alert("Archivo inválido o sin datos consistentes.");
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    });
-
-    // ================= PANEL 4: CENTRO DE REPORTES Y DESCARGAS =================
-    function renderizarSelectReportes() {
-      const select = document.getElementById('rep-fiscal-select');
-      select.innerHTML = '<option value="TODOS">-- Descargar Todos los Fiscales --</option>';
-      cacheFiscales.forEach(f => {
-        select.innerHTML += `<option value="${f.cedula}">${f.nombre} (${f.cedula})</option>`;
-      });
-    }
-
-    document.getElementById('btn-descargar-reporte').addEventListener('click', () => {
-      const fechaFiltro = document.getElementById('rep-fecha').value;
-      const fiscalFiltro = document.getElementById('rep-fiscal-select').value;
-
-      if (!fechaFiltro) {
-        alert("Debe seleccionar una fecha específica para realizar la extracción.");
-        return;
-      }
-
-      let filtrados = cacheActuaciones.filter(a => a.fecha === fechaFiltro);
-
-      if (fiscalFiltro !== "TODOS") {
-        filtrados = filtrados.filter(a => a.cedula_fiscal === fiscalFiltro);
-      }
-
-      if (filtrados.length === 0) {
-        alert("No se hallaron actuaciones en el sistema para la fecha y criterio seleccionados.");
-        return;
-      }
-
-      let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "Cedula Fiscal,Nombre Fiscal,Estado,Municipio,Fecha,Detalle Actuacion\n";
-
-      filtrados.forEach(row => {
-        const detalleLimpio = row.detalle.replace(/"/g, '""');
-        csvContent += `"${row.cedula_fiscal}","${row.nombre_fiscal}","${row.estado}","${row.municipio}","${row.fecha}","${detalleLimpio}"\n`;
-      });
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `Reporte_Actuaciones_${fechaFiltro}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-
-  </script>
+    </script>
 </body>
 </html>
