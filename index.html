@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Gestión - Liquid Glass</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" 
-
-rel="stylesheet">
+    <title>Portal de Gestión - SUNDDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         /* === VARIABLES Y RESET === */
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            --text-color: #000000;
-            --accent-color: rgba(255, 255, 255, 0.3);
+            /* Fondo de cristal más opaco para que el texto negro resalte */
+            --glass-bg: rgba(255, 255, 255, 0.75); 
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+            --text-color: #000000; /* Todo el texto en negro */
         }
 
         * {
@@ -22,6 +20,7 @@ rel="stylesheet">
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
+            color: var(--text-color); /* Aplicado a todo globalmente */
         }
 
         body {
@@ -29,7 +28,6 @@ rel="stylesheet">
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -58,8 +56,7 @@ rel="stylesheet">
 
         .app-logo {
             width: 160px;
-            margin-bottom: 30px;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
+            margin-bottom: 20px;
         }
 
         .input-group {
@@ -68,45 +65,44 @@ rel="stylesheet">
         }
 
         .input-group label {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-bottom: 8px;
             display: block;
-            opacity: 0.9;
+            font-weight: 600;
         }
 
         input[type="email"], input[type="password"], textarea {
             width: 100%;
             padding: 12px 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
+            background: #ffffff;
+            border: 1px solid #cccccc;
             border-radius: 12px;
-            color: white;
             font-size: 1rem;
             outline: none;
             transition: all 0.3s;
         }
 
         input:focus, textarea:focus {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: #000000;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
 
-        #login-view button.btn-primary {
+        /* Botones Globales (Texto negro, fondo gris/blanco para contraste) */
+        button.btn-primary {
             width: 100%;
             padding: 14px;
-            background: #000000;
-            border: none;
+            background: #e0e0e0;
+            border: 1px solid #b3b3b3;
             border-radius: 12px;
-            color: #ffffff;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 10px;
         }
 
-        #login-view button.btn-primary:hover {
-            background: #222222;
+        button.btn-primary:hover {
+            background: #cccccc;
             transform: translateY(-2px);
         }
 
@@ -124,12 +120,11 @@ rel="stylesheet">
             align-items: center;
             padding: 15px 5%;
             border-radius: 0 0 24px 24px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .header-logo {
             height: 50px;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
         }
 
         .user-profile-container {
@@ -144,9 +139,8 @@ rel="stylesheet">
         }
 
         .btn-logout {
-            background: rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--glass-border);
-            color: #ffffff;
+            background: transparent;
+            border: 1px solid #000000;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
@@ -155,8 +149,34 @@ rel="stylesheet">
         }
 
         .btn-logout:hover {
-            background: rgba(220, 53, 69, 0.8);
-            border-color: rgba(220, 53, 69, 1);
+            background: #ffcccc;
+            border-color: #cc0000;
+            color: #cc0000;
+        }
+
+        /* === BARRA DE FILTROS === */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 0 5%;
+            flex-wrap: wrap;
+        }
+
+        .btn-filter {
+            background: #ffffff;
+            border: 1px solid #000000;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-filter:hover, .btn-filter.active {
+            background: #e0e0e0;
+            transform: scale(1.05);
         }
 
         .cards-container {
@@ -173,11 +193,12 @@ rel="stylesheet">
             padding: 20px;
             cursor: pointer;
             transition: transform 0.3s, background 0.3s;
+            border: 1px solid #cccccc;
         }
 
         .denuncia-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .status-badge {
@@ -185,19 +206,17 @@ rel="stylesheet">
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 10px;
+            border: 1px solid #000;
         }
-
-        .status-pendiente { background: rgba(255, 193, 7, 0.8); color: black; }
-        .status-revisado { background: rgba(40, 167, 69, 0.8); color: white; }
 
         /* === MODAL FLOTANTE === */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(5px);
             z-index: 1000;
             justify-content: center;
@@ -206,7 +225,6 @@ rel="stylesheet">
 
         .modal-content {
             background: #ffffff;
-            color: #000000;
             width: 90%;
             max-width: 500px;
             max-height: 90vh;
@@ -215,6 +233,7 @@ rel="stylesheet">
             position: relative;
             border-radius: 24px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid #000;
         }
 
         .close-btn {
@@ -222,9 +241,9 @@ rel="stylesheet">
             top: 20px; right: 20px;
             background: none;
             border: none;
-            color: #000000;
             font-size: 1.5rem;
             cursor: pointer;
+            font-weight: bold;
         }
 
         .decision-box {
@@ -239,25 +258,8 @@ rel="stylesheet">
             margin-top: 15px;
         }
 
-        .modal-content button.btn-primary {
-            background: #000000;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
+        .btn-group button {
             flex: 1;
-        }
-        
-        .modal-content button.btn-primary:hover {
-            background: #333333;
-        }
-        
-        .modal-content button.btn-primary:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
         }
 
         #explanation-box {
@@ -265,21 +267,11 @@ rel="stylesheet">
             margin-top: 20px;
             animation: fadeIn 0.4s ease;
         }
-        
-        .modal-content textarea {
-            background: #f5f5f5;
-            color: #000;
-            border: 1px solid #ccc;
-        }
-        .modal-content textarea:focus {
-            background: #fff;
-            border-color: #000;
-        }
 
         .loader {
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid #cccccc;
             border-radius: 50%;
-            border-top: 4px solid #fff;
+            border-top: 4px solid #000000;
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
@@ -287,13 +279,11 @@ rel="stylesheet">
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; 
-
-transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cccccc; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -301,45 +291,42 @@ transform: translateY(0); } }
     <div id="login-view" class="glass-panel">
         <img src="https://i.ibb.co/1f607SYR/logosundde.png" alt="Logo" class="app-logo">
         <h2>Iniciar Sesión</h2>
-        <p style="font-size: 0.85rem; margin-bottom: 25px; opacity: 0.8;">Portal de Sujetos de 
-
-Aplicación</p>
+        <p style="font-size: 0.85rem; margin-bottom: 25px;">Portal de Sujetos de Aplicación</p>
         
         <div class="input-group">
             <label>Correo Electrónico</label>
             <input type="email" id="email" placeholder="usuario@empresa.com">
         </div>
         <div class="input-group">
-            <label>Contraseña (Opcional por ahora)</label>
+            <label>Contraseña</label>
             <input type="password" id="password" placeholder="••••••••">
         </div>
         
         <button class="btn-primary" id="btn-login" onclick="ingresar()">Acceder al Sistema</button>
-        <div id="login-loader" style="display:none; margin-top:15px;"><div 
-
-class="loader"></div></div>
-        <p id="login-error" style="color:#ff6b6b; font-size:0.85rem; margin-top:10px; 
-
-display:none;"></p>
+        <div id="login-loader" style="display:none; margin-top:15px;"><div class="loader"></div></div>
+        <p id="login-error" style="color:#cc0000; font-size:0.85rem; font-weight: bold; margin-top:10px; display:none;"></p>
     </div>
 
     <div id="dashboard-view">
         <header class="glass-panel dashboard-header">
-            <img src="https://i.ibb.co/1f607SYR/logosundde.png" alt="Logo Pequeño" class="header-
-
-logo">
+            <img src="https://i.ibb.co/1f607SYR/logosundde.png" alt="Logo Pequeño" class="header-logo">
             <div class="user-profile-container">
                 <div class="user-profile">
                     <strong id="perfil-email">Usuario</strong><br>
-                    <span id="perfil-empresa" style="opacity: 0.8;">Empresa</span>
+                    <span id="perfil-empresa" style="font-weight: 600;">Empresa</span>
+                    <br><small id="perfil-rol"></small>
                 </div>
                 <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
             </div>
         </header>
 
-        <div id="dashboard-loader" style="display:none; text-align:center; padding: 40px;"><div 
+        <div class="filter-bar">
+            <button class="btn-filter active" id="btn-todas" onclick="filtrarVista('todas')">Denuncias Recibidas</button>
+            <button class="btn-filter" id="btn-procede" onclick="filtrarVista('Procede')">Procede</button>
+            <button class="btn-filter" id="btn-noprocede" onclick="filtrarVista('No Procede')">No Procede</button>
+        </div>
 
-class="loader"></div><p>Cargando denuncias...</p></div>
+        <div id="dashboard-loader" style="display:none; text-align:center; padding: 40px;"><div class="loader"></div><p style="margin-top:10px; font-weight:bold;">Cargando base de datos...</p></div>
         
         <main class="cards-container" id="cards-container">
             </main>
@@ -350,65 +337,51 @@ class="loader"></div><p>Cargando denuncias...</p></div>
             <button class="close-btn" onclick="cerrarModal()">&times;</button>
             <h2 id="modal-titulo" style="margin-bottom: 15px;">Detalles de la Denuncia</h2>
             
-            <div style="font-size: 0.95rem; line-height: 1.5; opacity: 0.9;">
+            <div style="font-size: 0.95rem; line-height: 1.6;">
                 <p><strong>Denunciante:</strong> <span id="modal-denunciante"></span></p>
                 <p><strong>Cédula:</strong> <span id="modal-cedula"></span></p>
                 <p><strong>Teléfono:</strong> <span id="modal-telefono"></span></p>
+                <p><strong>Empresa Implicada:</strong> <span id="modal-empresaimplicada"></span></p>
                 <p><strong>Producto:</strong> <span id="modal-producto"></span></p>
                 <p><strong>Motivo de la denuncia:</strong> <span id="modal-motivo"></span></p>
             </div>
 
             <div class="decision-box" id="decision-box">
-                <p style="font-weight: 600;">¿Cumple con las garantías?</p>
+                <p style="font-weight: 700;">¿Cumple con las garantías?</p>
                 <div class="btn-group">
-                    <button class="btn-primary" onclick="mostrarExplicacion('Sí 
-
-PROCEDE')">Sí</button>
-                    <button class="btn-primary" onclick="mostrarExplicacion('NO PROCEDE')">No 
-
-procede</button>
+                    <button class="btn-primary" onclick="mostrarExplicacion('Procede')">Procede</button>
+                    <button class="btn-primary" onclick="mostrarExplicacion('No Procede')">No Procede</button>
                 </div>
             </div>
 
             <div id="explanation-box">
-                <label id="explanation-label" style="display: block; margin-bottom: 8px; font-size: 
-
-0.9rem; font-weight: 600;"></label>
-                <textarea id="respuesta-texto" rows="4" placeholder="Escriba detalladamente su 
-
-respuesta aquí..."></textarea>
-                <button class="btn-primary" id="btn-enviar-respuesta" style="margin-top: 15px; width: 
-
-100%;" onclick="enviarRespuesta()">Enviar Respuesta</button>
+                <label id="explanation-label" style="display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 700;"></label>
+                <textarea id="respuesta-texto" rows="4" placeholder="Escriba detalladamente su respuesta aquí..."></textarea>
+                <button class="btn-primary" id="btn-enviar-respuesta" style="margin-top: 15px; width: 100%; background: #000; color: #fff;" onclick="enviarRespuesta()">Confirmar y Enviar a Base de Datos</button>
             </div>
             
-            <p id="mensaje-exito" style="color: green; font-weight: bold; margin-top: 15px; display: 
-
-none; text-align: center;"></p>
+            <p id="mensaje-exito" style="color: #006600; font-weight: bold; margin-top: 15px; display: none; text-align: center;"></p>
         </div>
     </div>
 
     <script>
-        // URL EXACTA DE TU WEB APP
-        const WEB_APP_URL = 
-
-"https://script.google.com/macros/s/AKfycbwLPFaUEDcH3EOMGykhCkk7UeufZjFSgJiNQRMwsi1FSKJA9eWVEbGB40cxE
-
-xd9Z6U/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLPFaUEDcH3EOMGykhCkk7UeufZjFSgJiNQRMwsi1FSKJA9eWVEbGB40cxExd9Z6U/exec";
         
         let usuarioActual = {};
+        let denunciasDescargadas = []; // Almacenará todas las que traiga la base de datos
         let denunciaSeleccionada = null;
-        let prefijoDecision = ""; // Guardará si es "Sí PROCEDE" o "NO PROCEDE"
+        let prefijoDecision = ""; // Guarda si es "Procede" o "No Procede"
 
         // === 1. LÓGICA DE LOGIN ===
         async function ingresar() {
             const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('login-error');
             const btn = document.getElementById('btn-login');
             const loader = document.getElementById('login-loader');
 
-            if (!email) {
-                errorMsg.innerText = "Por favor ingrese su correo electrónico.";
+            if (!email || !password) {
+                errorMsg.innerText = "Por favor ingrese correo y contraseña.";
                 errorMsg.style.display = 'block';
                 return;
             }
@@ -418,33 +391,30 @@ xd9Z6U/exec";
             loader.style.display = 'block';
 
             try {
-                // Hacer petición a Google Apps Script
                 const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: "login", email: email })
+                    body: JSON.stringify({ action: "login", email: email, password: password })
                 });
                 
                 const result = await response.json();
 
                 if (result.success) {
                     usuarioActual = result;
-                    // Actualizar Header
                     document.getElementById('perfil-email').innerText = result.email;
                     document.getElementById('perfil-empresa').innerText = result.empresa;
+                    document.getElementById('perfil-rol').innerText = "Rol: " + result.rol;
                     
-                    // Cambiar Vista
                     document.getElementById('login-view').style.display = 'none';
                     document.getElementById('dashboard-view').style.display = 'flex';
                     
-                    // Cargar los datos de esa empresa
                     cargarDenuncias();
                 } else {
                     errorMsg.innerText = result.message;
                     errorMsg.style.display = 'block';
                 }
             } catch (error) {
-                errorMsg.innerText = "Error de conexión con el servidor.";
+                errorMsg.innerText = "Error de conexión. Verifica la URL de AppScript.";
                 errorMsg.style.display = 'block';
             } finally {
                 btn.style.display = 'block';
@@ -454,103 +424,137 @@ xd9Z6U/exec";
 
         function cerrarSesion() {
             usuarioActual = {};
+            denunciasDescargadas = [];
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
             document.getElementById('cards-container').innerHTML = '';
+            document.getElementById('login-error').style.display = 'none';
         }
 
         // === 2. LÓGICA PARA CARGAR DENUNCIAS ===
         async function cargarDenuncias() {
-            const container = document.getElementById('cards-container');
             const loader = document.getElementById('dashboard-loader');
+            const container = document.getElementById('cards-container');
             
             container.innerHTML = '';
             loader.style.display = 'block';
 
             try {
+                // Pasamos empresa y rol. Si el rol es "Sundde", el backend mandará todas
                 const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: "getDenuncias", empresa: usuarioActual.empresa })
+                    body: JSON.stringify({ 
+                        action: "getDenuncias", 
+                        empresa: usuarioActual.empresa,
+                        rol: usuarioActual.rol 
+                    })
                 });
                 
                 const result = await response.json();
                 loader.style.display = 'none';
 
-                if (result.success && result.data.length > 0) {
-                    result.data.forEach(denuncia => {
-                        // Determinar si ya tiene respuesta para cambiar el color de la etiqueta
-                        let estadoClase = denuncia.Respuesta_Empresa ? "status-revisado" : "status-
-
-pendiente";
-                        let estadoTexto = denuncia.Respuesta_Empresa ? "Revisado / Respondido" : 
-
-"Pendiente de Revisión";
-
-                        // Crear tarjeta HTML dinámicamente
-                        const card = document.createElement('div');
-                        card.className = 'glass-panel denuncia-card';
-                        card.onclick = () => abrirModal(denuncia);
-                        
-                        card.innerHTML = `
-                            <span class="status-badge ${estadoClase}">${estadoTexto}</span>
-                            <h3 style="margin-bottom: 10px;">ID: ${denuncia.ID_Denuncia}</h3>
-                            <p><strong>Denunciante:</strong> ${denuncia.Denunciante}</p>
-                            <p><strong>Producto:</strong> ${denuncia.Producto}</p>
-                            <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Hacer clic 
-
-para ver detalles y gestionar.</p>
-                        `;
-                        container.appendChild(card);
-                    });
+                if (result.success) {
+                    denunciasDescargadas = result.data;
+                    filtrarVista('todas'); // Por defecto muestra todas al cargar
                 } else {
-                    container.innerHTML = '<p style="text-align:center; width: 100%;">No hay 
-
-denuncias registradas para esta empresa.</p>';
+                    container.innerHTML = `<p style="color:red; font-weight:bold;">Error: ${result.message}</p>`;
                 }
             } catch (error) {
                 loader.style.display = 'none';
-                container.innerHTML = '<p style="color:red; text-align:center; width: 100%;">Error al 
-
-cargar los datos.</p>';
+                container.innerHTML = '<p style="color:red; font-weight:bold;">Error de red al cargar la información.</p>';
             }
         }
 
-        // === 3. LÓGICA DEL MODAL FLOTANTE ===
+        // === 3. LÓGICA DE FILTROS (BOTONES) ===
+        function filtrarVista(filtro) {
+            // Actualizar estilo visual de los botones
+            document.getElementById('btn-todas').classList.remove('active');
+            document.getElementById('btn-procede').classList.remove('active');
+            document.getElementById('btn-noprocede').classList.remove('active');
+            
+            if(filtro === 'todas') document.getElementById('btn-todas').classList.add('active');
+            if(filtro === 'Procede') document.getElementById('btn-procede').classList.add('active');
+            if(filtro === 'No Procede') document.getElementById('btn-noprocede').classList.add('active');
+
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+
+            // Filtrar arreglo según la columna Estatus
+            let listaFiltrada = denunciasDescargadas;
+            if (filtro !== 'todas') {
+                listaFiltrada = denunciasDescargadas.filter(d => {
+                    let estatusStr = d.Estatus ? d.Estatus.toString().trim() : "";
+                    return estatusStr.toLowerCase() === filtro.toLowerCase();
+                });
+            }
+
+            // Renderizar
+            if (listaFiltrada.length > 0) {
+                listaFiltrada.forEach(denuncia => {
+                    let tieneRespuesta = denuncia.Estatus && denuncia.Estatus.trim() !== "";
+                    let textoBadge = tieneRespuesta ? denuncia.Estatus : "Pendiente de Revisión";
+                    
+                    // Colores del badge para contraste con fondo blanco/gris
+                    let bgBadge = "#ffffff";
+                    if(denuncia.Estatus === "Procede") bgBadge = "#d4edda";
+                    if(denuncia.Estatus === "No Procede") bgBadge = "#f8d7da";
+                    if(!tieneRespuesta) bgBadge = "#fff3cd";
+
+                    const card = document.createElement('div');
+                    card.className = 'glass-panel denuncia-card';
+                    card.onclick = () => abrirModal(denuncia);
+                    
+                    card.innerHTML = `
+                        <span class="status-badge" style="background: ${bgBadge};">${textoBadge}</span>
+                        <h3 style="margin-bottom: 10px;">ID: ${denuncia.ID_Denuncia}</h3>
+                        <p><strong>Empresa:</strong> ${denuncia.Empresa_Implicada}</p>
+                        <p><strong>Denunciante:</strong> ${denuncia.Denunciante}</p>
+                        <p><strong>Producto:</strong> ${denuncia.Producto}</p>
+                        <p style="margin-top: 10px; font-size: 0.85rem; font-weight: bold;">Hacer clic para gestionar.</p>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = '<p style="text-align:center; width: 100%; font-weight:bold;">No se encontraron denuncias en esta categoría.</p>';
+            }
+        }
+
+        // === 4. LÓGICA DEL MODAL FLOTANTE ===
         function abrirModal(denuncia) {
             denunciaSeleccionada = denuncia;
             
-            // Llenar información
-            document.getElementById('modal-titulo').innerText = "Detalles del Caso " + 
-
-denuncia.ID_Denuncia;
+            document.getElementById('modal-titulo').innerText = "Detalles del Caso " + denuncia.ID_Denuncia;
             document.getElementById('modal-denunciante').innerText = denuncia.Denunciante;
             document.getElementById('modal-cedula').innerText = denuncia.Cedula_Denunciante;
             document.getElementById('modal-telefono').innerText = denuncia.Telefono;
+            document.getElementById('modal-empresaimplicada').innerText = denuncia.Empresa_Implicada;
             document.getElementById('modal-producto').innerText = denuncia.Producto;
             document.getElementById('modal-motivo').innerText = denuncia.Motivo_De_La_Denuncia;
 
-            // Limpiar caja de texto y mensajes
             document.getElementById('respuesta-texto').value = '';
             document.getElementById('explanation-box').style.display = 'none';
             document.getElementById('mensaje-exito').style.display = 'none';
-            document.getElementById('btn-enviar-respuesta').innerText = "Enviar Respuesta";
-            document.getElementById('btn-enviar-respuesta').disabled = false;
+            
+            let btnEnviar = document.getElementById('btn-enviar-respuesta');
+            btnEnviar.innerText = "Confirmar y Enviar a Base de Datos";
+            btnEnviar.disabled = false;
+            btnEnviar.style.display = 'block';
 
-            // Si ya fue respondida, ocultar botones de decisión y mostrar la respuesta
-            if (denuncia.Respuesta_Empresa) {
+            // Si la columna Estatus ya tiene información, mostramos modo "Sólo lectura"
+            if (denuncia.Estatus && denuncia.Estatus.trim() !== "") {
                 document.getElementById('decision-box').style.display = 'none';
-                document.getElementById('explanation-label').innerHTML = "Respuesta ya enviada:";
-                document.getElementById('respuesta-texto').value = denuncia.Respuesta_Empresa;
+                document.getElementById('explanation-label').innerHTML = `Estado: <strong>${denuncia.Estatus}</strong><br>Respuesta Registrada:`;
+                document.getElementById('respuesta-texto').value = denuncia.Respuesta_Empresa || "(Sin comentarios adicionales)";
                 document.getElementById('respuesta-texto').readOnly = true;
-                document.getElementById('btn-enviar-respuesta').style.display = 'none';
+                btnEnviar.style.display = 'none';
                 document.getElementById('explanation-box').style.display = 'block';
             } else {
+                // Modo Edición
                 document.getElementById('decision-box').style.display = 'block';
                 document.getElementById('respuesta-texto').readOnly = false;
-                document.getElementById('btn-enviar-respuesta').style.display = 'block';
             }
 
             document.getElementById('details-modal').style.display = 'flex';
@@ -562,21 +566,17 @@ denuncia.ID_Denuncia;
         }
 
         function mostrarExplicacion(decision) {
-            prefijoDecision = decision; // Guardamos la decisión del botón
+            prefijoDecision = decision; // "Procede" o "No Procede"
             const box = document.getElementById('explanation-box');
             const label = document.getElementById('explanation-label');
             
             box.style.display = 'block';
             document.getElementById('respuesta-texto').focus();
             
-            if(decision === 'Sí PROCEDE') {
-                label.innerHTML = "Indique las instrucciones para realizar el cambio del producto o 
-
-reparación:";
+            if(decision === 'Procede') {
+                label.innerHTML = "Indique las instrucciones para realizar el cambio del producto o reparación:";
             } else {
-                label.innerHTML = "Explique al denunciante el motivo legal o técnico por el cual NO 
-
-procede:";
+                label.innerHTML = "Explique al denunciante el motivo legal o técnico por el cual NO procede:";
             }
         }
 
@@ -586,15 +586,12 @@ procede:";
             const msgExito = document.getElementById('mensaje-exito');
 
             if (!textoExplicacion.trim()) {
-                alert("Por favor, escriba una explicación antes de enviar.");
+                alert("Por favor, escriba una explicación para el sistema antes de enviar.");
                 return;
             }
 
-            btn.innerText = "Enviando...";
+            btn.innerText = "Enviando a Base de Datos...";
             btn.disabled = true;
-
-            // Concatenar la decisión (Sí/No) con el texto que escribió el usuario
-            const respuestaFinal = `[${prefijoDecision}] - ${textoExplicacion}`;
 
             try {
                 const response = await fetch(WEB_APP_URL, {
@@ -603,29 +600,29 @@ procede:";
                     body: JSON.stringify({ 
                         action: "updateRespuesta", 
                         id: denunciaSeleccionada.ID_Denuncia, 
-                        respuesta: respuestaFinal 
+                        estatus: prefijoDecision,         // Se guarda en Col H
+                        respuesta: textoExplicacion       // Se guarda en Col I
                     })
                 });
                 
                 const result = await response.json();
 
                 if (result.success) {
-                    msgExito.innerText = "¡Respuesta registrada en la base de datos!";
+                    msgExito.innerText = "¡Estatus actualizado y respuesta guardada!";
                     msgExito.style.display = 'block';
                     btn.style.display = 'none';
                     
-                    // Recargar tarjetas en el fondo para que aparezca como "Revisado"
+                    // Recargar silenciosamente la base de datos para refrescar la interfaz
                     cargarDenuncias();
                     
-                    // Cerrar modal automáticamente después de 2 segundos
-                    setTimeout(cerrarModal, 2000);
+                    setTimeout(cerrarModal, 2500);
                 } else {
-                    alert("Error al guardar: " + result.message);
+                    alert("Error del servidor: " + result.message);
                     btn.innerText = "Intentar de nuevo";
                     btn.disabled = false;
                 }
             } catch (error) {
-                alert("Error de conexión al enviar respuesta.");
+                alert("Error de conexión. Intente nuevamente.");
                 btn.innerText = "Intentar de nuevo";
                 btn.disabled = false;
             }
