@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Gestión - SUNDDE</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
     <style>
         /* === VARIABLES Y RESET === */
         :root {
-            /* Fondo de cristal más opaco para que el texto negro resalte */
             --glass-bg: rgba(255, 255, 255, 0.75); 
             --glass-border: rgba(255, 255, 255, 0.5);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
-            --text-color: #000000; /* Todo el texto en negro */
+            --text-color: #000000;
         }
 
         * {
@@ -20,7 +21,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            color: var(--text-color); /* Aplicado a todo globalmente */
+            color: var(--text-color);
         }
 
         body {
@@ -87,7 +88,6 @@
             box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
 
-        /* Botones Globales (Texto negro, fondo gris/blanco para contraste) */
         button.btn-primary {
             width: 100%;
             padding: 14px;
@@ -130,7 +130,7 @@
         .user-profile-container {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .user-profile {
@@ -138,19 +138,26 @@
             font-size: 0.9rem;
         }
 
+        /* Botón Logout estilo icono circular */
         .btn-logout {
             background: transparent;
             border: 1px solid #000000;
-            padding: 8px 16px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            font-weight: 600;
             transition: all 0.3s;
         }
 
         .btn-logout:hover {
             background: #ffcccc;
             border-color: #cc0000;
+        }
+
+        .btn-logout:hover .material-icons {
             color: #cc0000;
         }
 
@@ -312,16 +319,17 @@
             <img src="https://i.ibb.co/1f607SYR/logosundde.png" alt="Logo Pequeño" class="header-logo">
             <div class="user-profile-container">
                 <div class="user-profile">
-                    <strong id="perfil-email">Usuario</strong><br>
+                    <strong id="perfil-nombre">Nombre Apellido</strong><br>
                     <span id="perfil-empresa" style="font-weight: 600;">Empresa</span>
-                    <br><small id="perfil-rol"></small>
                 </div>
-                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+                <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar Sesión">
+                    <span class="material-icons">logout</span>
+                </button>
             </div>
         </header>
 
         <div class="filter-bar">
-            <button class="btn-filter active" id="btn-todas" onclick="filtrarVista('todas')">Denuncias Recibidas</button>
+            <button class="btn-filter active" id="btn-pendientes" onclick="filtrarVista('Pendiente')">Denuncias Recibidas</button>
             <button class="btn-filter" id="btn-procede" onclick="filtrarVista('Procede')">Procede</button>
             <button class="btn-filter" id="btn-noprocede" onclick="filtrarVista('No Procede')">No Procede</button>
         </div>
@@ -368,9 +376,29 @@
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLPFaUEDcH3EOMGykhCkk7UeufZjFSgJiNQRMwsi1FSKJA9eWVEbGB40cxExd9Z6U/exec";
         
         let usuarioActual = {};
-        let denunciasDescargadas = []; // Almacenará todas las que traiga la base de datos
+        let denunciasDescargadas = [];
         let denunciaSeleccionada = null;
-        let prefijoDecision = ""; // Guarda si es "Procede" o "No Procede"
+        let prefijoDecision = "";
+
+        // === AUTO-LOGIN AL CARGAR PÁGINA ===
+        window.onload = () => {
+            const sesionGuardada = localStorage.getItem('sesionSundde');
+            if (sesionGuardada) {
+                usuarioActual = JSON.parse(sesionGuardada);
+                prepararDashboard();
+            }
+        };
+
+        function prepararDashboard() {
+            // Muestra Nombre si existe, si no muestra el email por seguridad
+            document.getElementById('perfil-nombre').innerText = usuarioActual.nombre || usuarioActual.email;
+            document.getElementById('perfil-empresa').innerText = usuarioActual.empresa;
+            
+            document.getElementById('login-view').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'flex';
+            
+            cargarDenuncias();
+        }
 
         // === 1. LÓGICA DE LOGIN ===
         async function ingresar() {
@@ -401,14 +429,10 @@
 
                 if (result.success) {
                     usuarioActual = result;
-                    document.getElementById('perfil-email').innerText = result.email;
-                    document.getElementById('perfil-empresa').innerText = result.empresa;
-                    document.getElementById('perfil-rol').innerText = "Rol: " + result.rol;
+                    // Guardamos la sesión en el navegador
+                    localStorage.setItem('sesionSundde', JSON.stringify(usuarioActual));
                     
-                    document.getElementById('login-view').style.display = 'none';
-                    document.getElementById('dashboard-view').style.display = 'flex';
-                    
-                    cargarDenuncias();
+                    prepararDashboard();
                 } else {
                     errorMsg.innerText = result.message;
                     errorMsg.style.display = 'block';
@@ -423,8 +447,11 @@
         }
 
         function cerrarSesion() {
+            // Borramos la sesión del navegador
+            localStorage.removeItem('sesionSundde');
             usuarioActual = {};
             denunciasDescargadas = [];
+            
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('email').value = '';
@@ -442,7 +469,6 @@
             loader.style.display = 'block';
 
             try {
-                // Pasamos empresa y rol. Si el rol es "Sundde", el backend mandará todas
                 const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -458,7 +484,7 @@
 
                 if (result.success) {
                     denunciasDescargadas = result.data;
-                    filtrarVista('todas'); // Por defecto muestra todas al cargar
+                    filtrarVista('Pendiente'); // Por defecto muestra solo las pendientes
                 } else {
                     container.innerHTML = `<p style="color:red; font-weight:bold;">Error: ${result.message}</p>`;
                 }
@@ -468,36 +494,35 @@
             }
         }
 
-        // === 3. LÓGICA DE FILTROS (BOTONES) ===
+        // === 3. LÓGICA DE FILTROS ===
         function filtrarVista(filtro) {
-            // Actualizar estilo visual de los botones
-            document.getElementById('btn-todas').classList.remove('active');
+            document.getElementById('btn-pendientes').classList.remove('active');
             document.getElementById('btn-procede').classList.remove('active');
             document.getElementById('btn-noprocede').classList.remove('active');
             
-            if(filtro === 'todas') document.getElementById('btn-todas').classList.add('active');
+            if(filtro === 'Pendiente') document.getElementById('btn-pendientes').classList.add('active');
             if(filtro === 'Procede') document.getElementById('btn-procede').classList.add('active');
             if(filtro === 'No Procede') document.getElementById('btn-noprocede').classList.add('active');
 
             const container = document.getElementById('cards-container');
             container.innerHTML = '';
 
-            // Filtrar arreglo según la columna Estatus
-            let listaFiltrada = denunciasDescargadas;
-            if (filtro !== 'todas') {
-                listaFiltrada = denunciasDescargadas.filter(d => {
-                    let estatusStr = d.Estatus ? d.Estatus.toString().trim() : "";
+            let listaFiltrada = denunciasDescargadas.filter(d => {
+                let estatusStr = d.Estatus ? d.Estatus.toString().trim() : "";
+                if (filtro === 'Pendiente') {
+                    // Si el estatus está vacío, es pendiente
+                    return estatusStr === "";
+                } else {
+                    // Filtra por 'Procede' o 'No Procede'
                     return estatusStr.toLowerCase() === filtro.toLowerCase();
-                });
-            }
+                }
+            });
 
-            // Renderizar
             if (listaFiltrada.length > 0) {
                 listaFiltrada.forEach(denuncia => {
                     let tieneRespuesta = denuncia.Estatus && denuncia.Estatus.trim() !== "";
                     let textoBadge = tieneRespuesta ? denuncia.Estatus : "Pendiente de Revisión";
                     
-                    // Colores del badge para contraste con fondo blanco/gris
                     let bgBadge = "#ffffff";
                     if(denuncia.Estatus === "Procede") bgBadge = "#d4edda";
                     if(denuncia.Estatus === "No Procede") bgBadge = "#f8d7da";
@@ -543,7 +568,6 @@
             btnEnviar.disabled = false;
             btnEnviar.style.display = 'block';
 
-            // Si la columna Estatus ya tiene información, mostramos modo "Sólo lectura"
             if (denuncia.Estatus && denuncia.Estatus.trim() !== "") {
                 document.getElementById('decision-box').style.display = 'none';
                 document.getElementById('explanation-label').innerHTML = `Estado: <strong>${denuncia.Estatus}</strong><br>Respuesta Registrada:`;
@@ -552,7 +576,6 @@
                 btnEnviar.style.display = 'none';
                 document.getElementById('explanation-box').style.display = 'block';
             } else {
-                // Modo Edición
                 document.getElementById('decision-box').style.display = 'block';
                 document.getElementById('respuesta-texto').readOnly = false;
             }
@@ -566,7 +589,7 @@
         }
 
         function mostrarExplicacion(decision) {
-            prefijoDecision = decision; // "Procede" o "No Procede"
+            prefijoDecision = decision; 
             const box = document.getElementById('explanation-box');
             const label = document.getElementById('explanation-label');
             
@@ -600,8 +623,8 @@
                     body: JSON.stringify({ 
                         action: "updateRespuesta", 
                         id: denunciaSeleccionada.ID_Denuncia, 
-                        estatus: prefijoDecision,         // Se guarda en Col H
-                        respuesta: textoExplicacion       // Se guarda en Col I
+                        estatus: prefijoDecision,         
+                        respuesta: textoExplicacion       
                     })
                 });
                 
@@ -612,7 +635,6 @@
                     msgExito.style.display = 'block';
                     btn.style.display = 'none';
                     
-                    // Recargar silenciosamente la base de datos para refrescar la interfaz
                     cargarDenuncias();
                     
                     setTimeout(cerrarModal, 2500);
