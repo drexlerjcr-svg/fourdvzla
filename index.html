@@ -2,19 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>SUNDDE - Sujeto de Aplicación</title>
+  <title>SUNDDE - Sistema de Monitoreo Premium</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- Ícono para pantalla de teléfono móvil -->
   <link rel="shortcut icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png" type="image/png">
   <link rel="apple-touch-icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png">
   
   <style>
-    /* VARIABLES Y DISEÑO LIQUID GLASS */
+    /* VARIABLES Y DISEÑO LIQUID GLASS OPTIMIZADO PARA TEXTO NEGRO */
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.12);
-      --glass-border: rgba(255, 255, 255, 0.25);
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-      --text-main: #ffffff;
+      --glass-bg: rgba(255, 255, 255, 0.82); /* Mayor opacidad para lectura perfecta */
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+      --text-main: #000000; /* Letras principales totalmente negras */
       --primary: #007bff;
     }
 
@@ -54,25 +53,31 @@
       text-align: center;
     }
 
+    .login-box h2 {
+      color: #000000;
+    }
+
     .login-box img {
       max-width: 180px;
       margin-bottom: 20px;
     }
 
+    /* INPUTS EN TONOS CLAROS CON TEXTO NEGRO */
     input, select, textarea {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border-radius: 8px;
-      border: 1px solid var(--glass-border);
-      background: rgba(0, 0, 0, 0.3);
-      color: white;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.95);
+      color: #000000; /* Texto escrito en negro */
+      font-weight: 600;
       outline: none;
       box-sizing: border-box;
     }
 
     input::placeholder, textarea::placeholder {
-      color: rgba(255,255,255,0.6);
+      color: rgba(0, 0, 0, 0.55);
     }
 
     button {
@@ -88,6 +93,7 @@
       margin-top: 10px;
     }
     button:hover { background: #0056b3; transform: scale(1.02); }
+    button:disabled { background: #a0c4ff; cursor: not-allowed; }
 
     /* DASHBOARD PRINCIPAL */
     #dashboard-screen {
@@ -103,8 +109,6 @@
       margin-bottom: 30px;
     }
 
-    header img { height: 50px; }
-
     .grid-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -114,78 +118,89 @@
     .card {
       padding: 24px;
       transition: transform 0.3s, box-shadow 0.3s;
+      color: #000000; /* Forzar negro en el contenedor de las tarjetas */
     }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.5); }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.3); }
+
+    .card p, .card h3, .card label {
+      color: #000000 !important; /* Asegurar máxima prioridad del color negro */
+    }
 
     .badge {
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: bold;
-      background: rgba(255,255,255,0.25);
+      background: #007bff;
+      color: white !important;
       float: right;
     }
 
     /* ESTADISTICAS */
     .stats-container { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
     .stat-box { flex: 1; min-width: 200px; padding: 20px; text-align: center; }
-    .stat-box h2 { margin: 0; font-size: 2.6rem; color: #ffd700; }
+    .stat-box h2 { margin: 0; font-size: 2.6rem; color: #0056b3; }
+    .stat-box p { color: #000000; font-weight: bold; }
 
     /* ANIMACION CARGA */
-    #loader { display: none; text-align: center; padding: 30px; font-size: 1.3rem; }
+    #loader { display: none; text-align: center; padding: 30px; font-size: 1.3rem; color: #000000; }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA DE LOGEO -->
   <div id="login-screen">
     <div class="login-box glass-panel">
       <img src="https://i.ibb.co/v4pPWh2s/sundde.png" alt="SUNDDE Logo">
       <h2>Módulo de Acceso</h2>
       <input type="email" id="email" placeholder="Correo Corporativo o Empresa" required>
       <input type="password" id="pass" placeholder="Contraseña Seguro" required>
-      <button onclick="iniciarSesion()">Ingresar al Sistema</button>
-      <p id="login-error" style="color:#ff6b6b; display:none; margin-top:15px; font-weight:bold;"></p>
+      <button id="btn-login" onclick="iniciarSesion()">Ingresar al Sistema</button>
+      <p id="login-error" style="color:#dc3545; display:none; margin-top:15px; font-weight:bold;"></p>
     </div>
   </div>
 
-  <!-- PANEL CENTRAL -->
   <div id="dashboard-screen">
     <header class="glass-panel">
       <img src="https://i.ibb.co/v4pPWh2s/sundde.png" alt="SUNDDE">
       <div>
-        <span id="user-info" style="margin-right: 20px; font-weight: bold; font-size:1.1rem;"></span>
+        <span id="user-info" style="margin-right: 20px; font-weight: bold; font-size:1.1rem; color:#000000;"></span>
         <button onclick="cerrarSesion()" style="width: auto; background: #dc3545;">Cerrar Sesión</button>
       </div>
     </header>
 
-    <!-- ESTADÍSTICAS DEL ADMIN -->
     <div id="admin-stats" class="stats-container" style="display:none;"></div>
 
     <div style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
-      <h2 id="panel-title" style="margin:0;">Bandeja de Casos Asignados</h2>
+      <h2 id="panel-title" style="margin:0; color:#000000;">Bandeja de Casos Asignados</h2>
       <button id="btn-descarga-lote" style="width: auto; display: none; background:#28a745;" onclick="descargarLote()"><i class="fas fa-download"></i> Descargar Todo el Lote</button>
     </div>
 
-    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x"></i><br><span style="margin-top:10px; display:inline-block;">Sincronizando con Google Sheets...</span></div>
+    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x"></i><br><span style="margin-top:10px; display:inline-block; font-weight:bold; color:#000000;">Sincronizando con Google Sheets...</span></div>
     <div id="denuncias-container" class="grid-container"></div>
   </div>
 
   <script>
-    // URL Fija obligatoria provista para tus automatizaciones
     const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxC859D4u4GWusT8FBrCZgQf_6QpX7995_UPv-zSnMx0T3WJkbRR0qLmDH8Wxp5EWDE/exec";
     
     let currentUser = null;
     let currentDenuncias = [];
 
-    // Función puente de comunicación asíncrona Vercel -> Apps Script
+    // Verificación automática de sesión al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      const sesionGuardada = localStorage.getItem('sundde_sesion');
+      if (sesionGuardada) {
+        currentUser = JSON.parse(sesionGuardada);
+        levantarDashboard();
+      }
+    });
+
     async function requestAPI(action, payload = {}) {
       try {
         const response = await fetch(WEBAPP_URL, {
           method: "POST",
           mode: "cors",
           headers: {
-            "Content-Type": "text/plain" // Crucial para saltarse restricciones de preflight OPTIONS en Google
+            "Content-Type": "text/plain"
           },
           body: JSON.stringify({ action, payload })
         });
@@ -200,6 +215,7 @@
       const email = document.getElementById('email').value;
       const pass = document.getElementById('pass').value;
       const errBox = document.getElementById('login-error');
+      const btnLogin = document.getElementById('btn-login');
       errBox.style.display = 'none';
       
       if(!email || !pass) {
@@ -208,24 +224,36 @@
         return;
       }
 
+      // Cambiar estado del botón a cargando
+      btnLogin.disabled = true;
+      btnLogin.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Verificando credenciales...`;
+
       const res = await requestAPI("loginUser", { email, pass });
       
-      if(res.success) {
-        currentUser = res;
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('dashboard-screen').style.display = 'block';
-        document.getElementById('user-info').innerText = `${res.nombre} (${res.role})`;
-        
-        if(res.role === "Administrador General") loadAdminStats();
-        if(res.role === "Analista Denunciado" || res.role === "Fiscal Nacional") {
-          document.getElementById('btn-descarga-lote').style.display = 'block';
-        }
-        
-        cargarDenuncias();
-      } else {
+      // Restaurar estado original si falla
+      if(!res.success) {
+        btnLogin.disabled = false;
+        btnLogin.innerHTML = "Ingresar al Sistema";
         errBox.innerText = res.message;
         errBox.style.display = 'block';
+      } else {
+        currentUser = res;
+        localStorage.setItem('sundde_sesion', JSON.stringify(res)); // Guardar sesión de forma persistente
+        levantarDashboard();
       }
+    }
+
+    function levantarDashboard() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard-screen').style.display = 'block';
+      document.getElementById('user-info').innerText = `${currentUser.nombre} (${currentUser.role})`;
+      
+      if(currentUser.role === "Administrador General") loadAdminStats();
+      if(currentUser.role === "Analista Denunciado" || currentUser.role === "Fiscal Nacional") {
+        document.getElementById('btn-descarga-lote').style.display = 'block';
+      }
+      
+      cargarDenuncias();
     }
 
     async function cargarDenuncias() {
@@ -241,7 +269,7 @@
     function renderCards(data) {
       const container = document.getElementById('denuncias-container');
       if(data.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; opacity:0.7;">No tienes denuncias asignadas en esta etapa del proceso.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; font-weight:bold; opacity:0.7; color:#000000;">No tienes denuncias asignadas en esta etapa del proceso.</p>`;
         return;
       }
 
@@ -254,26 +282,26 @@
           <p><strong>Empresa/Sujeto:</strong> ${d.Empresa} (${d.Sujeto_De_La_Denuncia || 'N/A'})</p>
           <p><strong>Denunciante:</strong> ${d.Denunciante} | Tel: ${d.Telefono}</p>
           <p><strong>Producto:</strong> ${d.Producto}</p>
-          <p style="background: rgba(0,0,0,0.2); padding:10px; border-radius:6px; font-size:13px;"><strong>Motivo:</strong> ${d.Motivo_De_La_Denuncia}</p>
+          <p style="background: rgba(0,0,0,0.06); padding:10px; border-radius:6px; font-size:13px; border: 1px solid rgba(0,0,0,0.1); color:#000000;"><strong>Motivo:</strong> ${d.Motivo_De_La_Denuncia}</p>
         `;
 
         if(currentUser.role === "Analista SUNDDE") {
-           html += `<label style="font-size:12px; opacity:0.8;">Adjuntar PDF Soporte Denunciante:</label>
+           html += `<label style="font-size:12px; font-weight:bold;">Adjuntar PDF Soporte Denunciante:</label>
                     <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
                     <button onclick="procesar('SUNDDE_NOTIFICAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-paper-plane"></i> Notificar a Empresa</button>`;
         }
         
         if(currentUser.role === "Analista Denunciado") {
-           if(d.PDF_SUNDDE) html += `<a href="${d.PDF_SUNDDE}" target="_blank" style="color: #ffd700; text-decoration:none;"><i class="fas fa-file-pdf"></i> Descargar Documento Denuncia</a><br><br>`;
+           if(d.PDF_SUNDDE) html += `<a href="${d.PDF_SUNDDE}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline;"><i class="fas fa-file-pdf"></i> Descargar Documento Denuncia</a><br><br>`;
            html += `<textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe el Acta de conformidad y comentarios de entrega obligatorios..." required></textarea>
-                    <label style="font-size:12px; opacity:0.8;">Subir Foto/Acta Soporte (PDF):</label>
+                    <label style="font-size:12px; font-weight:bold;">Subir Foto/Acta Soporte (PDF):</label>
                     <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
                     <button onclick="procesar('EMPRESA_ATENDER', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-check"></i> Cargar y Atender Denuncia</button>`;
         }
 
         if(currentUser.role === "Fiscal Nacional") {
            html += `<p><strong>Descargo de Empresa:</strong> ${d.Respuesta_Empresa}</p>
-                    <a href="${d.PDF_Empresa}" target="_blank" style="color: #ffd700; text-decoration:none;"><i class="fas fa-file-pdf"></i> Descargar Evidencias de Empresa</a><br><br>
+                    <a href="${d.PDF_Empresa}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline;"><i class="fas fa-file-pdf"></i> Descargar Evidencias de Empresa</a><br><br>
                     <select id="sel_${d.ID_Denuncia}" onchange="toggleComentFiscal('${d.ID_Denuncia}')">
                       <option value="SI">Sí Conforme (Cierre y mandar encuesta)</option>
                       <option value="NO">No Conforme (Devolver a la Empresa)</option>
@@ -282,7 +310,7 @@
                       <textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe un breve mensaje del porqué no está conforme..."></textarea>
                     </div>
                     <div id="file_fiscal_wrap_${d.ID_Denuncia}">
-                      <label style="font-size:12px; opacity:0.8;">Adjuntar Acta Cierre Fiscal (PDF):</label>
+                      <label style="font-size:12px; font-weight:bold;">Adjuntar Acta Cierre Fiscal (PDF):</label>
                       <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
                     </div>
                     <button onclick="procesarFiscal(${d.rowIndex}, '${d.ID_Denuncia}', '${d.Correo_Denunciante}')"><i class="fas fa-gavel"></i> Procesar Decisión</button>`;
@@ -290,13 +318,13 @@
 
         if(currentUser.role === "Asistente de Seguimiento") {
             html += `<p><strong>Respuesta de Empresa:</strong> ${d.Respuesta_Empresa}</p>
-                     <label style="font-size:12px; opacity:0.8;">Puntuación de Encuesta del Ciudadano (1 a 5 Estrellas):</label>
+                     <label style="font-size:12px; font-weight:bold;">Puntuación de Encuesta del Ciudadano (1 a 5 Estrellas):</label>
                      <input type="number" id="sat_${d.ID_Denuncia}" min="1" max="5" placeholder="Ej: 5">
                      <button onclick="procesar('SEGUIMIENTO_CERRAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-box-archive"></i> Registrar Encuesta y Archivar</button>`;
         }
 
         if(currentUser.role === "Administrador General") {
-           html += `<p><strong>Nivel de Satisfacción:</strong> ${d.Satisfaccion_Encuesta ? d.Satisfaccion_Encuesta + ' <i class="fas fa-star" style="color:#ffd700;"></i>' : 'Pendiente Cierre'}</p>`;
+           html += `<p><strong>Nivel de Satisfacción:</strong> ${d.Satisfaccion_Encuesta ? d.Satisfaccion_Encuesta + ' <i class="fas fa-star" style="color:#ffc107;"></i>' : 'Pendiente Cierre'}</p>`;
            if(d.Estatus === "Enviado a Empresa") {
              html += `<button style="background:#ff8c00;" onclick="procesar('ADMIN_ALERTA', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-bell"></i> Alertar Empresa Demorada</button>`;
            }
@@ -310,7 +338,7 @@
     function toggleComentFiscal(id) {
       const val = document.getElementById(`sel_${id}`).value;
       document.getElementById(`wrapper_fiscal_${id}`).style.display = val === "NO" ? "block" : "none";
-      document.getElementById(`file_fiscal_wrap_${id}`).style.display = val === "SI" ? "block" : "none";
+      document.getElementById('file_fiscal_wrap_' + id).style.display = val === "SI" ? "block" : "none";
     }
 
     async function procesar(subAction, rowIndex, id) {
@@ -393,7 +421,7 @@
       let starsHtml = "";
       let roundedStars = Math.round(stats.promedioSatisfaccion);
       for(let i=1; i<=5; i++) {
-        starsHtml += `<i class="fa${i <= roundedStars ? 's' : 'r'} fa-star" style="color:#ffd700;"></i>`;
+        starsHtml += `<i class="fa${i <= roundedStars ? 's' : 'r'} fa-star" style="color:#ffc107;"></i>`;
       }
 
       document.getElementById('admin-stats').innerHTML = `
@@ -406,10 +434,16 @@
 
     function cerrarSesion() {
       currentUser = null;
+      localStorage.removeItem('sundde_sesion'); // Destruir la sesión guardada
       document.getElementById('dashboard-screen').style.display = 'none';
       document.getElementById('login-screen').style.display = 'flex';
       document.getElementById('email').value = '';
       document.getElementById('pass').value = '';
+      
+      // Reestablecer el botón de ingreso a su estado natural
+      const btnLogin = document.getElementById('btn-login');
+      btnLogin.disabled = false;
+      btnLogin.innerHTML = "Ingresar al Sistema";
     }
   </script>
 </body>
