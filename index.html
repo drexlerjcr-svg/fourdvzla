@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SUNDDE - Denuncias</title>
+  <title>SUNDDE - Sistema de Monitoreo Premium</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="shortcut icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png" type="image/png">
   <link rel="apple-touch-icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png">
@@ -27,7 +27,7 @@
 
     .glass-panel {
       background: var(--glass-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: var(--glass-shadow);
+      border: 1px solid var(--glass-border); border-radius: 15px; box-shadow: var(--glass-shadow);
     }
 
     /* PANTALLA LOGIN */
@@ -37,23 +37,23 @@
     .login-box img { max-width: 180px; margin-bottom: 20px; }
 
     input, select, textarea {
-      width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px;
+      width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px;
       border: 1px solid rgba(0, 0, 0, 0.3); background: rgba(255, 255, 255, 0.95);
-      color: #000000; font-weight: 600; outline: none; box-sizing: border-box;
+      color: #000000; font-weight: 600; outline: none; box-sizing: border-box; font-family: inherit;
     }
 
     button {
-      background: var(--primary); color: white; border: none; padding: 12px 20px;
+      background: var(--primary); color: white; border: none; padding: 10px 15px;
       border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;
       transition: all 0.3s ease; margin-top: 10px;
     }
     button:hover { background: #0056b3; transform: scale(1.02); }
 
     /* DASHBOARD PRINCIPAL */
-    #dashboard-screen { display: none; padding: 20px; position: relative; }
+    #dashboard-screen { display: none; padding: 15px; position: relative; }
 
-    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin-bottom: 30px; }
-    header img { max-width: 180px; height: auto; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; margin-bottom: 20px; border-radius: 12px; }
+    header img { max-width: 150px; height: auto; }
 
     /* MENU HAMBURGUESA ADMIN */
     #btn-menu-admin { display: none; font-size: 24px; cursor: pointer; margin-right: 15px; color: #0056b3; }
@@ -70,46 +70,55 @@
       z-index: 2000; transition: 0.3s ease; padding: 20px; overflow-y: auto; box-sizing: border-box;
     }
     .sidebar.open { left: 0; }
-    .sidebar h3 { color: #0056b3; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 20px; font-size: 1.1rem; }
+    .sidebar h3 { color: #0056b3; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 20px; font-size: 1rem; }
     .close-sidebar { font-size: 24px; cursor: pointer; float: right; color: #333; }
 
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-    .card { padding: 24px; transition: transform 0.3s, box-shadow 0.3s; color: #000000; cursor: pointer; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.3); border: 1px solid var(--primary); }
-    .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; background: #007bff; color: white; float: right; }
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+    
+    /* CARDS MÁS PEQUEÑAS */
+    .card { padding: 15px; transition: transform 0.2s, box-shadow 0.2s; color: #000000; cursor: pointer; font-size: 0.9rem; }
+    .card h3 { margin-top: 0; font-size: 1.05rem; margin-bottom: 10px; }
+    .card p { margin: 5px 0; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px 0 rgba(0,0,0,0.25); border: 1px solid var(--primary); }
+    .badge { padding: 4px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; background: #007bff; color: white; float: right; }
 
-    /* ESTADISTICAS */
-    .stats-container { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
-    .stat-box { flex: 1; min-width: 150px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; border: 2px solid transparent;}
+    /* ESTADISTICAS COMPACTAS */
+    .stats-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .stat-box { flex: 1; min-width: 110px; padding: 12px 10px; text-align: center; cursor: pointer; transition: 0.2s; border: 2px solid transparent; border-radius: 12px; }
     .stat-box:hover { transform: scale(1.03); background: rgba(255,255,255,0.95); }
-    .stat-box.active-filter { border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(0, 123, 255, 0.4); }
-    .stat-box h2 { margin: 0; font-size: 2.2rem; color: #0056b3; }
-    .stat-box p { color: #000000; font-weight: bold; margin: 5px 0 0 0; }
+    .stat-box.active-filter { border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); background: rgba(255,255,255,0.98); }
+    .stat-box h2 { margin: 0; font-size: 1.6rem; color: #0056b3; }
+    .stat-box p { color: #000000; font-weight: bold; margin: 3px 0 0 0; font-size: 0.8rem; line-height: 1.1; }
 
     /* MODAL FLOTANTE */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
-    .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #333; font-weight: bold; }
-    #loader { display: none; text-align: center; padding: 30px; font-size: 1.3rem; color: #000000; }
+    .modal-content { background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 12px; width: 90%; max-width: 550px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
+    .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; font-weight: bold; }
+    
+    #loader { display: none; text-align: center; padding: 20px; font-size: 1.1rem; color: #000000; }
+    
+    /* DETALLES COMPLETOS DENTRO DEL MODAL */
+    .full-info-box { background:#f1f4f8; padding:15px; border-radius:8px; margin-bottom:15px; font-size:0.85rem; border:1px solid #ddd; color: #333; }
+    .full-info-box p { margin: 6px 0; }
 
     /* ALERTA PERSONALIZADA */
-    .alert-content { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
-    .alert-content h3 { margin-top: 15px; color: #000; }
-    .alert-content p { color: #333; font-weight: 500; }
-    .alert-content button { margin-top: 20px; background: #007bff; }
+    .alert-content { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
+    .alert-content h3 { margin-top: 10px; color: #000; font-size: 1.2rem; }
+    .alert-content p { color: #333; font-weight: 500; font-size: 0.95rem; }
+    .alert-content button { margin-top: 15px; background: #007bff; padding: 8px; }
 
     @media (max-width: 768px) {
       header { flex-direction: row; padding: 10px; align-items: center; }
-      header img { max-width: 90px; }
+      header img { max-width: 100px; }
       .user-header-info { display: flex; align-items: center; gap: 8px; text-align: right; justify-content: flex-end; width: 100%; }
-      #user-info { font-size: 0.85rem; margin: 0; display: inline-block; line-height: 1.2; }
-      header button { padding: 6px 12px; font-size: 0.8rem; margin: 0; width: auto; }
-      .stats-container { flex-direction: column; gap: 10px; }
-      .stat-box { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; min-width: unset; }
-      .stat-box h2 { font-size: 1.6rem; }
-      .stat-box p { margin: 0; font-size: 1rem; }
+      #user-info { font-size: 0.8rem; margin: 0; display: inline-block; line-height: 1.2; }
+      header button { padding: 6px 10px; font-size: 0.8rem; margin: 0; width: auto; }
+      .stats-container { gap: 8px; }
+      .stat-box { min-width: 30%; padding: 10px; }
+      .stat-box h2 { font-size: 1.4rem; }
+      .stat-box p { font-size: 0.75rem; }
       .grid-container { grid-template-columns: 1fr; }
-      #panel-title { font-size: 1.3rem; margin-bottom: 15px !important; }
+      #panel-title { font-size: 1.2rem; margin-bottom: 10px !important; }
       .modal-content { padding: 20px; width: 95%; }
     }
   </style>
@@ -128,19 +137,19 @@
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
   <div class="sidebar" id="admin-sidebar">
     <span class="close-sidebar" onclick="toggleSidebar()">&times;</span>
-    <h2 style="margin-top:0; color:#000;">Panel de Control</h2>
+    <h2 style="margin-top:0; color:#000; font-size:1.3rem;">Panel Administrador</h2>
     
-    <h3><i class="fas fa-star" style="color:#ffc107;"></i> Satisfacción General</h3>
+    <h3><i class="fas fa-star" style="color:#ffc107;"></i> Satisfacción Ciudadana</h3>
     <div id="admin-stats-satisfaccion" class="stats-container" style="margin-bottom:10px;"></div>
     
-    <h3><i class="fas fa-chart-pie"></i> Dashboard Estadísticas</h3>
-    <div id="admin-stats-casos" class="stats-container" style="flex-direction: column;"></div>
+    <h3><i class="fas fa-chart-pie"></i> Estatus Global (Filtros)</h3>
+    <div id="admin-stats-casos" class="stats-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
   </div>
 
   <div id="action-modal" class="modal-overlay">
     <div class="modal-content">
       <span class="close-btn" onclick="cerrarModal()">&times;</span>
-      <h3 id="modal-title" style="margin-top:0; color:#0056b3; border-bottom:1px solid #ddd; padding-bottom:10px;">Gestión de Caso</h3>
+      <h3 id="modal-title" style="margin-top:0; color:#0056b3; border-bottom:1px solid #ddd; padding-bottom:10px; font-size:1.1rem;">Gestión de Caso</h3>
       <div id="modal-body"></div>
     </div>
   </div>
@@ -148,11 +157,11 @@
   <div id="login-screen">
     <div class="login-box glass-panel">
       <img src="https://i.ibb.co/v4pPWh2s/sundde.png" alt="SUNDDE Logo">
-      <h2>Módulo de Acceso</h2>
+      <h2 style="font-size: 1.4rem;">Módulo de Acceso</h2>
       <input type="email" id="email" placeholder="Correo Corporativo o Empresa" required>
-      <input type="password" id="pass" placeholder="Contraseña Seguro" required>
+      <input type="password" id="pass" placeholder="Contraseña Segura" required>
       <button id="btn-login" onclick="iniciarSesion()">Ingresar al Sistema</button>
-      <p id="login-error" style="color:#dc3545; display:none; margin-top:15px; font-weight:bold;"></p>
+      <p id="login-error" style="color:#dc3545; display:none; margin-top:15px; font-size:0.9rem; font-weight:bold;"></p>
     </div>
   </div>
 
@@ -170,17 +179,17 @@
 
     <div id="dashboard-stats" class="stats-container" style="display:none;"></div>
 
-    <div style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;">
-      <h2 id="panel-title" style="margin:0; color:#000000;">Bandeja de Casos <span id="filtro-label" style="font-size:1rem; color:#0056b3;">(Todas)</span></h2>
-      <button id="btn-descarga-lote" style="width: auto; display: none; background:#28a745;" onclick="descargarLote()"><i class="fas fa-download"></i> Descargar Todo el Lote</button>
+    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;">
+      <h2 id="panel-title" style="margin:0; color:#000000;">Bandeja de Casos <span id="filtro-label" style="font-size:0.9rem; color:#0056b3;">(Todas)</span></h2>
+      <button id="btn-descarga-lote" style="width: auto; display: none; background:#28a745; padding: 6px 12px; font-size: 0.85rem;" onclick="descargarLote()"><i class="fas fa-download"></i> Descargar Evidencias</button>
     </div>
 
-    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x"></i><br><span style="margin-top:10px; display:inline-block; font-weight:bold; color:#000000;">Sincronizando con Google Sheets...</span></div>
+    <div id="loader"><i class="fas fa-cloud-download-alt fa-bounce fa-2x" style="color:#0056b3;"></i><br><span style="margin-top:10px; display:inline-block; font-weight:bold; color:#000000;">Validando y actualizando registros desde el servidor central...</span></div>
     <div id="denuncias-container" class="grid-container"></div>
   </div>
 
   <script>
-    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxC859D4u4GWusT8FBrCZgQf_6QpX7995_UPv-zSnMx0T3WJkbRR0qLmDH8Wxp5EWDE/exec";
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbypsSbSP194UABFRsVsrF0XN8OaeZK7WUj-3triDEUem6gOO2QTqVl8r4-OFGv0bNHR/exec";
     
     let currentUser = null;
     let currentDenuncias = [];
@@ -191,10 +200,9 @@
       if (sesionGuardada) { currentUser = JSON.parse(sesionGuardada); levantarDashboard(); }
     });
 
-    // SISTEMA DE ALERTAS PERSONALIZADO
     function mostrarAlerta(mensaje, esExito = false) {
       document.getElementById('alert-message').innerText = mensaje;
-      let icon = esExito ? '<i class="fas fa-check-circle" style="color:#28a745; font-size:50px;"></i>' : '<i class="fas fa-exclamation-circle" style="color:#dc3545; font-size:50px;"></i>';
+      let icon = esExito ? '<i class="fas fa-check-circle" style="color:#28a745; font-size:40px;"></i>' : '<i class="fas fa-exclamation-circle" style="color:#dc3545; font-size:40px;"></i>';
       document.getElementById('alert-icon').innerHTML = icon;
       document.getElementById('custom-alert-modal').style.display = 'flex';
     }
@@ -209,7 +217,7 @@
           body: JSON.stringify({ action, payload })
         });
         return await response.json();
-      } catch (err) { return { success: false, message: "Error al enlazar con el servidor." }; }
+      } catch (err) { return { success: false, message: "Error al enlazar con el servidor principal." }; }
     }
 
     async function iniciarSesion() {
@@ -220,7 +228,7 @@
       errBox.style.display = 'none';
       if(!email || !pass) { errBox.innerText = "Complete los campos."; errBox.style.display = 'block'; return; }
 
-      btnLogin.disabled = true; btnLogin.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Verificando...`;
+      btnLogin.disabled = true; btnLogin.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Conectando...`;
       const res = await requestAPI("loginUser", { email, pass });
       
       if(!res.success) {
@@ -243,7 +251,7 @@
       
       if(currentUser.role === "Analista Denunciado" || currentUser.role === "Fiscal Nacional") { document.getElementById('btn-descarga-lote').style.display = 'block'; }
       
-      cargarDenuncias(); // El loadStats ahora se ejecuta dentro de cargarDenuncias
+      cargarDenuncias(); 
     }
 
     function toggleSidebar() {
@@ -260,54 +268,63 @@
       return nombre.toLowerCase().replace(/ /g, '-');
     }
 
+    // Helper para detectar vacíos
+    function estaVacio(val) { return !val || val.trim() === ''; }
+
     async function loadStats(role) {
-      // Pedimos las estadisticas de backend solo para la satisfacción promedio
       const statsBackend = await requestAPI("getStats"); 
-      
       let htmlMain = "";
 
-      // CALCULO DINÁMICO: Asegura que el número de la tarjeta coincida EXÁCTAMENTE con lo que se muestra
       if (role === "Analista SUNDDE") {
-        let cPorNotificar = currentDenuncias.filter(d => d.Estatus !== 'Enviado a Empresa' && !d.Estatus.includes('Atendid') && !d.Estatus.includes('Cerrad')).length;
+        let cPorNotificar = currentDenuncias.filter(d => estaVacio(d.Estatus)).length;
         let cNotificadas = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa').length;
-        
         htmlMain += `<div id="stat-${formatIdFiltro('Por notificar')}" class="stat-box glass-panel" onclick="toggleFiltro('Por notificar')"><h2>${cPorNotificar}</h2><p>Por notificar</p></div>`;
         htmlMain += `<div id="stat-${formatIdFiltro('Notificadas')}" class="stat-box glass-panel" onclick="toggleFiltro('Notificadas')"><h2>${cNotificadas}</h2><p>Notificadas</p></div>`;
       
       } else if (role === "Asistente de Seguimiento") {
-        let cCerradoFiscal = currentDenuncias.filter(d => d.Estatus.includes('Conforme') || d.Estatus.includes('Fiscal')).length;
-        let cCerradoEmpresa = currentDenuncias.filter(d => d.Estatus === 'Cerrada' || d.Estatus.includes('Cerrad')).length;
-        
+        let cCerradoFiscal = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal').length;
+        let cCerradoEmpresa = currentDenuncias.filter(d => d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada').length;
+        htmlMain += `<div id="stat-${formatIdFiltro('Cerrado Fiscal')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado Fiscal')"><h2>${cCerradoFiscal}</h2><p>Cerrado Fiscal</p></div>`;
+        htmlMain += `<div id="stat-${formatIdFiltro('Cerrado por Empresa')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado por Empresa')"><h2>${cCerradoEmpresa}</h2><p>Cerrado Empresa</p></div>`;
+      
+      } else if (role === "Administrador General") {
+        let cVacias = currentDenuncias.filter(d => estaVacio(d.Estatus)).length;
+        let cEnv = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa').length;
+        let cAte = currentDenuncias.filter(d => d.Estatus && d.Estatus.includes('Atendid')).length;
+        let cDev = currentDenuncias.filter(d => d.Estatus === 'Devuelto').length;
+        let cCEmp = currentDenuncias.filter(d => d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada').length;
+        let cCFis = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal').length;
+
         let starsHtml = "";
         let roundedStars = Math.round(statsBackend.promedioSatisfaccion || 0);
-        for(let i=1; i<=5; i++) { starsHtml += `<i class="fa${i <= roundedStars ? 's' : 'r'} fa-star" style="color:#ffc107;"></i>`; }
-        let boxSatisfaccion = `<div id="stat-${formatIdFiltro('Satisfaccion')}" class="stat-box glass-panel" onclick="toggleFiltro('Satisfaccion')"><h2>${statsBackend.promedioSatisfaccion || 0}</h2><p>${starsHtml}</p></div>`;
+        for(let i=1; i<=5; i++) { starsHtml += `<i class="fa${i <= roundedStars ? 's' : 'r'} fa-star" style="color:#ffc107; font-size:12px;"></i>`; }
+        let boxSatisfaccion = `<div class="stat-box glass-panel" style="min-width:100%; cursor:default;"><h2>${statsBackend.promedioSatisfaccion || 0}</h2><p>${starsHtml}</p></div>`;
         
-        htmlMain += `<div id="stat-${formatIdFiltro('Cerrado por Fiscal')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado por Fiscal')"><h2>${cCerradoFiscal}</h2><p>Cerrado por Fiscal</p></div>`;
-        htmlMain += `<div id="stat-${formatIdFiltro('Cerrado por Empresa')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado por Empresa')"><h2>${cCerradoEmpresa}</h2><p>Cerrado por Empresa</p></div>`;
-        htmlMain += boxSatisfaccion;
-      
+        let miniCards = `
+          <div id="stat-${formatIdFiltro('Por Notificar')}" class="stat-box glass-panel" onclick="toggleFiltro('Por Notificar')"><h2>${cVacias}</h2><p>Por Notificar</p></div>
+          <div id="stat-${formatIdFiltro('Notificadas')}" class="stat-box glass-panel" onclick="toggleFiltro('Notificadas')"><h2>${cEnv}</h2><p>Notificadas</p></div>
+          <div id="stat-${formatIdFiltro('Atendidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Atendidas')"><h2>${cAte}</h2><p>Atendidas</p></div>
+          <div id="stat-${formatIdFiltro('Devueltas')}" class="stat-box glass-panel" onclick="toggleFiltro('Devueltas')"><h2>${cDev}</h2><p>Devueltas</p></div>
+          <div id="stat-${formatIdFiltro('Cerrado Empresa')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado Empresa')"><h2>${cCEmp}</h2><p>Cer. Empresa</p></div>
+          <div id="stat-${formatIdFiltro('Cerrado Fiscal')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado Fiscal')"><h2>${cCFis}</h2><p>Cer. Fiscal</p></div>
+        `;
+        document.getElementById('dashboard-stats').style.display = 'none';
+        document.getElementById('admin-stats-satisfaccion').innerHTML = boxSatisfaccion;
+        document.getElementById('admin-stats-casos').innerHTML = miniCards;
+
       } else {
-        let cRecibidas = currentDenuncias.filter(d => (role === 'Analista Denunciado' && (d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto')) || (role !== 'Analista Denunciado' && (d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Recibida' || d.Estatus === 'Nueva' || d.Estatus === 'Ingresada'))).length;
-        let cAtendidas = currentDenuncias.filter(d => d.Estatus.includes('Atendid')).length;
-        let cCerradas = currentDenuncias.filter(d => d.Estatus.includes('Cerrad') || d.Estatus.includes('Conforme')).length;
+        // Analista Denunciado y Fiscal Nacional
+        let cRecibidas = currentDenuncias.filter(d => (role === 'Analista Denunciado' && (d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto'))).length;
+        let cAtendidas = currentDenuncias.filter(d => d.Estatus && d.Estatus.includes('Atendid')).length;
+        let cCerradas = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada').length;
 
-        let boxRecibidas = `<div id="stat-${formatIdFiltro('Recibidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Recibidas')"><h2>${cRecibidas}</h2><p>Recibidas</p></div>`;
-        let boxAtendidas = `<div id="stat-${formatIdFiltro('Atendidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Atendidas')"><h2>${cAtendidas}</h2><p>Atendidas</p></div>`;
-        let boxCerradas = `<div id="stat-${formatIdFiltro('Cerradas')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerradas')"><h2>${cCerradas}</h2><p>Cerradas</p></div>`;
-
-        if(role === "Administrador General") {
-          let starsHtml = "";
-          let roundedStars = Math.round(statsBackend.promedioSatisfaccion || 0);
-          for(let i=1; i<=5; i++) { starsHtml += `<i class="fa${i <= roundedStars ? 's' : 'r'} fa-star" style="color:#ffc107;"></i>`; }
-          let boxSatisfaccion = `<div id="stat-${formatIdFiltro('Satisfaccion')}" class="stat-box glass-panel" onclick="toggleFiltro('Satisfaccion')"><h2>${statsBackend.promedioSatisfaccion || 0}</h2><p>${starsHtml}</p></div>`;
-          
-          document.getElementById('dashboard-stats').style.display = 'none';
-          document.getElementById('admin-stats-satisfaccion').innerHTML = boxSatisfaccion;
-          document.getElementById('admin-stats-casos').innerHTML = boxRecibidas + boxAtendidas + boxCerradas;
-        } else {
-          htmlMain = boxRecibidas + boxAtendidas;
-          if(role !== "Analista Denunciado") { htmlMain += boxCerradas; }
+        if (role === 'Analista Denunciado') {
+          htmlMain += `<div id="stat-${formatIdFiltro('Recibidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Recibidas')"><h2>${cRecibidas}</h2><p>Recibidas</p></div>`;
+        }
+        htmlMain += `<div id="stat-${formatIdFiltro('Atendidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Atendidas')"><h2>${cAtendidas}</h2><p>Atendidas</p></div>`;
+        
+        if(role === "Fiscal Nacional") { 
+          htmlMain += `<div id="stat-${formatIdFiltro('Cerradas')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerradas')"><h2>${cCerradas}</h2><p>Cerradas</p></div>`;
         }
       }
 
@@ -316,7 +333,6 @@
         document.getElementById('dashboard-stats').style.display = 'flex';
       }
 
-      // Restaurar el foco visual del filtro activo
       if(filtroActual !== 'Todas') {
         let target = document.getElementById(`stat-${formatIdFiltro(filtroActual)}`);
         if(target) target.classList.add('active-filter');
@@ -328,8 +344,8 @@
       else filtroActual = tipo;
 
       document.getElementById('filtro-label').innerText = `(${filtroActual})`;
-      
       document.querySelectorAll('.stat-box').forEach(box => box.classList.remove('active-filter'));
+      
       if(filtroActual !== 'Todas') {
         let target = document.getElementById(`stat-${formatIdFiltro(tipo)}`);
         if(target) target.classList.add('active-filter');
@@ -343,17 +359,22 @@
       document.getElementById('loader').style.display = 'block';
       document.getElementById('denuncias-container').innerHTML = '';
       
-      const data = await requestAPI("getDenuncias", { user: currentUser });
+      let data = await requestAPI("getDenuncias", { user: currentUser });
       
-      if (currentUser.role === "Asistente de Seguimiento") {
-        currentDenuncias = data.filter(d => d.Estatus.toLowerCase().includes('conforme') || d.Estatus.toLowerCase().includes('cerrad') || d.Estatus.toLowerCase().includes('fiscal'));
+      // PRE-FILTRADO ESTRICTO SEGÚN ROL (Para que "Todas" muestre lo correcto)
+      if (currentUser.role === "Analista SUNDDE") {
+        currentDenuncias = data.filter(d => estaVacio(d.Estatus) || d.Estatus === 'Enviado a Empresa');
+      } else if (currentUser.role === "Asistente de Seguimiento") {
+        currentDenuncias = data.filter(d => d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada');
+      } else if (currentUser.role === "Fiscal Nacional") {
+        currentDenuncias = data.filter(d => (d.Estatus && d.Estatus.includes('Atendid')) || d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa');
+      } else if (currentUser.role === "Analista Denunciado") {
+         currentDenuncias = data.filter(d => d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto' || (d.Estatus && d.Estatus.includes('Atendid')));
       } else {
         currentDenuncias = data;
       }
 
       document.getElementById('loader').style.display = 'none';
-      
-      // Cargamos las stats DESPUÉS de tener las denuncias para contar de forma 100% exacta
       await loadStats(currentUser.role);
       renderCards();
     }
@@ -364,26 +385,26 @@
 
       let dataFiltrada = currentDenuncias;
       
-      if(filtroActual === 'Por notificar') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus !== 'Enviado a Empresa' && !d.Estatus.includes('Atendid') && !d.Estatus.includes('Cerrad'));
+      if(filtroActual === 'Por notificar' || filtroActual === 'Por Notificar') {
+         dataFiltrada = currentDenuncias.filter(d => estaVacio(d.Estatus));
       } else if(filtroActual === 'Notificadas') {
          dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa');
-      } else if(filtroActual === 'Cerrado por Fiscal') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus.includes('Conforme') || d.Estatus.includes('Fiscal'));
-      } else if(filtroActual === 'Cerrado por Empresa') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrada' || d.Estatus.includes('Cerrad'));
+      } else if(filtroActual === 'Cerrado Fiscal') {
+         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal');
+      } else if(filtroActual === 'Cerrado por Empresa' || filtroActual === 'Cerrado Empresa') {
+         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada');
       } else if(filtroActual === 'Recibidas') {
-         dataFiltrada = currentDenuncias.filter(d => (currentUser.role === 'Analista Denunciado' && (d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto')) || (currentUser.role !== 'Analista Denunciado' && (d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Recibida' || d.Estatus === 'Nueva' || d.Estatus === 'Ingresada')));
+         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto');
       } else if(filtroActual === 'Atendidas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus.includes('Atendid'));
+         dataFiltrada = currentDenuncias.filter(d => d.Estatus && d.Estatus.includes('Atendid'));
+      } else if(filtroActual === 'Devueltas') {
+         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Devuelto');
       } else if(filtroActual === 'Cerradas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus.includes('Cerrad') || d.Estatus.includes('Conforme'));
-      } else if(filtroActual === 'Satisfaccion') {
-         dataFiltrada = currentDenuncias.filter(d => d.Satisfaccion_Encuesta && d.Satisfaccion_Encuesta !== "");
+         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada');
       }
 
       if(dataFiltrada.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; font-weight:bold; opacity:0.7; color:#000000;">No hay casos bajo este filtro o etapa.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; font-weight:bold; opacity:0.7; color:#000000; font-size:0.95rem;">No hay casos bajo este filtro o etapa actualmente.</p>`;
         return;
       }
 
@@ -392,86 +413,135 @@
         card.className = 'card glass-panel';
         card.onclick = () => abrirModal(d.ID_Denuncia);
         
-        let estatusBadge = d.Estatus === "Enviado a Empresa" ? "Sin atender" : (d.Estatus === "Atendida por Empresa" ? "Atendidas" : d.Estatus);
-        let colorBadge = d.Estatus === "Devuelto" ? "background:#dc3545;" : (d.Estatus.includes("Cerrad") ? "background:#28a745;" : "background:#007bff;");
+        let labelEstatus = estaVacio(d.Estatus) ? "Por notificar" : d.Estatus;
+        let colorBadge = d.Estatus === "Devuelto" ? "background:#dc3545;" : ( (d.Estatus && d.Estatus.includes("Cerrad")) ? "background:#28a745;" : "background:#007bff;" );
 
         let html = `
-          <h3>Caso: ${d.ID_Denuncia} <span class="badge" style="${colorBadge}">${estatusBadge}</span></h3>
-          <p><strong>Empresa/Sujeto:</strong> ${d.Empresa}</p>
-          <p><strong>Denunciante:</strong> ${d.Denunciante}</p>
-          <p><strong>Teléfono:</strong> ${d.Telefono}</p>
-          <p><strong>Producto:</strong> ${d.Producto}</p>
-          <p style="background: rgba(0,0,0,0.06); padding:10px; border-radius:6px; font-size:13px; border: 1px solid rgba(0,0,0,0.1); color:#000000;"><strong>Motivo:</strong> ${d.Motivo_De_La_Denuncia}</p>
+          <h3>ID: ${d.ID_Denuncia} <span class="badge" style="${colorBadge}">${labelEstatus}</span></h3>
+          <p><strong>Empresa:</strong> ${d.Empresa || 'N/A'}</p>
+          <p><strong>Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
+          <p><strong>Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
+          <p><strong>Producto:</strong> ${d.Producto || 'N/A'}</p>
+          <p style="background: rgba(0,0,0,0.04); padding:8px; border-radius:6px; font-size:12px; border: 1px solid rgba(0,0,0,0.1); color:#000000; margin-top:8px;"><strong>Motivo:</strong> ${d.Motivo_De_La_Denuncia || 'No especificado'}</p>
         `;
 
-        if(d.Estatus === "Devuelto" && currentUser.role === "Analista Denunciado") {
-          html += `<p style="background: rgba(220,53,69,0.1); padding:10px; border-radius:6px; font-size:13px; border: 1px solid rgba(220,53,69,0.3); color:#dc3545; margin-top:10px;">
-                    <strong><i class="fas fa-exclamation-triangle"></i> Motivo de Devolución (Fiscal):</strong><br>${d.Comentario_Fiscal || 'Requiere revisión y nueva acta conforme a la ley.'}
+        if(d.Estatus === "Devuelto" && (currentUser.role === "Analista Denunciado" || currentUser.role === "Administrador General")) {
+          html += `<p style="background: rgba(220,53,69,0.1); padding:8px; border-radius:6px; font-size:12px; border: 1px solid rgba(220,53,69,0.3); color:#dc3545; margin-top:8px;">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Devolución (Fiscal):</strong><br>${d.Comentario_Fiscal || 'Requiere revisión y nueva acta.'}
                    </p>`;
         }
         
-        html += `<div style="text-align:center; margin-top:15px; font-size:12px; color:#0056b3; font-weight:bold;"><i class="fas fa-hand-pointer"></i> Toca para gestionar</div>`;
+        html += `<div style="text-align:center; margin-top:12px; font-size:11px; color:#0056b3; font-weight:bold;"><i class="fas fa-hand-pointer"></i> Toca para ver detalle / gestionar</div>`;
         
         card.innerHTML = html;
         container.appendChild(card);
       });
     }
 
+    function generarInfoCompletaHTML(d) {
+      let info = `<div class="full-info-box">
+                    <p><strong><i class="fas fa-building"></i> Empresa/Sujeto:</strong> ${d.Empresa || 'N/A'}</p>
+                    <p><strong><i class="fas fa-user"></i> Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
+                    <p><strong><i class="fas fa-phone"></i> Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
+                    <p><strong><i class="fas fa-box"></i> Producto Involucrado:</strong> ${d.Producto || 'N/A'}</p>
+                    <hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
+                    <p><strong>Motivo de Denuncia:</strong><br> ${d.Motivo_De_La_Denuncia || 'N/A'}</p>`;
+      if(d.Respuesta_Empresa) {
+        info += `<hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
+                 <p><strong><i class="fas fa-reply"></i> Respuesta/Descargo Empresa:</strong><br> ${d.Respuesta_Empresa}</p>`;
+      }
+      if(d.Comentario_Fiscal) {
+        info += `<hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
+                 <p style="color:#dc3545;"><strong><i class="fas fa-gavel"></i> Nota del Fiscal:</strong><br> ${d.Comentario_Fiscal}</p>`;
+      }
+      info += `</div>`;
+      return info;
+    }
+
     function abrirModal(id) {
        const d = currentDenuncias.find(x => x.ID_Denuncia === id);
        if(!d) return;
 
-       document.getElementById('modal-title').innerHTML = `<i class="fas fa-folder-open"></i> Gestionar Caso: ${d.ID_Denuncia}`;
+       // Lógica título con estrellas (Admin General)
+       let tituloExtra = '';
+       if(currentUser.role === "Administrador General" && d.Satisfaccion_Encuesta) {
+          let num = parseInt(d.Satisfaccion_Encuesta);
+          tituloExtra = ' <span style="font-size:14px;">';
+          for(let i=0; i<num; i++) tituloExtra += '<i class="fas fa-star" style="color:#ffc107;"></i>';
+          tituloExtra += '</span>';
+       }
+       document.getElementById('modal-title').innerHTML = `<i class="fas fa-folder-open"></i> Detalle: ${d.ID_Denuncia}${tituloExtra}`;
+       
        let html = '';
 
+       // INYECTAR INFO COMPLETA PARA TODOS MENOS SUNDDE (que no es necesario, pero si quieres se lo ponemos a todos)
+       // El usuario pidió que Analista Denunciado, Fiscal y Admin la tuvieran. Se la agregamos a todos para estandarizar.
+       html += generarInfoCompletaHTML(d);
+
+       // CONTROLES DE ACCIÓN SEGÚN ROL Y ESTATUS
        if(currentUser.role === "Analista SUNDDE") {
-           html += `<label style="font-size:12px; font-weight:bold;">Adjuntar PDF Soporte Denunciante:</label>
-                    <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                    <button onclick="procesar('SUNDDE_NOTIFICAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-paper-plane"></i> Notificar a Empresa</button>`;
+           if(estaVacio(d.Estatus)) {
+               html += `<label style="font-size:12px; font-weight:bold;">Adjuntar PDF Soporte Denunciante:</label>
+                        <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
+                        <button onclick="procesar('SUNDDE_NOTIFICAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-paper-plane"></i> Notificar a Empresa</button>`;
+           } else {
+               html += `<p style="text-align:center; color:#28a745; font-weight:bold; font-size:0.9rem;"><i class="fas fa-check-circle"></i> Denuncia Notificada. No requiere acciones.</p>`;
+           }
        }
        
        if(currentUser.role === "Analista Denunciado") {
-           if(d.PDF_SUNDDE) html += `<a href="${d.PDF_SUNDDE}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline; display:block; margin-bottom:15px;"><i class="fas fa-file-pdf"></i> Descargar Documento Denuncia</a>`;
-           html += `<textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe el Acta de conformidad y comentarios de entrega obligatorios..." required></textarea>
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Subir Foto/Acta Soporte (PDF):</label>
-                    <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                    <button onclick="procesar('EMPRESA_ATENDER', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-check"></i> Cargar y Atender Denuncia</button>`;
-       }
-
-       if(currentUser.role === "Fiscal Nacional") {
-           html += `<p style="background:#f8f9fa; padding:10px; border-radius:5px;"><strong>Descargo de Empresa:</strong> ${d.Respuesta_Empresa}</p>
-                    <a href="${d.PDF_Empresa}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline; display:block; margin-bottom:15px;"><i class="fas fa-file-pdf"></i> Descargar Evidencias de Empresa</a>
-                    <select id="sel_${d.ID_Denuncia}" onchange="toggleComentFiscal('${d.ID_Denuncia}')">
-                      <option value="SI">Sí Conforme (Cierre y mandar encuesta)</option>
-                      <option value="NO">No Conforme (Devolver a la Empresa)</option>
-                    </select>
-                    <div id="wrapper_fiscal_${d.ID_Denuncia}" style="display:none;">
-                      <textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe un breve mensaje del porqué no está conforme para devolver a la empresa..."></textarea>
-                    </div>
-                    <div id="file_fiscal_wrap_${d.ID_Denuncia}">
-                      <label style="font-size:12px; font-weight:bold;">Adjuntar Acta Cierre Fiscal (PDF):</label>
-                      <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                    </div>
-                    <button onclick="procesarFiscal(${d.rowIndex}, '${d.ID_Denuncia}', '${d.Correo_Denunciante}')"><i class="fas fa-gavel"></i> Procesar Decisión</button>`;
-       }
-
-       if(currentUser.role === "Asistente de Seguimiento") {
-            html += `<p style="background:#f8f9fa; padding:10px; border-radius:5px;"><strong>Respuesta de Empresa:</strong> ${d.Respuesta_Empresa || 'No aplica'}</p>
-                     <label style="font-size:12px; font-weight:bold;">Puntuación de Encuesta del Ciudadano (1 a 5 Estrellas):</label>
-                     <input type="number" id="sat_${d.ID_Denuncia}" min="1" max="5" placeholder="Ej: 5">
-                     <button onclick="procesar('SEGUIMIENTO_CERRAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-box-archive"></i> Registrar Encuesta y Archivar</button>`;
-       }
-
-       if(currentUser.role === "Administrador General") {
-           html += `<p><strong>Nivel de Satisfacción:</strong> ${d.Satisfaccion_Encuesta ? d.Satisfaccion_Encuesta + ' <i class="fas fa-star" style="color:#ffc107;"></i>' : 'Pendiente Cierre'}</p>`;
-           if(d.Estatus === "Enviado a Empresa") {
-             html += `<button style="background:#ff8c00;" onclick="procesar('ADMIN_ALERTA', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-bell"></i> Alertar Empresa Demorada</button>`;
+           if(d.PDF_SUNDDE) html += `<a href="${d.PDF_SUNDDE}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline; display:block; margin-bottom:15px; font-size:0.9rem;"><i class="fas fa-file-pdf"></i> Ver Documento Notificación SUNDDE</a>`;
+           
+           if(d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto') {
+               html += `<textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe el Acta de conformidad y comentarios obligatorios..." required></textarea>
+                        <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Subir Foto/Acta Soporte (PDF):</label>
+                        <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
+                        <button onclick="procesar('EMPRESA_ATENDER', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-check"></i> Cargar y Atender Denuncia</button>`;
            } else {
-             html += `<p style="text-align:center; opacity:0.7;">No hay acciones pendientes para esta alerta.</p>`;
+               html += `<p style="text-align:center; color:#28a745; font-weight:bold; font-size:0.9rem;"><i class="fas fa-check-circle"></i> Denuncia en revisión por el fiscal o cerrada.</p>`;
            }
        }
 
-       if(html === '') html = '<p>No existen acciones de interacción para este caso actualmente.</p>';
+       if(currentUser.role === "Fiscal Nacional") {
+           if(d.PDF_Empresa) html += `<a href="${d.PDF_Empresa}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline; display:block; margin-bottom:15px; font-size:0.9rem;"><i class="fas fa-file-pdf"></i> Ver Evidencias / Acta de la Empresa</a>`;
+           
+           if(d.Estatus && d.Estatus.includes('Atendid')) {
+               html += `<select id="sel_${d.ID_Denuncia}" onchange="toggleComentFiscal('${d.ID_Denuncia}')" style="margin-bottom:10px;">
+                          <option value="SI">Sí Conforme (Aprobar Cierre)</option>
+                          <option value="NO">No Conforme (Devolver a la Empresa)</option>
+                        </select>
+                        <div id="wrapper_fiscal_${d.ID_Denuncia}" style="display:none;">
+                          <textarea id="coment_${d.ID_Denuncia}" placeholder="Explica el motivo de la devolución..." style="height:80px;"></textarea>
+                        </div>
+                        <div id="file_fiscal_wrap_${d.ID_Denuncia}">
+                          <label style="font-size:12px; font-weight:bold;">Adjuntar Acta Cierre Fiscal (PDF):</label>
+                          <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
+                        </div>
+                        <button onclick="procesarFiscal(${d.rowIndex}, '${d.ID_Denuncia}', '${d.Correo_Denunciante}')"><i class="fas fa-gavel"></i> Procesar Decisión</button>`;
+           } else {
+               html += `<p style="text-align:center; font-weight:bold; font-size:0.9rem; opacity:0.8;"><i class="fas fa-lock"></i> El caso ya ha sido dictaminado.</p>`;
+           }
+       }
+
+       if(currentUser.role === "Asistente de Seguimiento") {
+            if(!d.Satisfaccion_Encuesta) {
+                html += `<label style="font-size:12px; font-weight:bold;">Puntuación de Encuesta Ciudadana (1 a 5 Estrellas):</label>
+                         <input type="number" id="sat_${d.ID_Denuncia}" min="1" max="5" placeholder="Ej: 5">
+                         <button onclick="procesar('SEGUIMIENTO_CERRAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-box-archive"></i> Registrar Encuesta</button>`;
+            } else {
+                let stars = '';
+                for(let i=0; i<parseInt(d.Satisfaccion_Encuesta); i++) stars += '<i class="fas fa-star" style="color:#ffc107;"></i>';
+                html += `<p style="text-align:center; font-weight:bold;">Satisfacción registrada: ${stars}</p>`;
+            }
+       }
+
+       if(currentUser.role === "Administrador General") {
+           if(d.Estatus === "Enviado a Empresa") {
+             html += `<button style="background:#ff8c00; font-size:0.9rem;" onclick="procesar('ADMIN_ALERTA', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-bell"></i> Enviar Alerta de Demora a Empresa</button>`;
+           } else {
+             html += `<p style="text-align:center; opacity:0.7; font-size:0.85rem;">Vista de auditoría (Sin acciones requeridas).</p>`;
+           }
+       }
 
        document.getElementById('modal-body').innerHTML = html;
        document.getElementById('action-modal').style.display = 'flex';
@@ -491,11 +561,13 @@
 
       if(subAction === 'EMPRESA_ATENDER') {
         const txt = document.getElementById(`coment_${id}`).value;
-        if(!txt) { mostrarAlerta("El comentario es obligatorio"); return; }
+        if(!txt) { mostrarAlerta("El acta o comentario es obligatorio"); return; }
         payload.data.comentario = txt;
       }
       if(subAction === 'SEGUIMIENTO_CERRAR') {
-        payload.data.satisfaccion = document.getElementById(`sat_${id}`).value;
+        let val = document.getElementById(`sat_${id}`).value;
+        if(!val || val < 1 || val > 5) { mostrarAlerta("Ingrese un valor del 1 al 5."); return; }
+        payload.data.satisfaccion = val;
       }
 
       if(fileInput && fileInput.files.length > 0) {
@@ -509,7 +581,7 @@
          reader.readAsDataURL(file);
       } else {
          if(subAction === 'EMPRESA_ATENDER' || subAction === 'SUNDDE_NOTIFICAR') {
-           mostrarAlerta("Debe adjuntar el archivo PDF solicitado."); return;
+           mostrarAlerta("Debe adjuntar el archivo PDF solicitado obligatoriamente."); return;
          }
          cerrarModal(); ejecutarBackend(payload);
       }
@@ -522,12 +594,12 @@
        if(sel === "NO") {
          payload.subAction = "FISCAL_NOCONFORME";
          payload.data.comentarioFiscal = document.getElementById(`coment_${id}`).value;
-         if(!payload.data.comentarioFiscal){ mostrarAlerta("Debes explicar el porqué de la no conformidad."); return;}
+         if(!payload.data.comentarioFiscal){ mostrarAlerta("Debes explicar el porqué de la devolución."); return;}
          cerrarModal(); ejecutarBackend(payload);
        } else {
          payload.subAction = "FISCAL_CONFORME";
          let fileInput = document.getElementById(`file_${id}`);
-         if(!fileInput || fileInput.files.length === 0){ mostrarAlerta("Debe adjuntar el Acta del Fiscal en PDF."); return; }
+         if(!fileInput || fileInput.files.length === 0){ mostrarAlerta("Debe adjuntar el Acta del Fiscal en PDF para aprobar."); return; }
          let file = fileInput.files[0];
          let reader = new FileReader();
          reader.onload = async function(e) {
@@ -541,14 +613,14 @@
     async function ejecutarBackend(payload) {
       document.getElementById('loader').style.display = 'block';
       const res = await requestAPI("procesarDenuncia", payload);
-      mostrarAlerta(res.message, true); // Alerta exitosa
+      mostrarAlerta(res.message, true); 
       cargarDenuncias(); 
     }
 
     function descargarLote() {
        currentDenuncias.forEach((d, index) => {
          let url = d.PDF_SUNDDE || d.PDF_Empresa;
-         if(url) { setTimeout(() => { window.open(url, '_blank'); }, index * 1000); }
+         if(url) { setTimeout(() => { window.open(url, '_blank'); }, index * 1200); }
        });
     }
 
