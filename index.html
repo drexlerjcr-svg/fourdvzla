@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SUNDDE - Sistema de Monitoreo Premium</title>
+  <title>SUNDDE - Sistema de Denuncias</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="shortcut icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png" type="image/png">
   <link rel="apple-touch-icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png">
@@ -18,8 +18,7 @@
     }
 
     body {
-      margin: 0; padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: url('https://i.ibb.co/Q3wxsDRV/fondoprincipal.png') no-repeat center center fixed;
       background-size: cover; color: var(--text-main); min-height: 100vh;
       display: flex; flex-direction: column; overflow-x: hidden;
@@ -30,7 +29,6 @@
       border: 1px solid var(--glass-border); border-radius: 15px; box-shadow: var(--glass-shadow);
     }
 
-    /* PANTALLA LOGIN */
     #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
     .login-box { width: 100%; max-width: 400px; padding: 40px; text-align: center; box-sizing: border-box; }
     .login-box h2 { color: #000000; }
@@ -44,45 +42,30 @@
 
     button {
       background: var(--primary); color: white; border: none; padding: 10px 15px;
-      border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;
-      transition: all 0.3s ease; margin-top: 10px;
+      border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.3s ease; margin-top: 10px;
     }
     button:hover { background: #0056b3; transform: scale(1.02); }
 
-    /* DASHBOARD PRINCIPAL */
     #dashboard-screen { display: none; padding: 15px; position: relative; }
-
     header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; margin-bottom: 20px; border-radius: 12px; }
     header img { max-width: 150px; height: auto; }
 
-    /* MENU HAMBURGUESA ADMIN */
     #btn-menu-admin { display: none; font-size: 24px; cursor: pointer; margin-right: 15px; color: #0056b3; }
     .header-left { display: flex; align-items: center; }
 
-    /* SIDEBAR ADMIN */
-    .sidebar-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-      display: none; z-index: 1500; backdrop-filter: blur(3px);
-    }
-    .sidebar {
-      position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
-      background: rgba(255,255,255,0.95); box-shadow: 2px 0 15px rgba(0,0,0,0.3);
-      z-index: 2000; transition: 0.3s ease; padding: 20px; overflow-y: auto; box-sizing: border-box;
-    }
+    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(3px); }
+    .sidebar { position: fixed; top: 0; left: -320px; width: 300px; height: 100vh; background: rgba(255,255,255,0.95); box-shadow: 2px 0 15px rgba(0,0,0,0.3); z-index: 2000; transition: 0.3s ease; padding: 20px; overflow-y: auto; box-sizing: border-box; }
     .sidebar.open { left: 0; }
     .sidebar h3 { color: #0056b3; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 20px; font-size: 1rem; }
     .close-sidebar { font-size: 24px; cursor: pointer; float: right; color: #333; }
 
     .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-    
-    /* CARDS MÁS PEQUEÑAS */
     .card { padding: 15px; transition: transform 0.2s, box-shadow 0.2s; color: #000000; cursor: pointer; font-size: 0.9rem; }
     .card h3 { margin-top: 0; font-size: 1.05rem; margin-bottom: 10px; }
     .card p { margin: 5px 0; }
     .card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px 0 rgba(0,0,0,0.25); border: 1px solid var(--primary); }
     .badge { padding: 4px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; background: #007bff; color: white; float: right; }
 
-    /* ESTADISTICAS COMPACTAS */
     .stats-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
     .stat-box { flex: 1; min-width: 110px; padding: 12px 10px; text-align: center; cursor: pointer; transition: 0.2s; border: 2px solid transparent; border-radius: 12px; }
     .stat-box:hover { transform: scale(1.03); background: rgba(255,255,255,0.95); }
@@ -90,18 +73,18 @@
     .stat-box h2 { margin: 0; font-size: 1.6rem; color: #0056b3; }
     .stat-box p { color: #000000; font-weight: bold; margin: 3px 0 0 0; font-size: 0.8rem; line-height: 1.1; }
 
-    /* MODAL FLOTANTE */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 12px; width: 90%; max-width: 550px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
-    .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; font-weight: bold; }
+    .modal-content { background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
+    .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; font-weight: bold; z-index: 2000; }
     
     #loader { display: none; text-align: center; padding: 20px; font-size: 1.1rem; color: #000000; }
     
-    /* DETALLES COMPLETOS DENTRO DEL MODAL */
-    .full-info-box { background:#f1f4f8; padding:15px; border-radius:8px; margin-bottom:15px; font-size:0.85rem; border:1px solid #ddd; color: #333; }
-    .full-info-box p { margin: 6px 0; }
+    /* TIMELINE DE INFORMACION ORDENADA EN EL MODAL */
+    .timeline-box { background:#f1f4f8; padding:15px; border-radius:8px; margin-bottom:15px; font-size:0.85rem; border:1px solid #ddd; color: #333; }
+    .timeline-box p { margin: 6px 0; }
+    .btn-pdf { display:inline-block; margin-top:8px; color:#fff !important; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:12px; font-weight:bold; }
+    .btn-pdf:hover { opacity: 0.8; }
 
-    /* ALERTA PERSONALIZADA */
     .alert-content { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
     .alert-content h3 { margin-top: 10px; color: #000; font-size: 1.2rem; }
     .alert-content p { color: #333; font-weight: 500; font-size: 0.95rem; }
@@ -149,14 +132,14 @@
   <div id="action-modal" class="modal-overlay">
     <div class="modal-content">
       <span class="close-btn" onclick="cerrarModal()">&times;</span>
-      <h3 id="modal-title" style="margin-top:0; color:#0056b3; border-bottom:1px solid #ddd; padding-bottom:10px; font-size:1.1rem;">Gestión de Caso</h3>
+      <h3 id="modal-title" style="margin-top:0; color:#0056b3; border-bottom:1px solid #ddd; padding-bottom:10px; font-size:1.1rem; padding-right:20px;">Gestión de Caso</h3>
       <div id="modal-body"></div>
     </div>
   </div>
 
   <div id="login-screen">
     <div class="login-box glass-panel">
-      <img src="https://i.ibb.co/v4pPWh2s/sundde.png" alt="SUNDDE Logo">
+      <img src="https://i.ibb.co/zTQvCJWh/denuncias-1.png" alt="SUNDDE Logo">
       <h2 style="font-size: 1.4rem;">Módulo de Acceso</h2>
       <input type="email" id="email" placeholder="Correo Corporativo o Empresa" required>
       <input type="password" id="pass" placeholder="Contraseña Segura" required>
@@ -169,7 +152,7 @@
     <header class="glass-panel">
       <div class="header-left">
         <i class="fas fa-bars" id="btn-menu-admin" onclick="toggleSidebar()"></i>
-        <img src="https://i.ibb.co/v4pPWh2s/sundde.png" alt="SUNDDE">
+        <img src="https://i.ibb.co/zTQvCJWh/denuncias-1.png" alt="SUNDDE">
       </div>
       <div class="user-header-info">
         <span id="user-info" style="font-weight: bold; color:#000000;"></span>
@@ -184,7 +167,7 @@
       <button id="btn-descarga-lote" style="width: auto; display: none; background:#28a745; padding: 6px 12px; font-size: 0.85rem;" onclick="descargarLote()"><i class="fas fa-download"></i> Descargar Evidencias</button>
     </div>
 
-    <div id="loader"><i class="fas fa-cloud-download-alt fa-bounce fa-2x" style="color:#0056b3;"></i><br><span style="margin-top:10px; display:inline-block; font-weight:bold; color:#000000;">Validando y actualizando registros desde el servidor central...</span></div>
+    <div id="loader"><i class="fas fa-cloud-download-alt fa-bounce fa-2x" style="color:#0056b3;"></i><br><span style="margin-top:10px; display:inline-block; font-weight:bold; color:#000000;">Consultando Base de Datos...</span></div>
     <div id="denuncias-container" class="grid-container"></div>
   </div>
 
@@ -206,9 +189,7 @@
       document.getElementById('alert-icon').innerHTML = icon;
       document.getElementById('custom-alert-modal').style.display = 'flex';
     }
-    function cerrarAlerta() {
-      document.getElementById('custom-alert-modal').style.display = 'none';
-    }
+    function cerrarAlerta() { document.getElementById('custom-alert-modal').style.display = 'none'; }
 
     async function requestAPI(action, payload = {}) {
       try {
@@ -217,7 +198,7 @@
           body: JSON.stringify({ action, payload })
         });
         return await response.json();
-      } catch (err) { return { success: false, message: "Error al enlazar con el servidor principal." }; }
+      } catch (err) { return { success: false, message: "Error de conexión con el servidor principal." }; }
     }
 
     async function iniciarSesion() {
@@ -264,11 +245,7 @@
       }
     }
 
-    function formatIdFiltro(nombre) {
-      return nombre.toLowerCase().replace(/ /g, '-');
-    }
-
-    // Helper para detectar vacíos
+    function formatIdFiltro(nombre) { return nombre.toLowerCase().replace(/ /g, '-'); }
     function estaVacio(val) { return !val || val.trim() === ''; }
 
     async function loadStats(role) {
@@ -361,7 +338,7 @@
       
       let data = await requestAPI("getDenuncias", { user: currentUser });
       
-      // PRE-FILTRADO ESTRICTO SEGÚN ROL (Para que "Todas" muestre lo correcto)
+      // FILTRADO ESTRICTO INICIAL SEGÚN ROL PARA QUE "Todas" MUESTRE LO CORRECTO
       if (currentUser.role === "Analista SUNDDE") {
         currentDenuncias = data.filter(d => estaVacio(d.Estatus) || d.Estatus === 'Enviado a Empresa');
       } else if (currentUser.role === "Asistente de Seguimiento") {
@@ -385,6 +362,7 @@
 
       let dataFiltrada = currentDenuncias;
       
+      // LOGICA DE FILTROS AL TOCAR LAS TARJETAS ESTADÍSTICAS
       if(filtroActual === 'Por notificar' || filtroActual === 'Por Notificar') {
          dataFiltrada = currentDenuncias.filter(d => estaVacio(d.Estatus));
       } else if(filtroActual === 'Notificadas') {
@@ -422,39 +400,70 @@
           <p><strong>Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
           <p><strong>Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
           <p><strong>Producto:</strong> ${d.Producto || 'N/A'}</p>
-          <p style="background: rgba(0,0,0,0.04); padding:8px; border-radius:6px; font-size:12px; border: 1px solid rgba(0,0,0,0.1); color:#000000; margin-top:8px;"><strong>Motivo:</strong> ${d.Motivo_De_La_Denuncia || 'No especificado'}</p>
         `;
 
         if(d.Estatus === "Devuelto" && (currentUser.role === "Analista Denunciado" || currentUser.role === "Administrador General")) {
           html += `<p style="background: rgba(220,53,69,0.1); padding:8px; border-radius:6px; font-size:12px; border: 1px solid rgba(220,53,69,0.3); color:#dc3545; margin-top:8px;">
-                    <strong><i class="fas fa-exclamation-triangle"></i> Devolución (Fiscal):</strong><br>${d.Comentario_Fiscal || 'Requiere revisión y nueva acta.'}
+                    <strong><i class="fas fa-exclamation-triangle"></i> Devolución (Fiscal):</strong><br>${d.Comentario_Fiscal || 'Requiere revisión.'}
                    </p>`;
         }
         
-        html += `<div style="text-align:center; margin-top:12px; font-size:11px; color:#0056b3; font-weight:bold;"><i class="fas fa-hand-pointer"></i> Toca para ver detalle / gestionar</div>`;
+        html += `<div style="text-align:center; margin-top:12px; font-size:11px; color:#0056b3; font-weight:bold;"><i class="fas fa-hand-pointer"></i> Tocar para ver línea de tiempo</div>`;
         
         card.innerHTML = html;
         container.appendChild(card);
       });
     }
 
-    function generarInfoCompletaHTML(d) {
-      let info = `<div class="full-info-box">
-                    <p><strong><i class="fas fa-building"></i> Empresa/Sujeto:</strong> ${d.Empresa || 'N/A'}</p>
-                    <p><strong><i class="fas fa-user"></i> Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
-                    <p><strong><i class="fas fa-phone"></i> Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
-                    <p><strong><i class="fas fa-box"></i> Producto Involucrado:</strong> ${d.Producto || 'N/A'}</p>
-                    <hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
-                    <p><strong>Motivo de Denuncia:</strong><br> ${d.Motivo_De_La_Denuncia || 'N/A'}</p>`;
-      if(d.Respuesta_Empresa) {
-        info += `<hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
-                 <p><strong><i class="fas fa-reply"></i> Respuesta/Descargo Empresa:</strong><br> ${d.Respuesta_Empresa}</p>`;
-      }
-      if(d.Comentario_Fiscal) {
-        info += `<hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
-                 <p style="color:#dc3545;"><strong><i class="fas fa-gavel"></i> Nota del Fiscal:</strong><br> ${d.Comentario_Fiscal}</p>`;
+    // LINEA DE TIEMPO HERMOSA Y ORDENADA EN EL MODAL PARA TODOS LOS ROLES
+    function generarLineaDeTiempoHTML(d) {
+      let info = `<div class="timeline-box" style="border-left: 4px solid #333;">
+                    <h4 style="margin:0 0 10px 0; color:#333;"><i class="fas fa-info-circle"></i> Datos Ciudadano / Denunciante</h4>
+                    <p><strong>Empresa/Sujeto:</strong> ${d.Empresa || 'N/A'}</p>
+                    <p><strong>Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
+                    <p><strong>Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
+                    <p><strong>Producto:</strong> ${d.Producto || 'N/A'}</p>
+                  </div>`;
+
+      // PASO 1: SUNDDE
+      info += `<div class="timeline-box" style="border-left: 4px solid #007bff;">
+                 <h4 style="margin:0 0 8px 0; color:#007bff;"><i class="fas fa-file-alt"></i> 1. Carga Inicial (SUNDDE)</h4>
+                 <p><strong>Motivo de Denuncia:</strong><br> ${d.Motivo_De_La_Denuncia || 'N/A'}</p>`;
+      if(d.PDF_SUNDDE) {
+        info += `<a href="${d.PDF_SUNDDE}" class="btn-pdf" target="_blank" style="background:#007bff;"><i class="fas fa-file-pdf"></i> Ver Soporte Ciudadano</a>`;
       }
       info += `</div>`;
+
+      // PASO 2: DEVOLUCION (OPCIONAL SI EXISTE)
+      if(d.Comentario_Fiscal) {
+        info += `<div class="timeline-box" style="border-left: 4px solid #dc3545;">
+                   <h4 style="margin:0 0 8px 0; color:#dc3545;"><i class="fas fa-exclamation-triangle"></i> 2. Devolución (Fiscal Nacional)</h4>
+                   <p><strong>Motivo de No Conformidad:</strong><br> ${d.Comentario_Fiscal}</p>
+                 </div>`;
+      }
+
+      // PASO 3: RESPUESTA DE EMPRESA
+      if(d.Respuesta_Empresa) {
+        let labelEmpresa = d.Comentario_Fiscal ? "Respuesta a la devolución por el Fiscal Nacional:" : "Respuesta/Descargo Empresa:";
+        let numPaso = d.Comentario_Fiscal ? "3" : "2";
+        info += `<div class="timeline-box" style="border-left: 4px solid #28a745;">
+                   <h4 style="margin:0 0 8px 0; color:#28a745;"><i class="fas fa-industry"></i> ${numPaso}. Atención Empresa</h4>
+                   <p><strong>${labelEmpresa}</strong><br> ${d.Respuesta_Empresa}</p>`;
+        if(d.PDF_Empresa) {
+          info += `<a href="${d.PDF_Empresa}" class="btn-pdf" target="_blank" style="background:#28a745;"><i class="fas fa-file-pdf"></i> Ver Acta de Empresa</a>`;
+        }
+        info += `</div>`;
+      }
+
+      // PASO 4: CIERRE FISCAL
+      if(d.PDF_Fiscal) {
+        let numPasoCierre = d.Comentario_Fiscal ? "4" : "3";
+        info += `<div class="timeline-box" style="border-left: 4px solid #6c757d;">
+                   <h4 style="margin:0 0 8px 0; color:#6c757d;"><i class="fas fa-gavel"></i> ${numPasoCierre}. Cierre (Fiscal Nacional)</h4>
+                   <a href="${d.PDF_Fiscal}" class="btn-pdf" target="_blank" style="background:#6c757d;"><i class="fas fa-file-pdf"></i> Ver Acta Cierre Fiscal</a>
+                 </div>`;
+      }
+
       return info;
     }
 
@@ -462,84 +471,74 @@
        const d = currentDenuncias.find(x => x.ID_Denuncia === id);
        if(!d) return;
 
-       // Lógica título con estrellas (Admin General)
        let tituloExtra = '';
-       if(currentUser.role === "Administrador General" && d.Satisfaccion_Encuesta) {
+       if(d.Satisfaccion_Encuesta) {
           let num = parseInt(d.Satisfaccion_Encuesta);
-          tituloExtra = ' <span style="font-size:14px;">';
+          tituloExtra = ' <span style="font-size:14px;">(';
           for(let i=0; i<num; i++) tituloExtra += '<i class="fas fa-star" style="color:#ffc107;"></i>';
-          tituloExtra += '</span>';
+          tituloExtra += ')</span>';
        }
-       document.getElementById('modal-title').innerHTML = `<i class="fas fa-folder-open"></i> Detalle: ${d.ID_Denuncia}${tituloExtra}`;
+       document.getElementById('modal-title').innerHTML = `<i class="fas fa-folder-open"></i> Historial de Caso: ${d.ID_Denuncia}${tituloExtra}`;
        
-       let html = '';
+       let html = generarLineaDeTiempoHTML(d);
 
-       // INYECTAR INFO COMPLETA PARA TODOS MENOS SUNDDE (que no es necesario, pero si quieres se lo ponemos a todos)
-       // El usuario pidió que Analista Denunciado, Fiscal y Admin la tuvieran. Se la agregamos a todos para estandarizar.
-       html += generarInfoCompletaHTML(d);
-
-       // CONTROLES DE ACCIÓN SEGÚN ROL Y ESTATUS
+       // CONTROLES DE ACCIÓN DEBAJO DE LA LÍNEA DE TIEMPO
        if(currentUser.role === "Analista SUNDDE") {
            if(estaVacio(d.Estatus)) {
-               html += `<label style="font-size:12px; font-weight:bold;">Adjuntar PDF Soporte Denunciante:</label>
-                        <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                        <button onclick="procesar('SUNDDE_NOTIFICAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-paper-plane"></i> Notificar a Empresa</button>`;
-           } else {
-               html += `<p style="text-align:center; color:#28a745; font-weight:bold; font-size:0.9rem;"><i class="fas fa-check-circle"></i> Denuncia Notificada. No requiere acciones.</p>`;
+               html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
+                          <label style="font-size:12px; font-weight:bold;">Subir Expediente / Soporte Denunciante (PDF):</label>
+                          <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
+                          <button onclick="procesar('SUNDDE_NOTIFICAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-paper-plane"></i> Enviar Notificación a la Empresa</button>
+                        </div>`;
            }
        }
        
        if(currentUser.role === "Analista Denunciado") {
-           if(d.PDF_SUNDDE) html += `<a href="${d.PDF_SUNDDE}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline; display:block; margin-bottom:15px; font-size:0.9rem;"><i class="fas fa-file-pdf"></i> Ver Documento Notificación SUNDDE</a>`;
-           
            if(d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto') {
-               html += `<textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe el Acta de conformidad y comentarios obligatorios..." required></textarea>
-                        <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Subir Foto/Acta Soporte (PDF):</label>
-                        <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                        <button onclick="procesar('EMPRESA_ATENDER', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-check"></i> Cargar y Atender Denuncia</button>`;
-           } else {
-               html += `<p style="text-align:center; color:#28a745; font-weight:bold; font-size:0.9rem;"><i class="fas fa-check-circle"></i> Denuncia en revisión por el fiscal o cerrada.</p>`;
+               html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
+                          <textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe el Acta de conformidad obligatoria aquí..." required style="height:70px;"></textarea>
+                          <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Adjuntar Foto/Acta Soporte de Atención (PDF):</label>
+                          <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
+                          <button onclick="procesar('EMPRESA_ATENDER', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-check"></i> Cargar y Atender Denuncia</button>
+                        </div>`;
            }
        }
 
        if(currentUser.role === "Fiscal Nacional") {
-           if(d.PDF_Empresa) html += `<a href="${d.PDF_Empresa}" target="_blank" style="color: #0056b3; font-weight:bold; text-decoration:underline; display:block; margin-bottom:15px; font-size:0.9rem;"><i class="fas fa-file-pdf"></i> Ver Evidencias / Acta de la Empresa</a>`;
-           
            if(d.Estatus && d.Estatus.includes('Atendid')) {
-               html += `<select id="sel_${d.ID_Denuncia}" onchange="toggleComentFiscal('${d.ID_Denuncia}')" style="margin-bottom:10px;">
-                          <option value="SI">Sí Conforme (Aprobar Cierre)</option>
-                          <option value="NO">No Conforme (Devolver a la Empresa)</option>
-                        </select>
-                        <div id="wrapper_fiscal_${d.ID_Denuncia}" style="display:none;">
-                          <textarea id="coment_${d.ID_Denuncia}" placeholder="Explica el motivo de la devolución..." style="height:80px;"></textarea>
-                        </div>
-                        <div id="file_fiscal_wrap_${d.ID_Denuncia}">
-                          <label style="font-size:12px; font-weight:bold;">Adjuntar Acta Cierre Fiscal (PDF):</label>
-                          <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                        </div>
-                        <button onclick="procesarFiscal(${d.rowIndex}, '${d.ID_Denuncia}', '${d.Correo_Denunciante}')"><i class="fas fa-gavel"></i> Procesar Decisión</button>`;
-           } else {
-               html += `<p style="text-align:center; font-weight:bold; font-size:0.9rem; opacity:0.8;"><i class="fas fa-lock"></i> El caso ya ha sido dictaminado.</p>`;
+               html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
+                          <label style="font-size:12px; font-weight:bold;">Evaluación de Conformidad:</label>
+                          <select id="sel_${d.ID_Denuncia}" onchange="toggleComentFiscal('${d.ID_Denuncia}')">
+                            <option value="SI">Sí Conforme (Aprobar y Cerrar)</option>
+                            <option value="NO">No Conforme (Devolver a la Empresa)</option>
+                          </select>
+                          <div id="wrapper_fiscal_${d.ID_Denuncia}" style="display:none;">
+                            <textarea id="coment_${d.ID_Denuncia}" placeholder="Explica detalladamente el motivo de la devolución..." style="height:70px;"></textarea>
+                          </div>
+                          <div id="file_fiscal_wrap_${d.ID_Denuncia}">
+                            <label style="font-size:12px; font-weight:bold; display:block; margin-top:10px;">Adjuntar Acta de Cierre Legal (PDF):</label>
+                            <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
+                          </div>
+                          <button onclick="procesarFiscal(${d.rowIndex}, '${d.ID_Denuncia}', '${d.Correo_Denunciante}')"><i class="fas fa-gavel"></i> Procesar Decisión Definitiva</button>
+                        </div>`;
            }
        }
 
        if(currentUser.role === "Asistente de Seguimiento") {
             if(!d.Satisfaccion_Encuesta) {
-                html += `<label style="font-size:12px; font-weight:bold;">Puntuación de Encuesta Ciudadana (1 a 5 Estrellas):</label>
-                         <input type="number" id="sat_${d.ID_Denuncia}" min="1" max="5" placeholder="Ej: 5">
-                         <button onclick="procesar('SEGUIMIENTO_CERRAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-box-archive"></i> Registrar Encuesta</button>`;
-            } else {
-                let stars = '';
-                for(let i=0; i<parseInt(d.Satisfaccion_Encuesta); i++) stars += '<i class="fas fa-star" style="color:#ffc107;"></i>';
-                html += `<p style="text-align:center; font-weight:bold;">Satisfacción registrada: ${stars}</p>`;
+                html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px; text-align:center;">
+                           <label style="font-size:13px; font-weight:bold; color:#0056b3;">Registrar Puntuación de Encuesta (1 a 5 Estrellas):</label>
+                           <input type="number" id="sat_${d.ID_Denuncia}" min="1" max="5" placeholder="Ej: 5" style="text-align:center; font-size:20px;">
+                           <button onclick="procesar('SEGUIMIENTO_CERRAR', ${d.rowIndex}, '${d.ID_Denuncia}')" style="background:#28a745;"><i class="fas fa-box-archive"></i> Registrar Encuesta y Archivar</button>
+                         </div>`;
             }
        }
 
        if(currentUser.role === "Administrador General") {
            if(d.Estatus === "Enviado a Empresa") {
-             html += `<button style="background:#ff8c00; font-size:0.9rem;" onclick="procesar('ADMIN_ALERTA', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-bell"></i> Enviar Alerta de Demora a Empresa</button>`;
-           } else {
-             html += `<p style="text-align:center; opacity:0.7; font-size:0.85rem;">Vista de auditoría (Sin acciones requeridas).</p>`;
+             html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
+                        <button style="background:#ff8c00; font-size:0.9rem;" onclick="procesar('ADMIN_ALERTA', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-bell"></i> Enviar Alerta de Demora a la Empresa</button>
+                      </div>`;
            }
        }
 
@@ -561,12 +560,12 @@
 
       if(subAction === 'EMPRESA_ATENDER') {
         const txt = document.getElementById(`coment_${id}`).value;
-        if(!txt) { mostrarAlerta("El acta o comentario es obligatorio"); return; }
+        if(!txt) { mostrarAlerta("El texto de descargo de la empresa es obligatorio"); return; }
         payload.data.comentario = txt;
       }
       if(subAction === 'SEGUIMIENTO_CERRAR') {
         let val = document.getElementById(`sat_${id}`).value;
-        if(!val || val < 1 || val > 5) { mostrarAlerta("Ingrese un valor del 1 al 5."); return; }
+        if(!val || val < 1 || val > 5) { mostrarAlerta("Ingrese un valor del 1 al 5 en las estrellas."); return; }
         payload.data.satisfaccion = val;
       }
 
@@ -581,7 +580,7 @@
          reader.readAsDataURL(file);
       } else {
          if(subAction === 'EMPRESA_ATENDER' || subAction === 'SUNDDE_NOTIFICAR') {
-           mostrarAlerta("Debe adjuntar el archivo PDF solicitado obligatoriamente."); return;
+           mostrarAlerta("No has seleccionado ningún archivo PDF. Es obligatorio adjuntarlo para avanzar."); return;
          }
          cerrarModal(); ejecutarBackend(payload);
       }
@@ -594,12 +593,12 @@
        if(sel === "NO") {
          payload.subAction = "FISCAL_NOCONFORME";
          payload.data.comentarioFiscal = document.getElementById(`coment_${id}`).value;
-         if(!payload.data.comentarioFiscal){ mostrarAlerta("Debes explicar el porqué de la devolución."); return;}
+         if(!payload.data.comentarioFiscal){ mostrarAlerta("Debes explicar el porqué de la devolución obligatoriamente."); return;}
          cerrarModal(); ejecutarBackend(payload);
        } else {
          payload.subAction = "FISCAL_CONFORME";
          let fileInput = document.getElementById(`file_${id}`);
-         if(!fileInput || fileInput.files.length === 0){ mostrarAlerta("Debe adjuntar el Acta del Fiscal en PDF para aprobar."); return; }
+         if(!fileInput || fileInput.files.length === 0){ mostrarAlerta("Debe adjuntar el Acta del Fiscal en formato PDF para poder aprobar."); return; }
          let file = fileInput.files[0];
          let reader = new FileReader();
          reader.onload = async function(e) {
