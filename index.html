@@ -1,638 +1,734 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SUNDDE - Sistema de Denuncias</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="shortcut icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png" type="image/png">
-  <link rel="apple-touch-icon" href="https://i.ibb.co/zTQvCJWh/denuncias-1.png">
-  
-  <style>
-    :root {
-      --glass-bg: rgba(255, 255, 255, 0.82); 
-      --glass-border: rgba(255, 255, 255, 0.6);
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
-      --text-main: #000000; 
-      --primary: #007bff;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Centralizado de Denuncias - SUNDDE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1E3A8A;       
+            --secondary: #0284C7;     
+            --success: #10B981;       
+            --warning: #F59E0B;       
+            --danger: #EF4444;        
+            --dark: #0F172A;          
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
+        }
 
-    body {
-      margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('https://i.ibb.co/Q3wxsDRV/fondoprincipal.png') no-repeat center center fixed;
-      background-size: cover; color: var(--text-main); min-height: 100vh;
-      display: flex; flex-direction: column; overflow-x: hidden;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
 
-    .glass-panel {
-      background: var(--glass-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--glass-border); border-radius: 15px; box-shadow: var(--glass-shadow);
-    }
+        body {
+            background: linear-gradient(135deg, #E0E7FF 0%, #E0F2FE 50%, #F1F5F9 100%);
+            color: var(--dark);
+            min-height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
 
-    #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
-    .login-box { width: 100%; max-width: 400px; padding: 40px; text-align: center; box-sizing: border-box; }
-    .login-box h2 { color: #000000; }
-    .login-box img { max-width: 180px; margin-bottom: 20px; }
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow);
+        }
 
-    input, select, textarea {
-      width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.3); background: rgba(255, 255, 255, 0.95);
-      color: #000000; font-weight: 600; outline: none; box-sizing: border-box; font-family: inherit;
-    }
+        #login-view { width: 100%; max-width: 440px; padding: 40px; text-align: center; animation: fadeIn 0.5s ease-out; }
+        .login-header i { font-size: 3rem; color: var(--primary); margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(30, 58, 138, 0.2)); }
+        .login-header h2 { font-size: 1.8rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
+        .login-header p { color: #475569; font-size: 0.95rem; margin-bottom: 30px; }
 
-    button {
-      background: var(--primary); color: white; border: none; padding: 10px 15px;
-      border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.3s ease; margin-top: 10px;
-    }
-    button:hover { background: #0056b3; transform: scale(1.02); }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; }
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748B; }
 
-    #dashboard-screen { display: none; padding: 15px; position: relative; }
-    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; margin-bottom: 20px; border-radius: 12px; }
-    header img { max-width: 150px; height: auto; }
+        input, select, textarea {
+            width: 100%; padding: 12px 12px 12px 40px; border-radius: 10px; border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.6); font-size: 1rem; color: var(--dark); outline: none; transition: all 0.3s ease;
+        }
+        select { padding-left: 12px; cursor: pointer; } /* Corregido padding para select sin icono */
+        .input-wrapper select { padding-left: 40px; }
+        textarea { padding-left: 12px; }
+        input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
 
-    #btn-menu-admin { display: none; font-size: 24px; cursor: pointer; margin-right: 15px; color: #0056b3; }
-    .header-left { display: flex; align-items: center; }
+        .btn-action {
+            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, #1D4ED8 100%);
+            color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35); }
+        .btn-action:disabled { background: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(3px); }
-    .sidebar { position: fixed; top: 0; left: -320px; width: 300px; height: 100vh; background: rgba(255,255,255,0.95); box-shadow: 2px 0 15px rgba(0,0,0,0.3); z-index: 2000; transition: 0.3s ease; padding: 20px; overflow-y: auto; box-sizing: border-box; }
-    .sidebar.open { left: 0; }
-    .sidebar h3 { color: #0056b3; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 20px; font-size: 1rem; }
-    .close-sidebar { font-size: 24px; cursor: pointer; float: right; color: #333; }
+        #app-view { display: none; width: 98vw; height: 95vh; max-width: 1600px; grid-template-columns: 280px 1fr; overflow: hidden; }
 
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-    .card { padding: 15px; transition: transform 0.2s, box-shadow 0.2s; color: #000000; cursor: pointer; font-size: 0.9rem; }
-    .card h3 { margin-top: 0; font-size: 1.05rem; margin-bottom: 10px; }
-    .card p { margin: 5px 0; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px 0 rgba(0,0,0,0.25); border: 1px solid var(--primary); }
-    .badge { padding: 4px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; background: #007bff; color: white; float: right; }
+        .sidebar { padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); height: 100%; }
+        .brand { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 25px; }
+        .brand i { font-size: 1.8rem; color: var(--primary); }
+        .brand h3 { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
 
-    .stats-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .stat-box { flex: 1; min-width: 110px; padding: 12px 10px; text-align: center; cursor: pointer; transition: 0.2s; border: 2px solid transparent; border-radius: 12px; }
-    .stat-box:hover { transform: scale(1.03); background: rgba(255,255,255,0.95); }
-    .stat-box.active-filter { border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); background: rgba(255,255,255,0.98); }
-    .stat-box h2 { margin: 0; font-size: 1.6rem; color: #0056b3; }
-    .stat-box p { color: #000000; font-weight: bold; margin: 3px 0 0 0; font-size: 0.8rem; line-height: 1.1; }
+        .user-profile-card { background: rgba(255, 255, 255, 0.4); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .user-profile-card h4 { font-size: 0.95rem; color: var(--dark); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-profile-card p { font-size: 0.8rem; color: #475569; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-profile-card .tag-role { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; background: var(--primary); color: white; margin-top: 8px; }
 
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
-    .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; font-weight: bold; z-index: 2000; }
-    
-    #loader { display: none; text-align: center; padding: 20px; font-size: 1.1rem; color: #000000; }
-    
-    /* TIMELINE DE INFORMACION ORDENADA EN EL MODAL */
-    .timeline-box { background:#f1f4f8; padding:15px; border-radius:8px; margin-bottom:15px; font-size:0.85rem; border:1px solid #ddd; color: #333; }
-    .timeline-box p { margin: 6px 0; }
-    .btn-pdf { display:inline-block; margin-top:8px; color:#fff !important; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:12px; font-weight:bold; }
-    .btn-pdf:hover { opacity: 0.8; }
+        .menu-items { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #475569; font-weight: 600; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
+        .menu-link:hover, .menu-link.active { background: rgba(255, 255, 255, 0.7); color: var(--primary); }
+        .logout-link { color: var(--danger); border-top: 1px solid rgba(0, 0, 0, 0.08); padding-top: 15px; }
+        .logout-link:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-    .alert-content { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2); }
-    .alert-content h3 { margin-top: 10px; color: #000; font-size: 1.2rem; }
-    .alert-content p { color: #333; font-weight: 500; font-size: 0.95rem; }
-    .alert-content button { margin-top: 15px; background: #007bff; padding: 8px; }
+        .main-content { padding: 35px; overflow-y: auto; height: 100%; display: flex; flex-direction: column; gap: 30px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; }
+        .top-bar h1 { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .top-bar .date-pill { padding: 8px 16px; border-radius: 20px; background: rgba(255, 255, 255, 0.6); font-size: 0.9rem; font-weight: 600; color: var(--primary); border: 1px solid var(--glass-border); }
 
-    @media (max-width: 768px) {
-      header { flex-direction: row; padding: 10px; align-items: center; }
-      header img { max-width: 100px; }
-      .user-header-info { display: flex; align-items: center; gap: 8px; text-align: right; justify-content: flex-end; width: 100%; }
-      #user-info { font-size: 0.8rem; margin: 0; display: inline-block; line-height: 1.2; }
-      header button { padding: 6px 10px; font-size: 0.8rem; margin: 0; width: auto; }
-      .stats-container { gap: 8px; }
-      .stat-box { min-width: 30%; padding: 10px; }
-      .stat-box h2 { font-size: 1.4rem; }
-      .stat-box p { font-size: 0.75rem; }
-      .grid-container { grid-template-columns: 1fr; }
-      #panel-title { font-size: 1.2rem; margin-bottom: 10px !important; }
-      .modal-content { padding: 20px; width: 95%; }
-    }
-  </style>
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .stat-card { padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .stat-card .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
+        .stat-card h5 { font-size: 0.85rem; color: #475569; text-transform: uppercase; }
+        .stat-card p { font-size: 1.7rem; font-weight: 700; color: var(--dark); }
+
+        .workspace-view { display: none; }
+        .workspace-view.active { display: block; animation: fadeInUp 0.4s ease-out; }
+
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--glass-border); }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(255, 255, 255, 0.2); }
+        th { background: rgba(30, 58, 138, 0.05); padding: 14px 16px; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid var(--glass-border); }
+        td { padding: 14px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05); color: #334155; }
+        tr:hover td { background: rgba(255, 255, 255, 0.4); }
+
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .status-nuevo { background: rgba(30, 58, 138, 0.15); color: var(--primary); }
+        .status-envcomp { background: rgba(2, 132, 199, 0.15); color: var(--secondary); }
+        .status-atcomp { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .status-devuelto { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .status-cerradofisc { background: #D1FAE5; color: #065F46; }
+        .status-final { background: #F3F4F6; color: #374151; }
+
+        .dropzone-container { border: 2px dashed var(--secondary); border-radius: 12px; padding: 30px; text-align: center; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; margin-bottom: 20px; }
+        .dropzone-container:hover { background: rgba(255, 255, 255, 0.6); border-color: var(--primary); }
+        .dropzone-container i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 10px; }
+        .file-selected-text { font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 5px; display: none; }
+
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+        .btn-sm-primary { background: var(--primary); color: white; }
+        .btn-sm-success { background: var(--success); color: white; }
+        .btn-sm-warning { background: var(--warning); color: white; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { width: 100%; max-width: 550px; padding: 30px; animation: zoomIn 0.3s ease-out; max-height: 90vh; overflow-y: auto;}
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-header h3 { color: var(--primary); font-weight: 700; }
+        .close-modal { font-size: 1.3rem; cursor: pointer; color: #64748B; }
+
+        /* Grid para la vista de detalle */
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.9rem; margin-bottom: 20px; }
+        .detail-grid > div { background: rgba(255, 255, 255, 0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .detail-grid .full-width { grid-column: span 2; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
 </head>
 <body>
 
-  <div id="custom-alert-modal" class="modal-overlay" style="z-index: 3000;">
-    <div class="alert-content">
-      <div id="alert-icon"></div>
-      <h3 id="alert-title">Atención</h3>
-      <p id="alert-message"></p>
-      <button onclick="cerrarAlerta()">Entendido</button>
-    </div>
-  </div>
-
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-  <div class="sidebar" id="admin-sidebar">
-    <span class="close-sidebar" onclick="toggleSidebar()">&times;</span>
-    <h2 style="margin-top:0; color:#000; font-size:1.3rem;">Panel Administrador</h2>
-    
-    <h3><i class="fas fa-star" style="color:#ffc107;"></i> Satisfacción Ciudadana</h3>
-    <div id="admin-stats-satisfaccion" class="stats-container" style="margin-bottom:10px;"></div>
-    
-    <h3><i class="fas fa-chart-pie"></i> Estatus Global (Filtros)</h3>
-    <div id="admin-stats-casos" class="stats-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
-  </div>
-
-  <div id="action-modal" class="modal-overlay">
-    <div class="modal-content">
-      <span class="close-btn" onclick="cerrarModal()">&times;</span>
-      <h3 id="modal-title" style="margin-top:0; color:#0056b3; border-bottom:1px solid #ddd; padding-bottom:10px; font-size:1.1rem; padding-right:20px;">Gestión de Caso</h3>
-      <div id="modal-body"></div>
-    </div>
-  </div>
-
-  <div id="login-screen">
-    <div class="login-box glass-panel">
-      <img src="https://i.ibb.co/zTQvCJWh/denuncias-1.png" alt="SUNDDE Logo">
-      <h2 style="font-size: 1.4rem;">Módulo de Acceso</h2>
-      <input type="email" id="email" placeholder="Correo Corporativo o Empresa" required>
-      <input type="password" id="pass" placeholder="Contraseña Segura" required>
-      <button id="btn-login" onclick="iniciarSesion()">Ingresar al Sistema</button>
-      <p id="login-error" style="color:#dc3545; display:none; margin-top:15px; font-size:0.9rem; font-weight:bold;"></p>
-    </div>
-  </div>
-
-  <div id="dashboard-screen">
-    <header class="glass-panel">
-      <div class="header-left">
-        <i class="fas fa-bars" id="btn-menu-admin" onclick="toggleSidebar()"></i>
-        <img src="https://i.ibb.co/zTQvCJWh/denuncias-1.png" alt="SUNDDE">
-      </div>
-      <div class="user-header-info">
-        <span id="user-info" style="font-weight: bold; color:#000000;"></span>
-        <button onclick="cerrarSesion()" style="background: #dc3545;"><i class="fas fa-sign-out-alt"></i></button>
-      </div>
-    </header>
-
-    <div id="dashboard-stats" class="stats-container" style="display:none;"></div>
-
-    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;">
-      <h2 id="panel-title" style="margin:0; color:#000000;">Bandeja de Casos <span id="filtro-label" style="font-size:0.9rem; color:#0056b3;">(Todas)</span></h2>
-      <button id="btn-descarga-lote" style="width: auto; display: none; background:#28a745; padding: 6px 12px; font-size: 0.85rem;" onclick="descargarLote()"><i class="fas fa-download"></i> Descargar Evidencias</button>
+    <div id="custom-alert" class="modal" style="z-index: 3000;">
+        <div class="glass-panel modal-content" style="max-width: 400px; text-align: center;">
+            <div id="alert-icon" style="font-size: 3rem; margin-bottom: 15px;"></div>
+            <h3 id="alert-title" style="margin-bottom: 10px; color: var(--primary);"></h3>
+            <p id="alert-message" style="color: #475569; margin-bottom: 20px;"></p>
+            <button class="btn-action" onclick="closeCustomAlert()">Entendido</button>
+        </div>
     </div>
 
-    <div id="loader"><i class="fas fa-cloud-download-alt fa-bounce fa-2x" style="color:#0056b3;"></i><br><span style="margin-top:10px; display:inline-block; font-weight:bold; color:#000000;">Consultando Base de Datos...</span></div>
-    <div id="denuncias-container" class="grid-container"></div>
-  </div>
+    <div class="modal" id="detail-modal">
+        <div class="glass-panel modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="detail-title">Detalles del Expediente</h3>
+                <i class="fas fa-xmark close-modal" onclick="closeDetailModal()"></i>
+            </div>
+            <div id="detail-body">
+                </div>
+        </div>
+    </div>
 
-  <script>
-    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxC859D4u4GWusT8FBrCZgQf_6QpX7995_UPv-zSnMx0T3WJkbRR0qLmDH8Wxp5EWDE/exec";
-    
-    let currentUser = null;
-    let currentDenuncias = [];
-    let filtroActual = 'Todas';
+    <div id="login-view" class="glass-panel">
+        <div class="login-header">
+            <i class="fas fa-shield-halved"></i>
+            <h2>SUNDDE</h2>
+            <p>Sistema Centralizado de Seguimiento de Denuncias</p>
+        </div>
+        
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="login-email" placeholder="usuario@sundde.gob.ve">
+            </div>
+        </div>
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const sesionGuardada = localStorage.getItem('sundde_sesion');
-      if (sesionGuardada) { currentUser = JSON.parse(sesionGuardada); levantarDashboard(); }
-    });
+        <div class="form-group">
+            <label>Contraseña</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="login-pass" placeholder="••••••••">
+            </div>
+        </div>
 
-    function mostrarAlerta(mensaje, esExito = false) {
-      document.getElementById('alert-message').innerText = mensaje;
-      let icon = esExito ? '<i class="fas fa-check-circle" style="color:#28a745; font-size:40px;"></i>' : '<i class="fas fa-exclamation-circle" style="color:#dc3545; font-size:40px;"></i>';
-      document.getElementById('alert-icon').innerHTML = icon;
-      document.getElementById('custom-alert-modal').style.display = 'flex';
-    }
-    function cerrarAlerta() { document.getElementById('custom-alert-modal').style.display = 'none'; }
+        <button class="btn-action" id="btn-login" onclick="attemptLogin()">
+            <i class="fas fa-right-to-bracket"></i> Autenticar Ingreso
+        </button>
+    </div>
 
-    async function requestAPI(action, payload = {}) {
-      try {
-        const response = await fetch(WEBAPP_URL, {
-          method: "POST", mode: "cors", headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ action, payload })
+    <div id="app-view" class="glass-panel">
+        <div class="sidebar">
+            <div class="brand">
+                <i class="fas fa-shield-halved"></i>
+                <h3>SUNDDE</h3>
+            </div>
+
+            <div class="user-profile-card">
+                <h4 id="user-display-name">Cargando...</h4>
+                <p id="user-display-email">...</p>
+                <span class="tag-role" id="user-display-role">...</span>
+                <p id="user-display-empresa" style="font-style: italic; font-size: 0.8rem; color: var(--secondary); margin-top:5px; display:none; font-weight: 600;"></p>
+            </div>
+
+            <div class="menu-items">
+                <div class="menu-link active" onclick="switchView('view-bandeja')">
+                    <i class="fas fa-folder-open"></i> Bandeja Unificada
+                </div>
+                <div class="menu-link" id="link-stats" onclick="switchView('view-analytics')" style="display: none;">
+                    <i class="fas fa-chart-pie"></i> Estadísticas Globales
+                </div>
+            </div>
+
+            <div class="menu-link logout-link" onclick="triggerLogout()">
+                <i class="fas fa-power-off"></i> Cerrar Sesión Activa
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="top-bar">
+                <h1 id="current-view-title">Bandeja Unificada de Expedientes</h1>
+                <div class="date-pill" id="live-date"></div>
+            </div>
+
+            <div id="view-bandeja" class="workspace-view active">
+                <div class="table-container">
+                    <table id="table-denuncias">
+                        <thead>
+                            <tr>
+                                <th>ID Expediente</th>
+                                <th>Sujeto de Aplicación / Empresa</th>
+                                <th>Denunciante</th>
+                                <th>Producto / Servicio</th>
+                                <th>Estatus Actual</th>
+                                <th>Acción Requerida</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-denuncias">
+                            <tr>
+                                <td colspan="6" style="text-align:center; color:#64748B;">Inicie sesión para descargar los expedientes del servidor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-analytics" class="workspace-view">
+                <div class="stats-grid">
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: var(--primary);"><i class="fas fa-file-invoice"></i></div>
+                        <div>
+                            <h5>Total Recibidas</h5>
+                            <p id="stat-recibidas">0</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: var(--warning);"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <h5>Casos Atendidos</h5>
+                            <p id="stat-atendidas">0</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: var(--success);"><i class="fas fa-circle-check"></i></div>
+                        <div>
+                            <h5>Casos Cerrados</h5>
+                            <p id="stat-cerradas">0</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);"><i class="fas fa-star"></i></div>
+                        <div>
+                            <h5>Satisfacción Promedio</h5>
+                            <p id="stat-satisfaccion">0.0 / 5</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="action-modal">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Procesar Expediente</h3>
+                <i class="fas fa-xmark close-modal" onclick="closeActionModal()"></i>
+            </div>
+            <div id="modal-body-form">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const webappurl = "https://script.google.com/macros/s/AKfycbwvsicQN5GZn7ymFX3fyelECKTo0t-nPRst6dadnw3K3NtXgWtQGI3chOG3qcZBozFv/exec";
+        
+        let currentUser = null;
+        let globalDenunciasData = [];
+        let selectedRowData = null;
+        let attachedFileBase64 = "";
+        let attachedFileName = "";
+        let attachedPhotoBase64 = "";
+        let attachedPhotoName = "";
+
+        document.getElementById('live-date').innerText = new Date().toLocaleDateString('es-VE', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
-        return await response.json();
-      } catch (err) { return { success: false, message: "Error de conexión con el servidor principal." }; }
-    }
 
-    async function iniciarSesion() {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('pass').value;
-      const errBox = document.getElementById('login-error');
-      const btnLogin = document.getElementById('btn-login');
-      errBox.style.display = 'none';
-      if(!email || !pass) { errBox.innerText = "Complete los campos."; errBox.style.display = 'block'; return; }
-
-      btnLogin.disabled = true; btnLogin.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Conectando...`;
-      const res = await requestAPI("loginUser", { email, pass });
-      
-      if(!res.success) {
-        btnLogin.disabled = false; btnLogin.innerHTML = "Ingresar al Sistema";
-        errBox.innerText = res.message; errBox.style.display = 'block';
-      } else {
-        currentUser = res; localStorage.setItem('sundde_sesion', JSON.stringify(res)); levantarDashboard();
-      }
-    }
-
-    function levantarDashboard() {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('dashboard-screen').style.display = 'block';
-      
-      let empresaORol = currentUser.empresa ? currentUser.empresa : currentUser.role;
-      document.getElementById('user-info').innerHTML = `${currentUser.nombre}<br><span style="font-weight:normal; font-size:0.9em;">${empresaORol}</span>`;
-      
-      if(currentUser.role === "Administrador General") { document.getElementById('btn-menu-admin').style.display = 'block'; } 
-      else { document.getElementById('btn-menu-admin').style.display = 'none'; }
-      
-      if(currentUser.role === "Analista Denunciado" || currentUser.role === "Fiscal Nacional") { document.getElementById('btn-descarga-lote').style.display = 'block'; }
-      
-      cargarDenuncias(); 
-    }
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('admin-sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if(sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open'); overlay.style.display = 'none';
-      } else {
-        sidebar.classList.add('open'); overlay.style.display = 'block';
-      }
-    }
-
-    function formatIdFiltro(nombre) { return nombre.toLowerCase().replace(/ /g, '-'); }
-    function estaVacio(val) { return !val || val.trim() === ''; }
-
-    async function loadStats(role) {
-      const statsBackend = await requestAPI("getStats"); 
-      let htmlMain = "";
-
-      if (role === "Analista SUNDDE") {
-        let cPorNotificar = currentDenuncias.filter(d => estaVacio(d.Estatus)).length;
-        let cNotificadas = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa').length;
-        htmlMain += `<div id="stat-${formatIdFiltro('Por notificar')}" class="stat-box glass-panel" onclick="toggleFiltro('Por notificar')"><h2>${cPorNotificar}</h2><p>Por notificar</p></div>`;
-        htmlMain += `<div id="stat-${formatIdFiltro('Notificadas')}" class="stat-box glass-panel" onclick="toggleFiltro('Notificadas')"><h2>${cNotificadas}</h2><p>Notificadas</p></div>`;
-      
-      } else if (role === "Asistente de Seguimiento") {
-        let cCerradoFiscal = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal').length;
-        let cCerradoEmpresa = currentDenuncias.filter(d => d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada').length;
-        htmlMain += `<div id="stat-${formatIdFiltro('Cerrado Fiscal')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado Fiscal')"><h2>${cCerradoFiscal}</h2><p>Cerrado Fiscal</p></div>`;
-        htmlMain += `<div id="stat-${formatIdFiltro('Cerrado por Empresa')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado por Empresa')"><h2>${cCerradoEmpresa}</h2><p>Cerrado Empresa</p></div>`;
-      
-      } else if (role === "Administrador General") {
-        let cVacias = currentDenuncias.filter(d => estaVacio(d.Estatus)).length;
-        let cEnv = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa').length;
-        let cAte = currentDenuncias.filter(d => d.Estatus && d.Estatus.includes('Atendid')).length;
-        let cDev = currentDenuncias.filter(d => d.Estatus === 'Devuelto').length;
-        let cCEmp = currentDenuncias.filter(d => d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada').length;
-        let cCFis = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal').length;
-
-        let starsHtml = "";
-        let roundedStars = Math.round(statsBackend.promedioSatisfaccion || 0);
-        for(let i=1; i<=5; i++) { starsHtml += `<i class="fa${i <= roundedStars ? 's' : 'r'} fa-star" style="color:#ffc107; font-size:12px;"></i>`; }
-        let boxSatisfaccion = `<div class="stat-box glass-panel" style="min-width:100%; cursor:default;"><h2>${statsBackend.promedioSatisfaccion || 0}</h2><p>${starsHtml}</p></div>`;
-        
-        let miniCards = `
-          <div id="stat-${formatIdFiltro('Por Notificar')}" class="stat-box glass-panel" onclick="toggleFiltro('Por Notificar')"><h2>${cVacias}</h2><p>Por Notificar</p></div>
-          <div id="stat-${formatIdFiltro('Notificadas')}" class="stat-box glass-panel" onclick="toggleFiltro('Notificadas')"><h2>${cEnv}</h2><p>Notificadas</p></div>
-          <div id="stat-${formatIdFiltro('Atendidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Atendidas')"><h2>${cAte}</h2><p>Atendidas</p></div>
-          <div id="stat-${formatIdFiltro('Devueltas')}" class="stat-box glass-panel" onclick="toggleFiltro('Devueltas')"><h2>${cDev}</h2><p>Devueltas</p></div>
-          <div id="stat-${formatIdFiltro('Cerrado Empresa')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado Empresa')"><h2>${cCEmp}</h2><p>Cer. Empresa</p></div>
-          <div id="stat-${formatIdFiltro('Cerrado Fiscal')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerrado Fiscal')"><h2>${cCFis}</h2><p>Cer. Fiscal</p></div>
-        `;
-        document.getElementById('dashboard-stats').style.display = 'none';
-        document.getElementById('admin-stats-satisfaccion').innerHTML = boxSatisfaccion;
-        document.getElementById('admin-stats-casos').innerHTML = miniCards;
-
-      } else {
-        // Analista Denunciado y Fiscal Nacional
-        let cRecibidas = currentDenuncias.filter(d => (role === 'Analista Denunciado' && (d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto'))).length;
-        let cAtendidas = currentDenuncias.filter(d => d.Estatus && d.Estatus.includes('Atendid')).length;
-        let cCerradas = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada').length;
-
-        if (role === 'Analista Denunciado') {
-          htmlMain += `<div id="stat-${formatIdFiltro('Recibidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Recibidas')"><h2>${cRecibidas}</h2><p>Recibidas</p></div>`;
-        }
-        htmlMain += `<div id="stat-${formatIdFiltro('Atendidas')}" class="stat-box glass-panel" onclick="toggleFiltro('Atendidas')"><h2>${cAtendidas}</h2><p>Atendidas</p></div>`;
-        
-        if(role === "Fiscal Nacional") { 
-          htmlMain += `<div id="stat-${formatIdFiltro('Cerradas')}" class="stat-box glass-panel" onclick="toggleFiltro('Cerradas')"><h2>${cCerradas}</h2><p>Cerradas</p></div>`;
-        }
-      }
-
-      if(role !== "Administrador General") {
-        document.getElementById('dashboard-stats').innerHTML = htmlMain;
-        document.getElementById('dashboard-stats').style.display = 'flex';
-      }
-
-      if(filtroActual !== 'Todas') {
-        let target = document.getElementById(`stat-${formatIdFiltro(filtroActual)}`);
-        if(target) target.classList.add('active-filter');
-      }
-    }
-
-    function toggleFiltro(tipo) {
-      if(filtroActual === tipo) filtroActual = 'Todas';
-      else filtroActual = tipo;
-
-      document.getElementById('filtro-label').innerText = `(${filtroActual})`;
-      document.querySelectorAll('.stat-box').forEach(box => box.classList.remove('active-filter'));
-      
-      if(filtroActual !== 'Todas') {
-        let target = document.getElementById(`stat-${formatIdFiltro(tipo)}`);
-        if(target) target.classList.add('active-filter');
-      }
-
-      if(document.getElementById('admin-sidebar').classList.contains('open')){ toggleSidebar(); }
-      renderCards();
-    }
-
-    async function cargarDenuncias() {
-      document.getElementById('loader').style.display = 'block';
-      document.getElementById('denuncias-container').innerHTML = '';
-      
-      let data = await requestAPI("getDenuncias", { user: currentUser });
-      
-      // FILTRADO ESTRICTO INICIAL SEGÚN ROL PARA QUE "Todas" MUESTRE LO CORRECTO
-      if (currentUser.role === "Analista SUNDDE") {
-        currentDenuncias = data.filter(d => estaVacio(d.Estatus) || d.Estatus === 'Enviado a Empresa');
-      } else if (currentUser.role === "Asistente de Seguimiento") {
-        currentDenuncias = data.filter(d => d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada');
-      } else if (currentUser.role === "Fiscal Nacional") {
-        currentDenuncias = data.filter(d => (d.Estatus && d.Estatus.includes('Atendid')) || d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa');
-      } else if (currentUser.role === "Analista Denunciado") {
-         currentDenuncias = data.filter(d => d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto' || (d.Estatus && d.Estatus.includes('Atendid')));
-      } else {
-        currentDenuncias = data;
-      }
-
-      document.getElementById('loader').style.display = 'none';
-      await loadStats(currentUser.role);
-      renderCards();
-    }
-
-    function renderCards() {
-      const container = document.getElementById('denuncias-container');
-      container.innerHTML = '';
-
-      let dataFiltrada = currentDenuncias;
-      
-      // LOGICA DE FILTROS AL TOCAR LAS TARJETAS ESTADÍSTICAS
-      if(filtroActual === 'Por notificar' || filtroActual === 'Por Notificar') {
-         dataFiltrada = currentDenuncias.filter(d => estaVacio(d.Estatus));
-      } else if(filtroActual === 'Notificadas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa');
-      } else if(filtroActual === 'Cerrado Fiscal') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal');
-      } else if(filtroActual === 'Cerrado por Empresa' || filtroActual === 'Cerrado Empresa') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada');
-      } else if(filtroActual === 'Recibidas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto');
-      } else if(filtroActual === 'Atendidas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus && d.Estatus.includes('Atendid'));
-      } else if(filtroActual === 'Devueltas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Devuelto');
-      } else if(filtroActual === 'Cerradas') {
-         dataFiltrada = currentDenuncias.filter(d => d.Estatus === 'Cerrado Fiscal' || d.Estatus === 'Cerrado por Empresa' || d.Estatus === 'Cerrada');
-      }
-
-      if(dataFiltrada.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; font-weight:bold; opacity:0.7; color:#000000; font-size:0.95rem;">No hay casos bajo este filtro o etapa actualmente.</p>`;
-        return;
-      }
-
-      dataFiltrada.forEach(d => {
-        let card = document.createElement('div');
-        card.className = 'card glass-panel';
-        card.onclick = () => abrirModal(d.ID_Denuncia);
-        
-        let labelEstatus = estaVacio(d.Estatus) ? "Por notificar" : d.Estatus;
-        let colorBadge = d.Estatus === "Devuelto" ? "background:#dc3545;" : ( (d.Estatus && d.Estatus.includes("Cerrad")) ? "background:#28a745;" : "background:#007bff;" );
-
-        let html = `
-          <h3>ID: ${d.ID_Denuncia} <span class="badge" style="${colorBadge}">${labelEstatus}</span></h3>
-          <p><strong>Empresa:</strong> ${d.Empresa || 'N/A'}</p>
-          <p><strong>Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
-          <p><strong>Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
-          <p><strong>Producto:</strong> ${d.Producto || 'N/A'}</p>
-        `;
-
-        if(d.Estatus === "Devuelto" && (currentUser.role === "Analista Denunciado" || currentUser.role === "Administrador General")) {
-          html += `<p style="background: rgba(220,53,69,0.1); padding:8px; border-radius:6px; font-size:12px; border: 1px solid rgba(220,53,69,0.3); color:#dc3545; margin-top:8px;">
-                    <strong><i class="fas fa-exclamation-triangle"></i> Devolución (Fiscal):</strong><br>${d.Comentario_Fiscal || 'Requiere revisión.'}
-                   </p>`;
-        }
-        
-        html += `<div style="text-align:center; margin-top:12px; font-size:11px; color:#0056b3; font-weight:bold;"><i class="fas fa-hand-pointer"></i> Tocar para ver línea de tiempo</div>`;
-        
-        card.innerHTML = html;
-        container.appendChild(card);
-      });
-    }
-
-    // LINEA DE TIEMPO HERMOSA Y ORDENADA EN EL MODAL PARA TODOS LOS ROLES
-    function generarLineaDeTiempoHTML(d) {
-      let info = `<div class="timeline-box" style="border-left: 4px solid #333;">
-                    <h4 style="margin:0 0 10px 0; color:#333;"><i class="fas fa-info-circle"></i> Datos Ciudadano / Denunciante</h4>
-                    <p><strong>Empresa/Sujeto:</strong> ${d.Empresa || 'N/A'}</p>
-                    <p><strong>Denunciante:</strong> ${d.Denunciante || 'N/A'}</p>
-                    <p><strong>Teléfono:</strong> ${d.Telefono || 'N/A'}</p>
-                    <p><strong>Producto:</strong> ${d.Producto || 'N/A'}</p>
-                  </div>`;
-
-      // PASO 1: SUNDDE
-      info += `<div class="timeline-box" style="border-left: 4px solid #007bff;">
-                 <h4 style="margin:0 0 8px 0; color:#007bff;"><i class="fas fa-file-alt"></i> 1. Carga Inicial (SUNDDE)</h4>
-                 <p><strong>Motivo de Denuncia:</strong><br> ${d.Motivo_De_La_Denuncia || 'N/A'}</p>`;
-      if(d.PDF_SUNDDE) {
-        info += `<a href="${d.PDF_SUNDDE}" class="btn-pdf" target="_blank" style="background:#007bff;"><i class="fas fa-file-pdf"></i> Ver Soporte Ciudadano</a>`;
-      }
-      info += `</div>`;
-
-      // PASO 2: DEVOLUCION (OPCIONAL SI EXISTE)
-      if(d.Comentario_Fiscal) {
-        info += `<div class="timeline-box" style="border-left: 4px solid #dc3545;">
-                   <h4 style="margin:0 0 8px 0; color:#dc3545;"><i class="fas fa-exclamation-triangle"></i> 2. Devolución (Fiscal Nacional)</h4>
-                   <p><strong>Motivo de No Conformidad:</strong><br> ${d.Comentario_Fiscal}</p>
-                 </div>`;
-      }
-
-      // PASO 3: RESPUESTA DE EMPRESA
-      if(d.Respuesta_Empresa) {
-        let labelEmpresa = d.Comentario_Fiscal ? "Respuesta a la devolución por el Fiscal Nacional:" : "Respuesta/Descargo Empresa:";
-        let numPaso = d.Comentario_Fiscal ? "3" : "2";
-        info += `<div class="timeline-box" style="border-left: 4px solid #28a745;">
-                   <h4 style="margin:0 0 8px 0; color:#28a745;"><i class="fas fa-industry"></i> ${numPaso}. Atención Empresa</h4>
-                   <p><strong>${labelEmpresa}</strong><br> ${d.Respuesta_Empresa}</p>`;
-        if(d.PDF_Empresa) {
-          info += `<a href="${d.PDF_Empresa}" class="btn-pdf" target="_blank" style="background:#28a745;"><i class="fas fa-file-pdf"></i> Ver Acta de Empresa</a>`;
-        }
-        info += `</div>`;
-      }
-
-      // PASO 4: CIERRE FISCAL
-      if(d.PDF_Fiscal) {
-        let numPasoCierre = d.Comentario_Fiscal ? "4" : "3";
-        info += `<div class="timeline-box" style="border-left: 4px solid #6c757d;">
-                   <h4 style="margin:0 0 8px 0; color:#6c757d;"><i class="fas fa-gavel"></i> ${numPasoCierre}. Cierre (Fiscal Nacional)</h4>
-                   <a href="${d.PDF_Fiscal}" class="btn-pdf" target="_blank" style="background:#6c757d;"><i class="fas fa-file-pdf"></i> Ver Acta Cierre Fiscal</a>
-                 </div>`;
-      }
-
-      return info;
-    }
-
-    function abrirModal(id) {
-       const d = currentDenuncias.find(x => x.ID_Denuncia === id);
-       if(!d) return;
-
-       let tituloExtra = '';
-       if(d.Satisfaccion_Encuesta) {
-          let num = parseInt(d.Satisfaccion_Encuesta);
-          tituloExtra = ' <span style="font-size:14px;">(';
-          for(let i=0; i<num; i++) tituloExtra += '<i class="fas fa-star" style="color:#ffc107;"></i>';
-          tituloExtra += ')</span>';
-       }
-       document.getElementById('modal-title').innerHTML = `<i class="fas fa-folder-open"></i> Historial de Caso: ${d.ID_Denuncia}${tituloExtra}`;
-       
-       let html = generarLineaDeTiempoHTML(d);
-
-       // CONTROLES DE ACCIÓN DEBAJO DE LA LÍNEA DE TIEMPO
-       if(currentUser.role === "Analista SUNDDE") {
-           if(estaVacio(d.Estatus)) {
-               html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
-                          <label style="font-size:12px; font-weight:bold;">Subir Expediente / Soporte Denunciante (PDF):</label>
-                          <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                          <button onclick="procesar('SUNDDE_NOTIFICAR', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-paper-plane"></i> Enviar Notificación a la Empresa</button>
-                        </div>`;
-           }
-       }
-       
-       if(currentUser.role === "Analista Denunciado") {
-           if(d.Estatus === 'Enviado a Empresa' || d.Estatus === 'Devuelto') {
-               html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
-                          <textarea id="coment_${d.ID_Denuncia}" placeholder="Escribe el Acta de conformidad obligatoria aquí..." required style="height:70px;"></textarea>
-                          <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Adjuntar Foto/Acta Soporte de Atención (PDF):</label>
-                          <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                          <button onclick="procesar('EMPRESA_ATENDER', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-check"></i> Cargar y Atender Denuncia</button>
-                        </div>`;
-           }
-       }
-
-       if(currentUser.role === "Fiscal Nacional") {
-           if(d.Estatus && d.Estatus.includes('Atendid')) {
-               html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
-                          <label style="font-size:12px; font-weight:bold;">Evaluación de Conformidad:</label>
-                          <select id="sel_${d.ID_Denuncia}" onchange="toggleComentFiscal('${d.ID_Denuncia}')">
-                            <option value="SI">Sí Conforme (Aprobar y Cerrar)</option>
-                            <option value="NO">No Conforme (Devolver a la Empresa)</option>
-                          </select>
-                          <div id="wrapper_fiscal_${d.ID_Denuncia}" style="display:none;">
-                            <textarea id="coment_${d.ID_Denuncia}" placeholder="Explica detalladamente el motivo de la devolución..." style="height:70px;"></textarea>
-                          </div>
-                          <div id="file_fiscal_wrap_${d.ID_Denuncia}">
-                            <label style="font-size:12px; font-weight:bold; display:block; margin-top:10px;">Adjuntar Acta de Cierre Legal (PDF):</label>
-                            <input type="file" id="file_${d.ID_Denuncia}" accept="application/pdf">
-                          </div>
-                          <button onclick="procesarFiscal(${d.rowIndex}, '${d.ID_Denuncia}', '${d.Correo_Denunciante}')"><i class="fas fa-gavel"></i> Procesar Decisión Definitiva</button>
-                        </div>`;
-           }
-       }
-
-       if(currentUser.role === "Asistente de Seguimiento") {
-            if(!d.Satisfaccion_Encuesta) {
-                html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px; text-align:center;">
-                           <label style="font-size:13px; font-weight:bold; color:#0056b3;">Registrar Puntuación de Encuesta (1 a 5 Estrellas):</label>
-                           <input type="number" id="sat_${d.ID_Denuncia}" min="1" max="5" placeholder="Ej: 5" style="text-align:center; font-size:20px;">
-                           <button onclick="procesar('SEGUIMIENTO_CERRAR', ${d.rowIndex}, '${d.ID_Denuncia}')" style="background:#28a745;"><i class="fas fa-box-archive"></i> Registrar Encuesta y Archivar</button>
-                         </div>`;
+        // -----------------------------------------------------------
+        // Lógica de Alertas Personalizadas (Reemplazo de alert())
+        // -----------------------------------------------------------
+        function showCustomAlert(title, message, type="info") {
+            const alertModal = document.getElementById('custom-alert');
+            const icon = document.getElementById('alert-icon');
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = message;
+            
+            if(type === 'error') {
+                icon.innerHTML = '<i class="fas fa-circle-exclamation" style="color: var(--danger);"></i>';
+            } else if(type === 'success') {
+                icon.innerHTML = '<i class="fas fa-circle-check" style="color: var(--success);"></i>';
+            } else {
+                icon.innerHTML = '<i class="fas fa-circle-info" style="color: var(--secondary);"></i>';
             }
-       }
+            alertModal.style.display = 'flex';
+        }
 
-       if(currentUser.role === "Administrador General") {
-           if(d.Estatus === "Enviado a Empresa") {
-             html += `<div style="border-top:1px solid #ccc; padding-top:15px; margin-top:15px;">
-                        <button style="background:#ff8c00; font-size:0.9rem;" onclick="procesar('ADMIN_ALERTA', ${d.rowIndex}, '${d.ID_Denuncia}')"><i class="fas fa-bell"></i> Enviar Alerta de Demora a la Empresa</button>
-                      </div>`;
-           }
-       }
+        function closeCustomAlert() {
+            document.getElementById('custom-alert').style.display = 'none';
+        }
 
-       document.getElementById('modal-body').innerHTML = html;
-       document.getElementById('action-modal').style.display = 'flex';
-    }
+        // -----------------------------------------------------------
+        // Lógica de Modal de Detalles Completos
+        // -----------------------------------------------------------
+        function openDetailModal(rowIndex) {
+            const item = globalDenunciasData.find(d => d.rowIndex === rowIndex);
+            if(!item) return;
 
-    function cerrarModal() { document.getElementById('action-modal').style.display = 'none'; }
+            document.getElementById('detail-title').innerText = "Expediente: " + (item.ID_Denuncia || 'N/A');
+            
+            let filesHtml = "";
+            if (item.PDF_SUNDDE) filesHtml += `<a href="${item.PDF_SUNDDE}" target="_blank" class="btn-sm btn-sm-primary"><i class="fas fa-file-pdf"></i> Acta SUNDDE</a>`;
+            if (item.PDF_Empresa) filesHtml += `<a href="${item.PDF_Empresa}" target="_blank" class="btn-sm btn-sm-warning"><i class="fas fa-file-pdf"></i> Acta Empresa</a>`;
+            if (item.Foto_Empresa) filesHtml += `<a href="${item.Foto_Empresa}" target="_blank" class="btn-sm" style="background:#8B5CF6; color:white;"><i class="fas fa-image"></i> Foto Entrega</a>`;
+            if (item.PDF_Fiscal) filesHtml += `<a href="${item.PDF_Fiscal}" target="_blank" class="btn-sm btn-sm-success"><i class="fas fa-file-pdf"></i> Acta Fiscal</a>`;
+            
+            if (!filesHtml) filesHtml = "<span style='font-size:0.85rem; color:#64748B;'>No se han cargado soportes en el servidor aún.</span>";
 
-    function toggleComentFiscal(id) {
-      const val = document.getElementById(`sel_${id}`).value;
-      document.getElementById(`wrapper_fiscal_${id}`).style.display = val === "NO" ? "block" : "none";
-      document.getElementById('file_fiscal_wrap_' + id).style.display = val === "SI" ? "block" : "none";
-    }
+            document.getElementById('detail-body').innerHTML = `
+                <div class="detail-grid">
+                    <div><strong>Denunciante:</strong><br> ${item.Denunciante || 'N/A'}</div>
+                    <div><strong>Cédula / RIF:</strong><br> ${item.Cedula_Denunciante || 'N/A'}</div>
+                    <div><strong>Teléfono:</strong><br> ${item.Telefono || 'N/A'}</div>
+                    <div><strong>Correo:</strong><br> ${item.Correo_Denunciante || 'N/A'}</div>
+                    <div class="full-width"><strong>Sujeto de Aplicación (Empresa):</strong><br> ${item.Empresa || 'N/A'}</div>
+                    <div class="full-width"><strong>Producto / Servicio:</strong><br> ${item.Producto || 'N/A'}</div>
+                    <div class="full-width"><strong>Motivo de la Denuncia:</strong><br> ${item.Motivo_De_La_Denuncia || 'N/A'}</div>
+                    <div><strong>Fecha:</strong><br> ${item.Fecha_de_Registro || 'N/A'}</div>
+                    <div><strong>Estatus Actual:</strong><br> <span class="badge" style="background:var(--primary); color:white;">${item.Estatus || 'Nuevo'}</span></div>
+                </div>
+                
+                <h4 style="margin-bottom:10px; color:var(--primary); border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;">Archivos y Soporte Documental</h4>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    ${filesHtml}
+                </div>
+                
+                <h4 style="margin-top:20px; margin-bottom:10px; color:var(--primary); border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;">Registro de Avances</h4>
+                <div style="font-size:0.85rem; color:#475569;">
+                    <p style="margin-bottom:8px;"><strong>Respuesta de la Empresa:</strong> ${item.Respuesta_Empresa || 'N/A'}</p>
+                    <p style="margin-bottom:8px;"><strong>Comentario Fiscal (Devolución/Cierre):</strong> ${item.Comentario_Fiscal || 'N/A'}</p>
+                    <p><strong>Puntuación de Encuesta:</strong> ${item.Encuesta || 'Pendiente'}</p>
+                </div>
+            `;
+            document.getElementById('detail-modal').style.display = 'flex';
+        }
 
-    async function procesar(subAction, rowIndex, id) {
-      let fileInput = document.getElementById(`file_${id}`);
-      let payload = { subAction, data: { rowIndex: rowIndex } };
+        function closeDetailModal() {
+            document.getElementById('detail-modal').style.display = 'none';
+        }
 
-      if(subAction === 'EMPRESA_ATENDER') {
-        const txt = document.getElementById(`coment_${id}`).value;
-        if(!txt) { mostrarAlerta("El texto de descargo de la empresa es obligatorio"); return; }
-        payload.data.comentario = txt;
-      }
-      if(subAction === 'SEGUIMIENTO_CERRAR') {
-        let val = document.getElementById(`sat_${id}`).value;
-        if(!val || val < 1 || val > 5) { mostrarAlerta("Ingrese un valor del 1 al 5 en las estrellas."); return; }
-        payload.data.satisfaccion = val;
-      }
+        // -----------------------------------------------------------
+        // Peticiones Backend
+        // -----------------------------------------------------------
+        async function sendToBackend(action, payload) {
+            try {
+                const response = await fetch(webappurl, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ action: action, payload: payload })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error("Falla en la comunicación:", error);
+                return { success: false, message: "Error crítico de conexión de red." };
+            }
+        }
 
-      if(fileInput && fileInput.files.length > 0) {
-         let file = fileInput.files[0];
-         let reader = new FileReader();
-         reader.onload = async function(e) {
-           payload.data.fileBase64 = e.target.result;
-           payload.data.fileName = id + "_document.pdf";
-           cerrarModal(); ejecutarBackend(payload);
-         };
-         reader.readAsDataURL(file);
-      } else {
-         if(subAction === 'EMPRESA_ATENDER' || subAction === 'SUNDDE_NOTIFICAR') {
-           mostrarAlerta("No has seleccionado ningún archivo PDF. Es obligatorio adjuntarlo para avanzar."); return;
-         }
-         cerrarModal(); ejecutarBackend(payload);
-      }
-    }
+        async function attemptLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            const btn = document.getElementById('btn-login');
 
-    async function procesarFiscal(rowIndex, id, correo) {
-       let sel = document.getElementById(`sel_${id}`).value;
-       let payload = { subAction: "", data: { rowIndex: rowIndex, correoDenunciante: correo } };
-       
-       if(sel === "NO") {
-         payload.subAction = "FISCAL_NOCONFORME";
-         payload.data.comentarioFiscal = document.getElementById(`coment_${id}`).value;
-         if(!payload.data.comentarioFiscal){ mostrarAlerta("Debes explicar el porqué de la devolución obligatoriamente."); return;}
-         cerrarModal(); ejecutarBackend(payload);
-       } else {
-         payload.subAction = "FISCAL_CONFORME";
-         let fileInput = document.getElementById(`file_${id}`);
-         if(!fileInput || fileInput.files.length === 0){ mostrarAlerta("Debe adjuntar el Acta del Fiscal en formato PDF para poder aprobar."); return; }
-         let file = fileInput.files[0];
-         let reader = new FileReader();
-         reader.onload = async function(e) {
-           payload.data.fileBase64 = e.target.result; payload.data.fileName = id + "_acta_fiscal.pdf";
-           cerrarModal(); ejecutarBackend(payload);
-         };
-         reader.readAsDataURL(file);
-       }
-    }
+            if (!email || !pass) { 
+                showCustomAlert("Campos Vacíos", "Debe completar los campos de seguridad.", "error"); 
+                return; 
+            }
+            
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Validando credenciales...";
+            btn.disabled = true;
 
-    async function ejecutarBackend(payload) {
-      document.getElementById('loader').style.display = 'block';
-      const res = await requestAPI("procesarDenuncia", payload);
-      mostrarAlerta(res.message, true); 
-      cargarDenuncias(); 
-    }
+            const dataResponse = await sendToBackend("loginUser", { email: email, pass: pass });
 
-    function descargarLote() {
-       currentDenuncias.forEach((d, index) => {
-         let url = d.PDF_SUNDDE || d.PDF_Empresa;
-         if(url) { setTimeout(() => { window.open(url, '_blank'); }, index * 1200); }
-       });
-    }
+            if (dataResponse && dataResponse.success) {
+                currentUser = {
+                    email: dataResponse.email,
+                    role: dataResponse.role,
+                    empresa: dataResponse.empresa,
+                    nombre: dataResponse.nombre
+                };
 
-    function cerrarSesion() {
-      currentUser = null; localStorage.removeItem('sundde_sesion'); 
-      document.getElementById('dashboard-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('email').value = ''; document.getElementById('pass').value = '';
-      const btnLogin = document.getElementById('btn-login');
-      btnLogin.disabled = false; btnLogin.innerHTML = "Ingresar al Sistema";
-      document.getElementById('admin-sidebar').classList.remove('open');
-      document.getElementById('sidebar-overlay').style.display = 'none';
-    }
-  </script>
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('app-view').style.display = 'grid';
+
+                document.getElementById('user-display-name').innerText = currentUser.nombre;
+                document.getElementById('user-display-email').innerText = currentUser.email;
+                document.getElementById('user-display-role').innerText = currentUser.role;
+
+                if (currentUser.empresa) {
+                    const empTag = document.getElementById('user-display-empresa');
+                    empTag.innerText = `Asignado a: ${currentUser.empresa}`;
+                    empTag.style.display = "block";
+                }
+
+                const rolLower = currentUser.role.toLowerCase();
+                if (rolLower.includes("director") || rolLower.includes("admin")) {
+                    document.getElementById('link-stats').style.display = "flex";
+                }
+
+                await loadDataGrid();
+            } else {
+                showCustomAlert("Acceso Denegado", dataResponse ? dataResponse.message : "El servidor SUNDDE rechazó las credenciales suministradas.", "error");
+            }
+
+            btn.innerHTML = "<i class='fas fa-right-to-bracket'></i> Autenticar Ingreso";
+            btn.disabled = false;
+        }
+
+        async function loadDataGrid() {
+            const tbody = document.getElementById('tbody-denuncias');
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Extrayendo registros de Google Sheets...</td></tr>";
+
+            const responseData = await sendToBackend("getDenuncias", { user: currentUser.email });
+
+            if (!responseData || !Array.isArray(responseData)) {
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:var(--danger); font-weight:600;'>Error al sincronizar con la base de datos de Denuncias.</td></tr>";
+                return;
+            }
+
+            globalDenunciasData = responseData;
+            tbody.innerHTML = "";
+
+            const userRoleLower = currentUser.role.toLowerCase();
+
+            let filtered = globalDenunciasData.filter(item => {
+                const est = (item.Estatus || "Nuevo").toString().trim();
+                const rol = userRoleLower;
+
+                if (rol.includes("denunciado") || rol.includes("empresa")) {
+                    if (item.Empresa && item.Empresa.toString().toLowerCase() !== currentUser.empresa.toString().toLowerCase()) return false;
+                    return est === "Admitido" || est === "En Revisión";
+                }
+
+                if (rol.includes("sundde")) return est === "Nuevo";
+                if (rol.includes("fiscal")) return est === "Atendido";
+                if (rol.includes("seguimiento")) return est === "Cerrado" || est === "Archivado";
+                if (rol.includes("director") || rol.includes("admin")) return true;
+
+                return false;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>No hay expedientes nuevos para su gestión en este momento.</td></tr>";
+                return;
+            }
+
+            filtered.forEach(item => {
+                let statusClass = "status-nuevo";
+                const estatusActual = item.Estatus ? item.Estatus.toString().trim() : "Nuevo";
+
+                if (estatusActual === "Admitido") statusClass = "status-envcomp";
+                if (estatusActual === "Atendido") statusClass = "status-atcomp";
+                if (estatusActual === "En Revisión") statusClass = "status-devuelto";
+                if (estatusActual === "Cerrado") statusClass = "status-cerradofisc";
+                if (estatusActual === "Archivado") statusClass = "status-final";
+
+                let actionButton = `<span style='font-size:0.85rem; color:#64748B;'>Lectura general</span>`;
+
+                if (userRoleLower.includes("sundde") && estatusActual === "Nuevo") {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-check"></i> Admitir</button>`;
+                } else if ((userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) && (estatusActual === "Admitido" || estatusActual === "En Revisión")) {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-gavel"></i> Cargar Atención</button>`;
+                } else if (userRoleLower.includes("fiscal") && estatusActual === "Atendido") {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-signature"></i> Evaluar</button>`;
+                } else if (userRoleLower.includes("seguimiento") && estatusActual === "Cerrado") {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-poll"></i> Verificar y Archivar</button>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:var(--primary); white-space:nowrap; cursor:pointer;" onclick="openDetailModal(${item.rowIndex})">
+                        <i class="fas fa-expand" style="margin-right:5px; color:var(--secondary);" title="Ver Info Completa"></i> ${item.ID_Denuncia || ('F-' + item.rowIndex)}
+                    </td>
+                    <td><strong>${item.Empresa || 'N/A'}</strong><br><span style="font-size:0.75rem; color:#64748B;">${item['Sujeto de Aplicación'] || ''}</span></td>
+                    <td>${item.Denunciante || 'Anónimo'}<br><span style="font-size:0.75rem; color:#64748B;">V-${item.Cedula_Denunciante || ''}</span></td>
+                    <td>${item.Producto || 'No detallado'}</td>
+                    <td><span class="badge ${statusClass}">${estatusActual}</span></td>
+                    <td>${actionButton}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            await loadAnalyticsData();
+        }
+
+        function parseFileToBase64(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            attachedFileName = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                attachedFileBase64 = e.target.result;
+                const labelText = document.getElementById('file-selected-name');
+                labelText.innerText = "✓ Acta lista: " + file.name;
+                labelText.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function parsePhotoToBase64(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            attachedPhotoName = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                attachedPhotoBase64 = e.target.result;
+                const labelText = document.getElementById('photo-selected-name');
+                labelText.innerText = "✓ Foto lista: " + file.name;
+                labelText.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openFormModal(rowIndex) {
+            selectedRowData = globalDenunciasData.find(d => d.rowIndex === rowIndex);
+            const modal = document.getElementById('action-modal');
+            const formContainer = document.getElementById('modal-body-form');
+            
+            attachedFileBase64 = ""; attachedFileName = "";
+            attachedPhotoBase64 = ""; attachedPhotoName = "";
+
+            modal.style.display = "flex";
+            document.getElementById('modal-title').innerText = `Gestión de Expediente: ${selectedRowData.ID_Denuncia || 'F-' + rowIndex}`;
+
+            const userRoleLower = currentUser.role.toLowerCase();
+
+            if (userRoleLower.includes("sundde")) {
+                formContainer.innerHTML = `
+                    <p style="font-size:0.9rem; margin-bottom:15px; color:#475569;">Cargar la documentación para admitir la denuncia.</p>
+                    <div class="form-group">
+                        <label>Adjuntar Documentación (PDF)</label>
+                        <div class="dropzone-container" onclick="document.getElementById('modal-file').click()">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>Presione para examinar</p>
+                            <span id="file-selected-name" class="file-selected-text"></span>
+                            <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
+                        </div>
+                    </div>
+                    <button class="btn-action" onclick="executeWorkflowTransition('SUNDDE_ADMITIR')"><i class="fas fa-check"></i> Admitir a la Empresa</button>
+                `;
+            } 
+            else if (userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) {
+                formContainer.innerHTML = `
+                    <div class="form-group">
+                        <label>Motivo y Detalles de Denuncia / Revisión</label>
+                        <p style="background:rgba(0,0,0,0.03); padding:10px; border-radius:6px; font-size:0.9rem;">
+                            ${selectedRowData.Estatus === 'En Revisión' ? (selectedRowData.Comentario_Fiscal || 'Devuelto para corrección.') : (selectedRowData.Motivo_De_La_Denuncia || 'No registrado.')}
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje Adicional</label>
+                        <textarea id="empresa-comentario" placeholder="Indique la solución planteada y detalles de la entrega..." style="height:70px; padding-left:12px;"></textarea>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div class="form-group">
+                            <label>Acta de Conformidad (PDF)</label>
+                            <div class="dropzone-container" onclick="document.getElementById('modal-file').click()" style="padding:15px; margin-bottom:0;">
+                                <i class="fas fa-file-pdf" style="font-size:1.5rem; margin-bottom:5px;"></i>
+                                <span id="file-selected-name" class="file-selected-text"></span>
+                                <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Foto de Entrega</label>
+                            <div class="dropzone-container" onclick="document.getElementById('modal-photo').click()" style="padding:15px; margin-bottom:0;">
+                                <i class="fas fa-image" style="font-size:1.5rem; margin-bottom:5px;"></i>
+                                <span id="photo-selected-name" class="file-selected-text"></span>
+                                <input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-action" style="margin-top: 15px;" onclick="executeWorkflowTransition('EMPRESA_ATENDER')"><i class="fas fa-check-circle"></i> Reportar Atención</button>
+                `;
+            }
+            else if (userRoleLower.includes("fiscal")) {
+                formContainer.innerHTML = `
+                    <div class="form-group">
+                        <label>Respuesta y Evidencia de la Empresa</label>
+                        <p style="background:rgba(0,0,0,0.03); padding:10px; border-radius:6px; font-size:0.9rem; margin-bottom:10px;"><strong>Mensaje:</strong> ${selectedRowData.Respuesta_Empresa || 'Sin mensaje adicional.'}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje / Motivo de Devolución (Obligatorio si No Conforme)</label>
+                        <textarea id="fiscal-obs" placeholder="Explique por qué devuelve la denuncia a revisión..." style="height:80px; padding-left:12px;"></textarea>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <button class="btn-action" style="background:linear-gradient(135deg, var(--success) 0%, #059669 100%);" onclick="executeWorkflowTransition('FISCAL_CONFORME')"><i class="fas fa-thumbs-up"></i> Conforme (Cerrar)</button>
+                        <button class="btn-action" style="background:linear-gradient(135deg, var(--warning) 0%, #D97706 100%);" onclick="executeWorkflowTransition('FISCAL_REVISION')"><i class="fas fa-undo"></i> No Conforme (Revisión)</button>
+                    </div>
+                `;
+            }
+            else if (userRoleLower.includes("seguimiento")) {
+                formContainer.innerHTML = `
+                    <p style="font-size:0.9rem; color:#475569; margin-bottom:15px;">Verificación de conformidad con el ciudadano(a): <strong>${selectedRowData.Denunciante}</strong></p>
+                    <div class="form-group">
+                        <label>Resultado de la Encuesta de Satisfacción</label>
+                        <select id="encuesta-resultado">
+                            <option value="">Seleccione puntuación (1 al 5)...</option>
+                            <option value="5">5 - Excelente / Totalmente Conforme</option>
+                            <option value="4">4 - Bueno / Conforme</option>
+                            <option value="3">3 - Regular / Aceptable</option>
+                            <option value="2">2 - Malo / Poco Conforme</option>
+                            <option value="1">1 - Pésimo / Nada Conforme</option>
+                        </select>
+                    </div>
+                    <button class="btn-action" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR')"><i class="fas fa-box-archive"></i> Archivar Expediente</button>
+                `;
+            }
+        }
+
+        function closeActionModal() {
+            document.getElementById('action-modal').style.display = "none";
+        }
+
+        async function executeWorkflowTransition(subAction) {
+            let dataPayload = {
+                rowIndex: selectedRowData.rowIndex,
+                correoDenunciante: selectedRowData.Correo_Denunciante || "",
+                fileBase64: attachedFileBase64,
+                fileName: attachedFileName,
+                photoBase64: attachedPhotoBase64,
+                photoName: attachedPhotoName
+            };
+
+            if (subAction === "EMPRESA_ATENDER") {
+                const comentarioEmpresa = document.getElementById('empresa-comentario').value.trim();
+                if (!comentarioEmpresa) { showCustomAlert("Información Incompleta", "Debe agregar un mensaje adicional a la atención.", "error"); return; }
+                if (!attachedFileBase64 || !attachedPhotoBase64) { showCustomAlert("Soportes Faltantes", "Obligatorio: Subir el acta de conformidad y la foto de entrega del producto.", "error"); return; }
+                dataPayload.comentario = comentarioEmpresa;
+            }
+            if (subAction === "FISCAL_REVISION") {
+                const obsFiscal = document.getElementById('fiscal-obs').value.trim();
+                if (!obsFiscal) { showCustomAlert("Justificación Requerida", "Debe agregar un mensaje del porqué devuelve la denuncia a revisión.", "error"); return; }
+                dataPayload.comentarioFiscal = obsFiscal;
+            }
+            if (subAction === "SEGUIMIENTO_ARCHIVAR") {
+                const encuesta = document.getElementById('encuesta-resultado').value;
+                if (!encuesta) { showCustomAlert("Encuesta Pendiente", "Debe registrar el resultado de la encuesta antes de archivar el expediente.", "error"); return; }
+                dataPayload.encuesta = encuesta;
+            }
+
+            closeActionModal();
+
+            const tbody = document.getElementById('tbody-denuncias');
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Transmitiendo al servidor (Esto puede demorar unos segundos)...</td></tr>";
+
+            const resultResponse = await sendToBackend("procesarDenuncia", {
+                subAction: subAction,
+                data: dataPayload
+            });
+
+            // Validación mejorada para atrapar mensajes undefined del Apps Script
+            if (resultResponse && resultResponse.success) {
+                const msjExito = resultResponse.message ? resultResponse.message : "El servidor procesó el expediente correctamente.";
+                showCustomAlert("Proceso Exitoso", msjExito, "success");
+            } else {
+                const msjError = (resultResponse && resultResponse.message) ? resultResponse.message : "Hubo un contratiempo al procesar la denuncia en el servidor Google Sheets.";
+                showCustomAlert("Error de Servidor", msjError, "error");
+            }
+
+            await loadDataGrid();
+        }
+
+        async function loadAnalyticsData() {
+            const stats = await sendToBackend("getStats", {});
+            if (stats) {
+                document.getElementById('stat-recibidas').innerText = stats.recibidas || 0;
+                document.getElementById('stat-atendidas').innerText = stats.atendidas || 0;
+                document.getElementById('stat-cerradas').innerText = stats.cerradas || 0;
+                document.getElementById('stat-satisfaccion').innerText = `${stats.promedioSatisfaccion || 0.0} / 5`;
+            }
+        }
+
+        function switchView(viewId) {
+            const views = document.querySelectorAll('.workspace-view');
+            views.forEach(v => v.classList.remove('active'));
+            
+            const links = document.querySelectorAll('.menu-link');
+            links.forEach(l => l.classList.remove('active'));
+
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            if (viewId === 'view-analytics') {
+                document.getElementById('current-view-title').innerText = "Estadísticas Institucionales Real-Time";
+            } else {
+                document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
+            }
+        }
+
+        function triggerLogout() {
+            currentUser = null;
+            document.getElementById('app-view').style.display = 'none';
+            document.getElementById('login-view').style.display = 'block';
+            document.getElementById('login-email').value = "";
+            document.getElementById('login-pass').value = "";
+            document.getElementById('tbody-denuncias').innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>Inicie sesión para descargar los expedientes del servidor...</td></tr>";
+            document.getElementById('link-stats').style.display = "none";
+        }
+    </script>
 </body>
 </html>
