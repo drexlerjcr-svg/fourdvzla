@@ -23,7 +23,8 @@
         body {
             background: linear-gradient(135deg, #E0E7FF 0%, #E0F2FE 50%, #F1F5F9 100%);
             color: var(--dark);
-            min-height: 100vh; overflow: hidden;
+            min-height: 100vh; 
+            overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
 
@@ -34,11 +35,12 @@
 
         .hidden { display: none !important; }
 
+        /* ================= LOGIN ================= */
         #login-view { width: 90%; max-width: 440px; padding: 40px; text-align: center; animation: fadeIn 0.5s ease-out; }
         .login-header h2 { font-size: 1.6rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
         .login-header p { color: #475569; font-size: 0.95rem; margin-bottom: 30px; }
 
-        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group { margin-bottom: 20px; text-align: left; width: 100%;}
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; }
         .input-wrapper { position: relative; }
         .input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748B; }
@@ -61,6 +63,7 @@
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35); }
         .btn-action:disabled { background: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
 
+        /* ================= APP LAYOUT ================= */
         #app-view { display: none; width: 100vw; height: 100vh; max-width: 100%; overflow: hidden; }
         #app-view.show-app { display: grid; grid-template-columns: 280px 1fr; }
 
@@ -78,22 +81,23 @@
         .logout-link { color: var(--danger); border-top: 1px solid rgba(0, 0, 0, 0.08); padding-top: 15px; margin-top: 15px;}
         .logout-link:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-        .main-content { padding: 35px; overflow-y: auto; height: 100%; display: flex; flex-direction: column; gap: 30px; }
+        .main-content { padding: 30px; overflow-y: auto; height: 100%; display: flex; flex-direction: column; gap: 20px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; }
-        .top-bar h1 { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
-        .top-bar .date-pill { padding: 8px 16px; border-radius: 20px; background: rgba(255, 255, 255, 0.6); font-size: 0.9rem; font-weight: 600; color: var(--primary); border: 1px solid var(--glass-border); }
+        .top-bar h1 { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+        .top-bar .date-pill { padding: 8px 16px; border-radius: 20px; background: rgba(255, 255, 255, 0.6); font-size: 0.85rem; font-weight: 600; color: var(--primary); border: 1px solid var(--glass-border); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
         .stat-card { padding: 20px; display: flex; align-items: center; gap: 15px; }
         .stat-card .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;}
         .stat-card h5 { font-size: 0.85rem; color: #475569; text-transform: uppercase; }
-        .stat-card p { font-size: 1.7rem; font-weight: 700; color: var(--dark); }
+        .stat-card p { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
 
         .workspace-view { display: none; }
         .workspace-view.active { display: block; animation: fadeInUp 0.4s ease-out; }
 
-        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--glass-border); -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(255, 255, 255, 0.2); min-width: 800px; }
+        /* ================= TABLAS DE ESCRITORIO ================= */
+        .table-container { width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.2);}
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 800px; }
         th { background: rgba(30, 58, 138, 0.05); padding: 14px 16px; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid var(--glass-border); white-space: nowrap;}
         td { padding: 14px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05); color: #334155; }
         tr:hover td { background: rgba(255, 255, 255, 0.4); }
@@ -106,80 +110,87 @@
         .status-cerradofisc { background: #D1FAE5; color: #065F46; }
         .status-final { background: #F3F4F6; color: #374151; }
 
-        .dropzone-container { border: 2px dashed var(--secondary); border-radius: 12px; padding: 30px; text-align: center; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; margin-bottom: 20px; }
+        .dropzone-container { border: 2px dashed var(--secondary); border-radius: 12px; padding: 25px; text-align: center; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; margin-bottom: 15px; }
         .dropzone-container:hover { background: rgba(255, 255, 255, 0.6); border-color: var(--primary); }
-        .dropzone-container i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 10px; }
+        .dropzone-container i { font-size: 2rem; color: var(--secondary); margin-bottom: 10px; }
         .file-selected-text { font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 5px; display: none; word-break: break-all;}
 
-        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; white-space: nowrap;}
+        .btn-sm { padding: 8px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; white-space: nowrap;}
         .btn-sm-primary { background: var(--primary); color: white; }
         .btn-sm-success { background: var(--success); color: white; }
         .btn-sm-warning { background: var(--warning); color: white; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 15px;}
-        .modal-content { width: 100%; max-width: 550px; padding: 30px; animation: zoomIn 0.3s ease-out; max-height: 90vh; overflow-y: auto;}
+        /* ================= MODALES ================= */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; padding: 15px;}
+        .modal-content { width: 100%; max-width: 550px; padding: 25px; animation: zoomIn 0.3s ease-out; max-height: 95vh; overflow-y: auto;}
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 15px; margin-bottom: 20px; }
-        .modal-header h3 { color: var(--primary); font-weight: 700; font-size: 1.2rem;}
+        .modal-header h3 { color: var(--primary); font-weight: 700; font-size: 1.1rem;}
         .close-modal { font-size: 1.3rem; cursor: pointer; color: #64748B; padding: 5px;}
 
         .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.9rem; margin-bottom: 20px; }
-        .detail-grid > div { background: rgba(255, 255, 255, 0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); word-break: break-word;}
+        .detail-grid > div { background: rgba(255, 255, 255, 0.4); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); word-break: break-word;}
         .detail-grid .full-width { grid-column: span 2; }
         .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        /* ================= MEDIA QUERY RESPONSIVA PARA TELÉFONOS ================= */
+
+        /* ================= MAGIA RESPONSIVA PARA TELÉFONOS (MOBILE-FIRST) ================= */
         @media (max-width: 768px) {
-            body { overflow-y: auto; display: block; padding: 10px; }
-            #login-view { margin: 5vh auto; padding: 30px 20px; }
+            body { overflow-y: auto; display: block; padding: 0; }
+            #login-view { margin: 5vh auto; padding: 30px 20px; border-radius: 0; box-shadow: none; border: none; background: transparent; backdrop-filter: none;}
             
             #app-view.show-app { display: flex; flex-direction: column; width: 100%; height: auto; overflow: visible; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 20px 15px; flex-shrink: 0;}
-            .user-profile-card { text-align: center; }
-            .menu-items { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-            .menu-link { padding: 8px 12px; font-size: 0.85rem; flex: 1; justify-content: center; text-align: center; white-space: nowrap;}
-            .logout-link { width: 100%; justify-content: center; border-top: none; padding-top: 0; }
             
-            .main-content { padding: 20px 10px; height: auto; overflow: visible; gap: 20px; }
-            .top-bar { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-            .top-bar h1 { font-size: 1.4rem; }
+            /* Sidebar se convierte en cabecera superior */
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 15px 10px; flex-shrink: 0; border-radius: 0;}
+            .user-profile-card { text-align: center; margin-bottom: 10px;}
+            .menu-items { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 5px;}
+            .menu-link { padding: 8px 10px; font-size: 0.8rem; flex: 1 1 45%; justify-content: center; text-align: center; }
+            .logout-link { width: 100%; flex: 1 1 100%; justify-content: center; border-top: none; padding-top: 5px; margin-top: 5px;}
             
+            /* Contenido Principal */
+            .main-content { padding: 15px 10px; height: auto; overflow: visible; }
+            .top-bar { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; }
+            .top-bar h1 { font-size: 1.3rem; text-align: left;}
+            
+            /* Rejillas se apilan */
             .detail-grid, .modal-grid { grid-template-columns: 1fr !important; }
             .detail-grid .full-width { grid-column: span 1; }
             .stats-grid { grid-template-columns: 1fr; }
-            .table-container { border: none; background: transparent; overflow-x: visible; margin-top: 10px; }
             
-            /* Transformación completa de Tabla a Tarjetas para evitar scroll horizontal */
-            table, thead, tbody, th, td, tr { display: block; min-width: auto; }
-            thead { display: none; } 
+            /* 🔴 TRANSFORMACIÓN ÉPICA DE TABLA A TARJETAS MÓVILES 🔴 */
+            .table-container { border: none; background: transparent; margin-top: 0; }
+            table, thead, tbody, th, td, tr { display: block; width: 100%; min-width: auto; }
+            thead { display: none; } /* Ocultar cabeceras horizontales */
             
             tr { 
-                margin-bottom: 20px; 
-                background: rgba(255, 255, 255, 0.45); 
+                margin-bottom: 15px; 
+                background: rgba(255, 255, 255, 0.6); 
                 border: 1px solid var(--glass-border); 
-                border-radius: 14px; 
-                padding: 16px; 
-                box-shadow: var(--glass-shadow);
+                border-radius: 12px; 
+                padding: 15px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             }
             
             td { 
-                border-bottom: 1px solid rgba(0, 0, 0, 0.06); 
-                padding: 10px 4px; 
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08); 
+                padding: 10px 0; 
                 display: flex; 
                 flex-direction: column; 
                 text-align: left; 
             }
-            td:last-child { border-bottom: none; padding-top: 15px; }
+            td:last-child { border-bottom: none; padding-bottom: 0; align-items: stretch;}
             
-            /* Inyección dinámica de etiquetas de cabecera mediante CSS */
+            /* Inyecta el título de cada campo automáticamente en el celular */
             td::before { 
                 content: attr(data-label); 
                 font-size: 0.75rem; 
-                font-weight: 700; 
+                font-weight: 800; 
                 color: var(--primary); 
                 text-transform: uppercase; 
                 margin-bottom: 4px; 
-                opacity: 0.85;
             }
+
+            .btn-sm { width: 100%; justify-content: center; padding: 12px; font-size: 0.9rem;}
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -190,10 +201,10 @@
 <body>
 
     <div id="custom-alert" class="modal" style="z-index: 3000;">
-        <div class="glass-panel modal-content" style="max-width: 400px; text-align: center;">
-            <div id="alert-icon" style="font-size: 3rem; margin-bottom: 15px;"></div>
+        <div class="glass-panel modal-content" style="max-width: 350px; text-align: center; padding: 30px;">
+            <div id="alert-icon" style="font-size: 3.5rem; margin-bottom: 15px;"></div>
             <h3 id="alert-title" style="margin-bottom: 10px; color: var(--primary);"></h3>
-            <p id="alert-message" style="color: #475569; margin-bottom: 20px;"></p>
+            <p id="alert-message" style="color: #475569; margin-bottom: 25px; line-height: 1.5;"></p>
             <button class="btn-action" onclick="closeCustomAlert()">Entendido</button>
         </div>
     </div>
@@ -204,14 +215,13 @@
                 <h3 id="detail-title">Detalles del Expediente</h3>
                 <i class="fas fa-xmark close-modal" onclick="closeDetailModal()"></i>
             </div>
-            <div id="detail-body">
-            </div>
+            <div id="detail-body"></div>
         </div>
     </div>
 
     <div id="login-view" class="glass-panel">
         <div class="login-header">
-            <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 150px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(30, 58, 138, 0.2));">
+            <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 140px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(30, 58, 138, 0.2));">
             <h2>Sistema Centralizado</h2>
             <p>Seguimiento de Denuncias</p>
         </div>
@@ -233,14 +243,15 @@
         </div>
 
         <button class="btn-action" id="btn-login" onclick="attemptLogin()">
-            <i class="fas fa-right-to-bracket"></i> Autenticar Ingreso
+            <i class="fas fa-right-to-bracket"></i> Ingresar al Sistema
         </button>
     </div>
 
     <div id="app-view" class="glass-panel">
+        
         <div class="sidebar">
             <div class="brand">
-                <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 120px;">
+                <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 100px;">
             </div>
 
             <div class="user-profile-card">
@@ -252,10 +263,10 @@
 
             <div class="menu-items">
                 <div class="menu-link active" onclick="switchView('view-bandeja')">
-                    <i class="fas fa-folder-open"></i> Bandeja Unificada
+                    <i class="fas fa-folder-open"></i> Bandeja Operativa
                 </div>
                 <div class="menu-link" id="link-stats" onclick="switchView('view-analytics')" style="display: none;">
-                    <i class="fas fa-chart-pie"></i> Estadísticas Globales
+                    <i class="fas fa-chart-pie"></i> Analíticas
                 </div>
                 <div class="menu-link logout-link" onclick="triggerLogout()">
                     <i class="fas fa-power-off"></i> Cerrar Sesión
@@ -274,12 +285,12 @@
                     <table id="table-denuncias">
                         <thead>
                             <tr>
-                                <th>ID Expediente / Documentos</th>
-                                <th>Sujeto de Aplicación / Empresa</th>
+                                <th>ID Expediente</th>
+                                <th>Empresa Vinculada</th>
                                 <th>Denunciante</th>
                                 <th>Producto / Servicio</th>
                                 <th>Estatus Actual</th>
-                                <th>Acción Requerida</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-denuncias">
@@ -317,7 +328,7 @@
                     <div class="glass-panel stat-card">
                         <div class="icon-box" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);"><i class="fas fa-star"></i></div>
                         <div>
-                            <h5>Satisfacción Promedio</h5>
+                            <h5>Satisfacción Media</h5>
                             <p id="stat-satisfaccion">0.0 / 5</p>
                         </div>
                     </div>
@@ -333,13 +344,13 @@
                 <h3 id="modal-title">Procesar Expediente</h3>
                 <i class="fas fa-xmark close-modal" onclick="closeActionModal()"></i>
             </div>
-            <div id="modal-body-form">
-            </div>
+            <div id="modal-body-form"></div>
         </div>
     </div>
 
     <script>
-        const webappurl = "https://script.google.com/macros/s/AKfycby4cS4KOT1Ph8xL9JRgGmxmX28SP4QyD5GtcJK04jh1AVLDQ0huszduHesaInDAjRbH/exec";
+        // ¡NUEVA URL CONFIGURADA AQUÍ!
+        const webappurl = "https://script.google.com/macros/s/AKfycbxY2R7li1ks9kNMndmKVt-WIw88pORGasAzsCJ793pOXsH_LxET2LaZ7vwQsnZVY8YV/exec";
         
         let currentUser = null;
         let globalDenunciasData = [];
@@ -354,7 +365,7 @@
         });
 
         // =======================================================
-        // SISTEMA DE AUTO-LOGIN Y PERSISTENCIA DE SESIÓN
+        // SISTEMA DE AUTO-LOGIN (Persistencia en LocalStorage)
         // =======================================================
         document.addEventListener("DOMContentLoaded", () => {
             const savedSession = localStorage.getItem("sundde_session");
@@ -388,7 +399,7 @@
 
         function triggerLogout() {
             currentUser = null;
-            localStorage.removeItem("sundde_session");
+            localStorage.removeItem("sundde_session"); // Borramos sesión
             document.getElementById('app-view').classList.remove('show-app');
             document.getElementById('login-view').classList.remove('hidden');
             document.getElementById('login-email').value = "";
@@ -398,7 +409,7 @@
         }
 
         // =======================================================
-        // Lógica de Alertas Personalizadas
+        // ALERTAS PERSONALIZADAS
         // =======================================================
         function showCustomAlert(title, message, type="info") {
             const alertModal = document.getElementById('custom-alert');
@@ -421,7 +432,7 @@
         }
 
         // =======================================================
-        // Lógica de Modal de Detalles Completos
+        // MODAL DETALLES DEL EXPEDIENTE
         // =======================================================
         function openDetailModal(rowIndex) {
             const item = globalDenunciasData.find(d => d.rowIndex === rowIndex);
@@ -450,27 +461,25 @@
                     <div><strong>Estatus Actual:</strong><br> <span class="badge" style="background:var(--primary); color:white;">${item.Estatus || 'Nuevo'}</span></div>
                 </div>
                 
-                <h4 style="margin-bottom:10px; color:var(--primary); border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;">Archivos y Soporte Documental</h4>
+                <h4 style="margin-bottom:10px; color:var(--primary); border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;">Soporte Documental</h4>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     ${filesHtml}
                 </div>
                 
                 <h4 style="margin-top:20px; margin-bottom:10px; color:var(--primary); border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;">Registro de Avances</h4>
                 <div style="font-size:0.85rem; color:#475569;">
-                    <p style="margin-bottom:8px;"><strong>Respuesta de la Empresa:</strong> ${item.Respuesta_Empresa || 'N/A'}</p>
-                    <p style="margin-bottom:8px;"><strong>Comentario Fiscal (Devolución/Cierre):</strong> ${item.Comentario_Fiscal || 'N/A'}</p>
-                    <p><strong>Puntuación de Encuesta:</strong> ${item.Encuesta || 'Pendiente'}</p>
+                    <p style="margin-bottom:8px;"><strong>Respuesta Empresa:</strong> ${item.Respuesta_Empresa || 'N/A'}</p>
+                    <p style="margin-bottom:8px;"><strong>Comentario Fiscal:</strong> ${item.Comentario_Fiscal || 'N/A'}</p>
+                    <p><strong>Puntuación Encuesta:</strong> ${item.Encuesta || 'Pendiente'}</p>
                 </div>
             `;
             document.getElementById('detail-modal').style.display = 'flex';
         }
 
-        function closeDetailModal() {
-            document.getElementById('detail-modal').style.display = 'none';
-        }
+        function closeDetailModal() { document.getElementById('detail-modal').style.display = 'none'; }
 
         // =======================================================
-        // Peticiones Backend
+        // PETICIONES BACKEND
         // =======================================================
         async function sendToBackend(action, payload) {
             try {
@@ -481,7 +490,7 @@
                 });
                 return await response.json();
             } catch (error) {
-                console.error("Falla en la comunicación:", error);
+                console.error("Error Fetch:", error);
                 return { success: false, message: "Error crítico de conexión de red." };
             }
         }
@@ -491,48 +500,40 @@
             const pass = document.getElementById('login-pass').value.trim();
             const btn = document.getElementById('btn-login');
 
-            if (!email || !pass) { 
-                showCustomAlert("Campos Vacíos", "Debe completar los campos de seguridad.", "error"); 
-                return; 
-            }
+            if (!email || !pass) { showCustomAlert("Campos Vacíos", "Debe completar los campos.", "error"); return; }
             
-            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Validando credenciales...";
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Validando...";
             btn.disabled = true;
 
             const dataResponse = await sendToBackend("loginUser", { email: email, pass: pass });
 
             if (dataResponse && dataResponse.success) {
                 currentUser = {
-                    email: dataResponse.email,
-                    role: dataResponse.role,
-                    empresa: dataResponse.empresa,
-                    nombre: dataResponse.nombre
+                    email: dataResponse.email, role: dataResponse.role,
+                    empresa: dataResponse.empresa, nombre: dataResponse.nombre
                 };
-
-                localStorage.setItem("sundde_session", JSON.stringify(currentUser));
+                localStorage.setItem("sundde_session", JSON.stringify(currentUser)); // Guardar Sesión
                 buildAppWorkspace();
             } else {
-                showCustomAlert("Acceso Denegado", dataResponse ? dataResponse.message : "El servidor SUNDDE rechazó las credenciales suministradas.", "error");
+                showCustomAlert("Acceso Denegado", dataResponse ? dataResponse.message : "Credenciales inválidas.", "error");
             }
-
-            btn.innerHTML = "<i class='fas fa-right-to-bracket'></i> Autenticar Ingreso";
+            btn.innerHTML = "<i class='fas fa-right-to-bracket'></i> Ingresar al Sistema";
             btn.disabled = false;
         }
 
         async function loadDataGrid() {
             const tbody = document.getElementById('tbody-denuncias');
-            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Extrayendo registros de Google Sheets...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Cargando Expedientes...</td></tr>";
 
             const responseData = await sendToBackend("getDenuncias", { user: currentUser.email });
 
             if (!responseData || !Array.isArray(responseData)) {
-                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:var(--danger); font-weight:600;'>Error al sincronizar con la base de datos de Denuncias.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:var(--danger);'>Error de sincronización.</td></tr>";
                 return;
             }
 
             globalDenunciasData = responseData;
             tbody.innerHTML = "";
-
             const userRoleLower = currentUser.role.toLowerCase();
 
             let filtered = globalDenunciasData.filter(item => {
@@ -543,17 +544,15 @@
                     if (item.Empresa && item.Empresa.toString().toLowerCase() !== currentUser.empresa.toString().toLowerCase()) return false;
                     return est === "Admitido" || est === "En Revisión";
                 }
-
                 if (rol.includes("sundde")) return est === "Nuevo";
                 if (rol.includes("fiscal")) return est === "Atendido";
                 if (rol.includes("seguimiento")) return est === "Cerrado" || est === "Archivado";
                 if (rol.includes("director") || rol.includes("admin")) return true;
-
                 return false;
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>No hay expedientes nuevos para su gestión en este momento.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>Bandeja vacía en este momento.</td></tr>";
                 return;
             }
 
@@ -567,27 +566,27 @@
                 if (estatusActual === "Cerrado") statusClass = "status-cerradofisc";
                 if (estatusActual === "Archivado") statusClass = "status-final";
 
-                let actionButton = `<span style='font-size:0.85rem; color:#64748B;'>Lectura general</span>`;
+                let actionButton = `<button class="btn-sm" style="background:#CBD5E1; color:#334155; pointer-events:none;"><i class="fas fa-lock"></i> Lectura</button>`;
 
                 if (userRoleLower.includes("sundde") && estatusActual === "Nuevo") {
-                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-check"></i> Admitir</button>`;
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-check"></i> Admitir Caso</button>`;
                 } else if ((userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) && (estatusActual === "Admitido" || estatusActual === "En Revisión")) {
                     actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-gavel"></i> Cargar Atención</button>`;
                 } else if (userRoleLower.includes("fiscal") && estatusActual === "Atendido") {
                     actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-signature"></i> Evaluar</button>`;
                 } else if (userRoleLower.includes("seguimiento") && estatusActual === "Cerrado") {
-                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-poll"></i> Verificar y Archivar</button>`;
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openFormModal(${item.rowIndex})"><i class="fas fa-poll"></i> Verificar / Archivar</button>`;
                 }
 
                 const tr = document.createElement('tr');
                 
-                // Inyectamos el atributo "data-label" para que CSS arme las tarjetas en el celular
+                // DATA-LABEL ES CLAVE PARA LA VISTA MÓVIL
                 tr.innerHTML = `
-                    <td data-label="ID Expediente / Documentos" style="font-weight:700; color:var(--primary); white-space:nowrap; cursor:pointer;" onclick="openDetailModal(${item.rowIndex})">
-                        <i class="fas fa-expand" style="margin-right:5px; color:var(--secondary);" title="Ver Info Completa"></i> ${item.ID_Denuncia || ('F-' + item.rowIndex)}
+                    <td data-label="ID Expediente" style="font-weight:700; color:var(--primary); cursor:pointer;" onclick="openDetailModal(${item.rowIndex})">
+                        <i class="fas fa-expand" style="margin-right:5px; color:var(--secondary);"></i> ${item.ID_Denuncia || ('F-' + item.rowIndex)}
                     </td>
-                    <td data-label="Sujeto de Aplicación / Empresa"><strong>${item.Empresa || 'N/A'}</strong><br><span style="font-size:0.75rem; color:#64748B;">${item['Sujeto de Aplicación'] || ''}</span></td>
-                    <td data-label="Denunciante">${item.Denunciante || 'Anónimo'}<br><span style="font-size:0.75rem; color:#64748B;">V-${item.Cedula_Denunciante || ''}</span></td>
+                    <td data-label="Empresa Vinculada"><strong>${item.Empresa || 'N/A'}</strong><br><span style="font-size:0.75rem;">${item['Sujeto de Aplicación'] || ''}</span></td>
+                    <td data-label="Denunciante">${item.Denunciante || 'Anónimo'}<br><span style="font-size:0.75rem;">V-${item.Cedula_Denunciante || ''}</span></td>
                     <td data-label="Producto / Servicio">${item.Producto || 'No detallado'}</td>
                     <td data-label="Estatus Actual"><span class="badge ${statusClass}">${estatusActual}</span></td>
                     <td data-label="Acción Requerida">${actionButton}</td>
@@ -598,6 +597,9 @@
             await loadAnalyticsData();
         }
 
+        // =======================================================
+        // GESTIÓN DE ARCHIVOS Y FLUJOS
+        // =======================================================
         function parseFileToBase64(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -605,9 +607,8 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 attachedFileBase64 = e.target.result;
-                const labelText = document.getElementById('file-selected-name');
-                labelText.innerText = "✓ Acta lista: " + file.name;
-                labelText.style.display = "block";
+                const lbl = document.getElementById('file-selected-name');
+                lbl.innerText = "✓ " + file.name; lbl.style.display = "block";
             };
             reader.readAsDataURL(file);
         }
@@ -619,9 +620,8 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 attachedPhotoBase64 = e.target.result;
-                const labelText = document.getElementById('photo-selected-name');
-                labelText.innerText = "✓ Foto lista: " + file.name;
-                labelText.style.display = "block";
+                const lbl = document.getElementById('photo-selected-name');
+                lbl.innerText = "✓ " + file.name; lbl.style.display = "block";
             };
             reader.readAsDataURL(file);
         }
@@ -629,147 +629,126 @@
         function openFormModal(rowIndex) {
             selectedRowData = globalDenunciasData.find(d => d.rowIndex === rowIndex);
             const modal = document.getElementById('action-modal');
-            const formContainer = document.getElementById('modal-body-form');
-            
-            attachedFileBase64 = ""; attachedFileName = "";
-            attachedPhotoBase64 = ""; attachedPhotoName = "";
+            const formC = document.getElementById('modal-body-form');
+            attachedFileBase64 = ""; attachedFileName = ""; attachedPhotoBase64 = ""; attachedPhotoName = "";
 
             modal.style.display = "flex";
-            document.getElementById('modal-title').innerText = `Gestión de Expediente: ${selectedRowData.ID_Denuncia || 'F-' + rowIndex}`;
+            document.getElementById('modal-title').innerText = `Procesar: ${selectedRowData.ID_Denuncia || 'F-' + rowIndex}`;
 
-            const userRoleLower = currentUser.role.toLowerCase();
+            const role = currentUser.role.toLowerCase();
 
-            if (userRoleLower.includes("sundde")) {
-                formContainer.innerHTML = `
-                    <p style="font-size:0.9rem; margin-bottom:15px; color:#475569;">Cargar la documentación para admitir la denuncia.</p>
+            if (role.includes("sundde")) {
+                formC.innerHTML = `
                     <div class="form-group">
-                        <label>Adjuntar Documentación (PDF)</label>
+                        <label>Soporte Unificado (PDF)</label>
                         <div class="dropzone-container" onclick="document.getElementById('modal-file').click()">
-                            <i class="fas fa-file-pdf"></i>
-                            <p>Presione para examinar</p>
+                            <i class="fas fa-file-pdf"></i><p>Toca para examinar</p>
                             <span id="file-selected-name" class="file-selected-text"></span>
                             <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
                         </div>
                     </div>
-                    <button class="btn-action" onclick="executeWorkflowTransition('SUNDDE_ADMITIR')"><i class="fas fa-check"></i> Admitir a la Empresa</button>
+                    <button class="btn-action" onclick="executeWorkflowTransition('SUNDDE_ADMITIR')"><i class="fas fa-check"></i> Admitir Denuncia</button>
                 `;
             } 
-            else if (userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) {
-                formContainer.innerHTML = `
+            else if (role.includes("denunciado") || role.includes("empresa")) {
+                formC.innerHTML = `
                     <div class="form-group">
-                        <label>Motivo y Detalles de Denuncia / Revisión</label>
-                        <p style="background:rgba(0,0,0,0.03); padding:10px; border-radius:6px; font-size:0.9rem;">
-                            ${selectedRowData.Estatus === 'En Revisión' ? (selectedRowData.Comentario_Fiscal || 'Devuelto para corrección.') : (selectedRowData.Motivo_De_La_Denuncia || 'No registrado.')}
-                        </p>
-                    </div>
-                    <div class="form-group">
-                        <label>Mensaje Adicional</label>
-                        <textarea id="empresa-comentario" placeholder="Indique la solución planteada y detalles de la entrega..." style="height:70px; padding-left:12px;"></textarea>
+                        <label>Respuesta / Solución</label>
+                        <textarea id="empresa-comentario" placeholder="Indique la solución planteada..." style="height:70px;"></textarea>
                     </div>
                     <div class="modal-grid">
                         <div class="form-group">
-                            <label>Acta de Conformidad (PDF)</label>
-                            <div class="dropzone-container" onclick="document.getElementById('modal-file').click()" style="padding:15px; margin-bottom:0;">
-                                <i class="fas fa-file-pdf" style="font-size:1.5rem; margin-bottom:5px;"></i>
+                            <label>Acta Conformidad (PDF)</label>
+                            <div class="dropzone-container" onclick="document.getElementById('modal-file').click()" style="padding:15px; margin:0;">
+                                <i class="fas fa-file-pdf" style="font-size:1.5rem;"></i>
                                 <span id="file-selected-name" class="file-selected-text"></span>
                                 <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Foto de Entrega</label>
-                            <div class="dropzone-container" onclick="document.getElementById('modal-photo').click()" style="padding:15px; margin-bottom:0;">
-                                <i class="fas fa-image" style="font-size:1.5rem; margin-bottom:5px;"></i>
+                            <label>Foto de Entrega (IMG)</label>
+                            <div class="dropzone-container" onclick="document.getElementById('modal-photo').click()" style="padding:15px; margin:0;">
+                                <i class="fas fa-image" style="font-size:1.5rem;"></i>
                                 <span id="photo-selected-name" class="file-selected-text"></span>
                                 <input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)">
                             </div>
                         </div>
                     </div>
-                    <button class="btn-action" style="margin-top: 15px;" onclick="executeWorkflowTransition('EMPRESA_ATENDER')"><i class="fas fa-check-circle"></i> Reportar Atención</button>
+                    <button class="btn-action" style="margin-top:20px;" onclick="executeWorkflowTransition('EMPRESA_ATENDER')"><i class="fas fa-paper-plane"></i> Enviar a Fiscal</button>
                 `;
             }
-            else if (userRoleLower.includes("fiscal")) {
-                formContainer.innerHTML = `
+            else if (role.includes("fiscal")) {
+                formC.innerHTML = `
                     <div class="form-group">
-                        <label>Respuesta y Evidencia de la Empresa</label>
-                        <p style="background:rgba(0,0,0,0.03); padding:10px; border-radius:6px; font-size:0.9rem; margin-bottom:10px;"><strong>Mensaje:</strong> ${selectedRowData.Respuesta_Empresa || 'Sin mensaje adicional.'}</p>
+                        <label>Observaciones (Solo si rechaza)</label>
+                        <textarea id="fiscal-obs" placeholder="Motivo de devolución..." style="height:60px;"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Mensaje / Motivo de Devolución (Obligatorio si No Conforme)</label>
-                        <textarea id="fiscal-obs" placeholder="Explique por qué devuelve la denuncia a revisión..." style="height:80px; padding-left:12px;"></textarea>
+                        <label>Acta Fiscal (PDF - Si aprueba)</label>
+                        <div class="dropzone-container" onclick="document.getElementById('modal-file').click()" style="padding:15px;">
+                            <i class="fas fa-signature" style="font-size:1.5rem;"></i>
+                            <span id="file-selected-name" class="file-selected-text"></span>
+                            <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
+                        </div>
                     </div>
                     <div class="modal-grid">
-                        <button class="btn-action" style="background:linear-gradient(135deg, var(--success) 0%, #059669 100%);" onclick="executeWorkflowTransition('FISCAL_CONFORME')"><i class="fas fa-thumbs-up"></i> Conforme (Cerrar)</button>
-                        <button class="btn-action" style="background:linear-gradient(135deg, var(--warning) 0%, #D97706 100%);" onclick="executeWorkflowTransition('FISCAL_REVISION')"><i class="fas fa-undo"></i> No Conforme (Revisión)</button>
+                        <button class="btn-action btn-sm-success" onclick="executeWorkflowTransition('FISCAL_CONFORME')"><i class="fas fa-thumbs-up"></i> Conforme</button>
+                        <button class="btn-action btn-sm-warning" onclick="executeWorkflowTransition('FISCAL_REVISION')"><i class="fas fa-undo"></i> Devolver</button>
                     </div>
                 `;
             }
-            else if (userRoleLower.includes("seguimiento")) {
-                formContainer.innerHTML = `
-                    <p style="font-size:0.9rem; color:#475569; margin-bottom:15px;">Verificación de conformidad con el ciudadano(a): <strong>${selectedRowData.Denunciante}</strong></p>
+            else if (role.includes("seguimiento")) {
+                formC.innerHTML = `
                     <div class="form-group">
-                        <label>Resultado de la Encuesta de Satisfacción</label>
+                        <label>Encuesta de Satisfacción</label>
                         <select id="encuesta-resultado">
-                            <option value="">Seleccione puntuación (1 al 5)...</option>
-                            <option value="5">5 - Excelente / Totalmente Conforme</option>
-                            <option value="4">4 - Bueno / Conforme</option>
-                            <option value="3">3 - Regular / Aceptable</option>
-                            <option value="2">2 - Malo / Poco Conforme</option>
-                            <option value="1">1 - Pésimo / Nada Conforme</option>
+                            <option value="">Puntuación (1 al 5)...</option>
+                            <option value="5">5 - Excelente</option>
+                            <option value="4">4 - Bueno</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="2">2 - Malo</option>
+                            <option value="1">1 - Pésimo</option>
                         </select>
                     </div>
-                    <button class="btn-action" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR')"><i class="fas fa-box-archive"></i> Archivar Expediente</button>
+                    <button class="btn-action" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR')"><i class="fas fa-box-archive"></i> Cierre Definitivo</button>
                 `;
             }
         }
 
-        function closeActionModal() {
-            document.getElementById('action-modal').style.display = "none";
-        }
+        function closeActionModal() { document.getElementById('action-modal').style.display = "none"; }
 
         async function executeWorkflowTransition(subAction) {
             let dataPayload = {
                 rowIndex: selectedRowData.rowIndex,
                 correoDenunciante: selectedRowData.Correo_Denunciante || "",
-                fileBase64: attachedFileBase64,
-                fileName: attachedFileName,
-                photoBase64: attachedPhotoBase64,
-                photoName: attachedPhotoName
+                fileBase64: attachedFileBase64, fileName: attachedFileName,
+                photoBase64: attachedPhotoBase64, photoName: attachedPhotoName
             };
 
             if (subAction === "EMPRESA_ATENDER") {
-                const comentarioEmpresa = document.getElementById('empresa-comentario').value.trim();
-                if (!comentarioEmpresa) { showCustomAlert("Información Incompleta", "Debe agregar un mensaje adicional a la atención.", "error"); return; }
-                if (!attachedFileBase64 || !attachedPhotoBase64) { showCustomAlert("Soportes Faltantes", "Obligatorio: Subir el acta de conformidad y la foto de entrega del producto.", "error"); return; }
-                dataPayload.comentario = comentarioEmpresa;
+                const com = document.getElementById('empresa-comentario').value.trim();
+                if (!com || !attachedFileBase64 || !attachedPhotoBase64) { showCustomAlert("Error", "Faltan datos o soportes.", "error"); return; }
+                dataPayload.comentario = com;
             }
             if (subAction === "FISCAL_REVISION") {
-                const obsFiscal = document.getElementById('fiscal-obs').value.trim();
-                if (!obsFiscal) { showCustomAlert("Justificación Requerida", "Debe agregar un mensaje del porqué devuelve la denuncia a revisión.", "error"); return; }
-                dataPayload.comentarioFiscal = obsFiscal;
+                const obs = document.getElementById('fiscal-obs').value.trim();
+                if (!obs) { showCustomAlert("Error", "Debe justificar la devolución.", "error"); return; }
+                dataPayload.comentarioFiscal = obs;
             }
             if (subAction === "SEGUIMIENTO_ARCHIVAR") {
-                const encuesta = document.getElementById('encuesta-resultado').value;
-                if (!encuesta) { showCustomAlert("Encuesta Pendiente", "Debe registrar el resultado de la encuesta antes de archivar el expediente.", "error"); return; }
-                dataPayload.encuesta = encuesta;
+                const enc = document.getElementById('encuesta-resultado').value;
+                if (!enc) { showCustomAlert("Error", "Debe registrar la encuesta.", "error"); return; }
+                dataPayload.encuesta = enc;
             }
 
             closeActionModal();
-
             const tbody = document.getElementById('tbody-denuncias');
-            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Transmitiendo al servidor (Esto puede demorar unos segundos)...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Transmitiendo al servidor...</td></tr>";
 
-            const resultResponse = await sendToBackend("procesarDenuncia", {
-                subAction: subAction,
-                data: dataPayload
-            });
+            const res = await sendToBackend("procesarDenuncia", { subAction: subAction, data: dataPayload });
 
-            if (resultResponse && resultResponse.success) {
-                const msjExito = resultResponse.message ? resultResponse.message : "El servidor procesó el expediente correctamente.";
-                showCustomAlert("Proceso Exitoso", msjExito, "success");
-            } else {
-                const msjError = (resultResponse && resultResponse.message) ? resultResponse.message : "Hubo un contratiempo al procesar la denuncia en el servidor Google Sheets.";
-                showCustomAlert("Error de Servidor", msjError, "error");
-            }
+            if (res && res.success) { showCustomAlert("Éxito", res.message, "success"); } 
+            else { showCustomAlert("Error de Servidor", res ? res.message : "Fallo de conexión.", "error"); }
 
             await loadDataGrid();
         }
@@ -785,20 +764,11 @@
         }
 
         function switchView(viewId) {
-            const views = document.querySelectorAll('.workspace-view');
-            views.forEach(v => v.classList.remove('active'));
-            
-            const links = document.querySelectorAll('.menu-link');
-            links.forEach(l => l.classList.remove('active'));
-
+            document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             event.currentTarget.classList.add('active');
-
-            if (viewId === 'view-analytics') {
-                document.getElementById('current-view-title').innerText = "Estadísticas Institucionales Real-Time";
-            } else {
-                document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
-            }
+            document.getElementById('current-view-title').innerText = viewId === 'view-analytics' ? "Estadísticas Institucionales" : "Bandeja Operativa";
         }
     </script>
 </body>
