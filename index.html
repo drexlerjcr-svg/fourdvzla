@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sistema Centralizado de Denuncias - SUNDDE</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -32,9 +32,10 @@
             border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow);
         }
 
-        #login-view { width: 100%; max-width: 440px; padding: 40px; text-align: center; animation: fadeIn 0.5s ease-out; }
-        .login-header i { font-size: 3rem; color: var(--primary); margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(30, 58, 138, 0.2)); }
-        .login-header h2 { font-size: 1.8rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
+        .hidden { display: none !important; }
+
+        #login-view { width: 90%; max-width: 440px; padding: 40px; text-align: center; animation: fadeIn 0.5s ease-out; }
+        .login-header h2 { font-size: 1.6rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
         .login-header p { color: #475569; font-size: 0.95rem; margin-bottom: 30px; }
 
         .form-group { margin-bottom: 20px; text-align: left; }
@@ -46,7 +47,7 @@
             width: 100%; padding: 12px 12px 12px 40px; border-radius: 10px; border: 1px solid rgba(0, 0, 0, 0.1);
             background: rgba(255, 255, 255, 0.6); font-size: 1rem; color: var(--dark); outline: none; transition: all 0.3s ease;
         }
-        select { padding-left: 12px; cursor: pointer; } /* Corregido padding para select sin icono */
+        select { padding-left: 12px; cursor: pointer; } 
         .input-wrapper select { padding-left: 40px; }
         textarea { padding-left: 12px; }
         input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
@@ -60,12 +61,11 @@
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35); }
         .btn-action:disabled { background: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        #app-view { display: none; width: 98vw; height: 95vh; max-width: 1600px; grid-template-columns: 280px 1fr; overflow: hidden; }
+        #app-view { display: none; width: 100vw; height: 100vh; max-width: 100%; overflow: hidden; }
+        #app-view.show-app { display: grid; grid-template-columns: 280px 1fr; }
 
-        .sidebar { padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); height: 100%; }
-        .brand { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 25px; }
-        .brand i { font-size: 1.8rem; color: var(--primary); }
-        .brand h3 { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .sidebar { padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); height: 100%; overflow-y: auto;}
+        .brand { display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 25px; }
 
         .user-profile-card { background: rgba(255, 255, 255, 0.4); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .user-profile-card h4 { font-size: 0.95rem; color: var(--dark); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -75,7 +75,7 @@
         .menu-items { display: flex; flex-direction: column; gap: 8px; flex: 1; }
         .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #475569; font-weight: 600; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
         .menu-link:hover, .menu-link.active { background: rgba(255, 255, 255, 0.7); color: var(--primary); }
-        .logout-link { color: var(--danger); border-top: 1px solid rgba(0, 0, 0, 0.08); padding-top: 15px; }
+        .logout-link { color: var(--danger); border-top: 1px solid rgba(0, 0, 0, 0.08); padding-top: 15px; margin-top: 15px;}
         .logout-link:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
         .main-content { padding: 35px; overflow-y: auto; height: 100%; display: flex; flex-direction: column; gap: 30px; }
@@ -85,20 +85,20 @@
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
         .stat-card { padding: 20px; display: flex; align-items: center; gap: 15px; }
-        .stat-card .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
+        .stat-card .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;}
         .stat-card h5 { font-size: 0.85rem; color: #475569; text-transform: uppercase; }
         .stat-card p { font-size: 1.7rem; font-weight: 700; color: var(--dark); }
 
         .workspace-view { display: none; }
         .workspace-view.active { display: block; animation: fadeInUp 0.4s ease-out; }
 
-        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--glass-border); }
-        table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(255, 255, 255, 0.2); }
-        th { background: rgba(30, 58, 138, 0.05); padding: 14px 16px; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid var(--glass-border); }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--glass-border); -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(255, 255, 255, 0.2); min-width: 800px; }
+        th { background: rgba(30, 58, 138, 0.05); padding: 14px 16px; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid var(--glass-border); white-space: nowrap;}
         td { padding: 14px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05); color: #334155; }
         tr:hover td { background: rgba(255, 255, 255, 0.4); }
 
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; white-space: nowrap;}
         .status-nuevo { background: rgba(30, 58, 138, 0.15); color: var(--primary); }
         .status-envcomp { background: rgba(2, 132, 199, 0.15); color: var(--secondary); }
         .status-atcomp { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
@@ -109,23 +109,51 @@
         .dropzone-container { border: 2px dashed var(--secondary); border-radius: 12px; padding: 30px; text-align: center; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; margin-bottom: 20px; }
         .dropzone-container:hover { background: rgba(255, 255, 255, 0.6); border-color: var(--primary); }
         .dropzone-container i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 10px; }
-        .file-selected-text { font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 5px; display: none; }
+        .file-selected-text { font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 5px; display: none; word-break: break-all;}
 
-        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; white-space: nowrap;}
         .btn-sm-primary { background: var(--primary); color: white; }
         .btn-sm-success { background: var(--success); color: white; }
         .btn-sm-warning { background: var(--warning); color: white; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 15px;}
         .modal-content { width: 100%; max-width: 550px; padding: 30px; animation: zoomIn 0.3s ease-out; max-height: 90vh; overflow-y: auto;}
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 15px; margin-bottom: 20px; }
-        .modal-header h3 { color: var(--primary); font-weight: 700; }
-        .close-modal { font-size: 1.3rem; cursor: pointer; color: #64748B; }
+        .modal-header h3 { color: var(--primary); font-weight: 700; font-size: 1.2rem;}
+        .close-modal { font-size: 1.3rem; cursor: pointer; color: #64748B; padding: 5px;}
 
         /* Grid para la vista de detalle */
         .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.9rem; margin-bottom: 20px; }
-        .detail-grid > div { background: rgba(255, 255, 255, 0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .detail-grid > div { background: rgba(255, 255, 255, 0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); word-break: break-word;}
         .detail-grid .full-width { grid-column: span 2; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* ================= RESPONSIVO PARA MÓVILES ================= */
+        @media (max-width: 768px) {
+            body { align-items: flex-start; }
+            #login-view { padding: 30px 20px; margin-top: 5vh; }
+            
+            #app-view.show-app { display: flex; flex-direction: column; overflow-y: auto; }
+            
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 20px 15px; flex-shrink: 0;}
+            .brand { padding-bottom: 15px; margin-bottom: 15px; }
+            .user-profile-card { margin-bottom: 15px; text-align: center;}
+            .menu-items { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .menu-link { padding: 8px 12px; font-size: 0.85rem; flex: 1; justify-content: center; text-align: center; white-space: nowrap;}
+            .logout-link { width: 100%; justify-content: center; border-top: none; padding-top: 0; }
+            
+            .main-content { padding: 20px 15px; height: auto; flex: 1; }
+            .top-bar { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+            .top-bar h1 { font-size: 1.4rem; }
+            
+            .detail-grid, .modal-grid { grid-template-columns: 1fr !important; }
+            .detail-grid .full-width { grid-column: span 1; }
+            
+            .modal-content { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            
+            .btn-action { padding: 12px; font-size: 0.95rem; }
+        }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -150,15 +178,15 @@
                 <i class="fas fa-xmark close-modal" onclick="closeDetailModal()"></i>
             </div>
             <div id="detail-body">
-                </div>
+            </div>
         </div>
     </div>
 
     <div id="login-view" class="glass-panel">
         <div class="login-header">
-            <i class="fas fa-shield-halved"></i>
-            <h2>SUNDDE</h2>
-            <p>Sistema Centralizado de Seguimiento de Denuncias</p>
+            <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 150px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(30, 58, 138, 0.2));">
+            <h2>Sistema Centralizado</h2>
+            <p>Seguimiento de Denuncias</p>
         </div>
         
         <div class="form-group">
@@ -185,8 +213,7 @@
     <div id="app-view" class="glass-panel">
         <div class="sidebar">
             <div class="brand">
-                <i class="fas fa-shield-halved"></i>
-                <h3>SUNDDE</h3>
+                <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 120px;">
             </div>
 
             <div class="user-profile-card">
@@ -203,10 +230,9 @@
                 <div class="menu-link" id="link-stats" onclick="switchView('view-analytics')" style="display: none;">
                     <i class="fas fa-chart-pie"></i> Estadísticas Globales
                 </div>
-            </div>
-
-            <div class="menu-link logout-link" onclick="triggerLogout()">
-                <i class="fas fa-power-off"></i> Cerrar Sesión Activa
+                <div class="menu-link logout-link" onclick="triggerLogout()">
+                    <i class="fas fa-power-off"></i> Cerrar Sesión
+                </div>
             </div>
         </div>
 
@@ -231,7 +257,7 @@
                         </thead>
                         <tbody id="tbody-denuncias">
                             <tr>
-                                <td colspan="6" style="text-align:center; color:#64748B;">Inicie sesión para descargar los expedientes del servidor...</td>
+                                <td colspan="6" style="text-align:center; color:#64748B;">Sincronizando información con el servidor...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -300,9 +326,53 @@
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
 
-        // -----------------------------------------------------------
-        // Lógica de Alertas Personalizadas (Reemplazo de alert())
-        // -----------------------------------------------------------
+        // =======================================================
+        // SISTEMA DE AUTO-LOGIN Y PERSISTENCIA DE SESIÓN
+        // =======================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedSession = localStorage.getItem("sundde_session");
+            if (savedSession) {
+                currentUser = JSON.parse(savedSession);
+                buildAppWorkspace();
+            }
+        });
+
+        function buildAppWorkspace() {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('app-view').classList.add('show-app');
+
+            document.getElementById('user-display-name').innerText = currentUser.nombre;
+            document.getElementById('user-display-email').innerText = currentUser.email;
+            document.getElementById('user-display-role').innerText = currentUser.role;
+
+            if (currentUser.empresa) {
+                const empTag = document.getElementById('user-display-empresa');
+                empTag.innerText = `Asignado a: ${currentUser.empresa}`;
+                empTag.style.display = "block";
+            }
+
+            const rolLower = currentUser.role.toLowerCase();
+            if (rolLower.includes("director") || rolLower.includes("admin")) {
+                document.getElementById('link-stats').style.display = "flex";
+            }
+
+            loadDataGrid();
+        }
+
+        function triggerLogout() {
+            currentUser = null;
+            localStorage.removeItem("sundde_session");
+            document.getElementById('app-view').classList.remove('show-app');
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('login-email').value = "";
+            document.getElementById('login-pass').value = "";
+            document.getElementById('tbody-denuncias').innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>Inicie sesión para descargar los expedientes del servidor...</td></tr>";
+            document.getElementById('link-stats').style.display = "none";
+        }
+
+        // =======================================================
+        // Lógica de Alertas Personalizadas
+        // =======================================================
         function showCustomAlert(title, message, type="info") {
             const alertModal = document.getElementById('custom-alert');
             const icon = document.getElementById('alert-icon');
@@ -323,9 +393,9 @@
             document.getElementById('custom-alert').style.display = 'none';
         }
 
-        // -----------------------------------------------------------
+        // =======================================================
         // Lógica de Modal de Detalles Completos
-        // -----------------------------------------------------------
+        // =======================================================
         function openDetailModal(rowIndex) {
             const item = globalDenunciasData.find(d => d.rowIndex === rowIndex);
             if(!item) return;
@@ -372,9 +442,9 @@
             document.getElementById('detail-modal').style.display = 'none';
         }
 
-        // -----------------------------------------------------------
+        // =======================================================
         // Peticiones Backend
-        // -----------------------------------------------------------
+        // =======================================================
         async function sendToBackend(action, payload) {
             try {
                 const response = await fetch(webappurl, {
@@ -412,25 +482,10 @@
                     nombre: dataResponse.nombre
                 };
 
-                document.getElementById('login-view').style.display = 'none';
-                document.getElementById('app-view').style.display = 'grid';
+                // Guardamos la sesión en el localStorage
+                localStorage.setItem("sundde_session", JSON.stringify(currentUser));
+                buildAppWorkspace();
 
-                document.getElementById('user-display-name').innerText = currentUser.nombre;
-                document.getElementById('user-display-email').innerText = currentUser.email;
-                document.getElementById('user-display-role').innerText = currentUser.role;
-
-                if (currentUser.empresa) {
-                    const empTag = document.getElementById('user-display-empresa');
-                    empTag.innerText = `Asignado a: ${currentUser.empresa}`;
-                    empTag.style.display = "block";
-                }
-
-                const rolLower = currentUser.role.toLowerCase();
-                if (rolLower.includes("director") || rolLower.includes("admin")) {
-                    document.getElementById('link-stats').style.display = "flex";
-                }
-
-                await loadDataGrid();
             } else {
                 showCustomAlert("Acceso Denegado", dataResponse ? dataResponse.message : "El servidor SUNDDE rechazó las credenciales suministradas.", "error");
             }
@@ -584,7 +639,7 @@
                         <label>Mensaje Adicional</label>
                         <textarea id="empresa-comentario" placeholder="Indique la solución planteada y detalles de la entrega..." style="height:70px; padding-left:12px;"></textarea>
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                    <div class="modal-grid">
                         <div class="form-group">
                             <label>Acta de Conformidad (PDF)</label>
                             <div class="dropzone-container" onclick="document.getElementById('modal-file').click()" style="padding:15px; margin-bottom:0;">
@@ -615,7 +670,7 @@
                         <label>Mensaje / Motivo de Devolución (Obligatorio si No Conforme)</label>
                         <textarea id="fiscal-obs" placeholder="Explique por qué devuelve la denuncia a revisión..." style="height:80px; padding-left:12px;"></textarea>
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                    <div class="modal-grid">
                         <button class="btn-action" style="background:linear-gradient(135deg, var(--success) 0%, #059669 100%);" onclick="executeWorkflowTransition('FISCAL_CONFORME')"><i class="fas fa-thumbs-up"></i> Conforme (Cerrar)</button>
                         <button class="btn-action" style="background:linear-gradient(135deg, var(--warning) 0%, #D97706 100%);" onclick="executeWorkflowTransition('FISCAL_REVISION')"><i class="fas fa-undo"></i> No Conforme (Revisión)</button>
                     </div>
@@ -681,7 +736,6 @@
                 data: dataPayload
             });
 
-            // Validación mejorada para atrapar mensajes undefined del Apps Script
             if (resultResponse && resultResponse.success) {
                 const msjExito = resultResponse.message ? resultResponse.message : "El servidor procesó el expediente correctamente.";
                 showCustomAlert("Proceso Exitoso", msjExito, "success");
@@ -718,16 +772,6 @@
             } else {
                 document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
             }
-        }
-
-        function triggerLogout() {
-            currentUser = null;
-            document.getElementById('app-view').style.display = 'none';
-            document.getElementById('login-view').style.display = 'block';
-            document.getElementById('login-email').value = "";
-            document.getElementById('login-pass').value = "";
-            document.getElementById('tbody-denuncias').innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>Inicie sesión para descargar los expedientes del servidor...</td></tr>";
-            document.getElementById('link-stats').style.display = "none";
         }
     </script>
 </body>
