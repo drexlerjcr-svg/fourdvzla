@@ -1,3 +1,4 @@
+// URL de despliegue de Google Apps Script vinculada a tus entornos
 const webappurl = "https://script.google.com/macros/s/AKfycbypsSbSP194UABFRsVsrF0XN8OaeZK7WUj-3triDEUem6gOO2QTqVl8r4-OFGv0bNHR/exec";
 
 let currentUser = null;
@@ -6,19 +7,23 @@ let selectedRowData = null;
 let attachedFileBase64 = "", attachedFileName = "";
 let attachedPhotoBase64 = "", attachedPhotoName = "";
 
+document.getElementById('live-date').innerText = new Date().toLocaleDateString('es-VE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+// =======================================================
+// PERSISTENCIA DE SESIÓN (AUTO-LOGIN)
+// =======================================================
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('live-date').innerText = new Date().toLocaleDateString('es-VE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    
     const savedSession = localStorage.getItem("sundde_session");
     if (savedSession) {
         currentUser = JSON.parse(savedSession);
         buildAppWorkspace();
-    } else {
-        window.location.href = "index.html"; // Redirige al login si no hay sesión
     }
 });
 
 function buildAppWorkspace() {
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('app-view').classList.add('show-app');
+
     document.getElementById('user-display-name').innerText = currentUser.nombre;
     document.getElementById('user-display-email').innerText = currentUser.email;
     document.getElementById('user-display-role').innerText = currentUser.role;
@@ -43,9 +48,18 @@ function buildAppWorkspace() {
 function triggerLogout() {
     currentUser = null;
     localStorage.removeItem("sundde_session");
-    window.location.href = "index.html";
+    document.getElementById('app-view').classList.remove('show-app');
+    document.getElementById('login-view').classList.remove('hidden');
+    document.getElementById('login-email').value = "";
+    document.getElementById('login-pass').value = "";
+    document.getElementById('tbody-denuncias').innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>Inicie sesión para descargar los expedientes del servidor...</td></tr>";
+    document.getElementById('link-stats').style.display = "none";
+    document.getElementById('admin-filter').style.display = "none";
 }
 
+// =======================================================
+// ALERTAS
+// =======================================================
 function showCustomAlert(title, message, type="info") {
     const alertModal = document.getElementById('custom-alert');
     const icon = document.getElementById('alert-icon');
@@ -61,6 +75,9 @@ function showCustomAlert(title, message, type="info") {
 
 function closeCustomAlert() { document.getElementById('custom-alert').style.display = 'none'; }
 
+// =======================================================
+// PETICIONES BACKEND
+// =======================================================
 async function sendToBackend(action, payload) {
     try {
         const response = await fetch(webappurl, {
@@ -73,6 +90,28 @@ async function sendToBackend(action, payload) {
         console.error("Falla:", error);
         return { success: false, message: "Error crítico de red." };
     }
+}
+
+async function attemptLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+    const btn = document.getElementById('btn-login');
+
+    if (!email || !pass) { showCustomAlert("Campos Vacíos", "Debe completar los campos de seguridad.", "error"); return; }
+    
+    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Validando..."; btn.disabled = true;
+
+    const dataResponse = await sendToBackend("loginUser", { email: email, pass: pass });
+
+    if (dataResponse && dataResponse.success) {
+        currentUser = { email: dataResponse.email, role: dataResponse.role, empresa: dataResponse.empresa, nombre: dataResponse.nombre };
+        localStorage.setItem("sundde_session", JSON.stringify(currentUser));
+        buildAppWorkspace();
+    } else {
+        showCustomAlert("Acceso Denegado", dataResponse ? dataResponse.message : "Credenciales rechazadas.", "error");
+    }
+
+    btn.innerHTML = "<i class='fas fa-right-to-bracket'></i> Autenticar Ingreso"; btn.disabled = false;
 }
 
 async function loadDataGrid() {
@@ -90,6 +129,9 @@ async function loadDataGrid() {
     renderDataGrid();
 }
 
+// =======================================================
+// RENDERIZADO Y FILTRADO POR ROLES
+// =======================================================
 function renderDataGrid() {
     const tbody = document.getElementById('tbody-denuncias');
     tbody.innerHTML = "";
@@ -98,6 +140,7 @@ function renderDataGrid() {
 
     let filtered = globalDenunciasData.filter(item => {
         const est = (item.Estatus || "Nuevo").toString().trim();
+        
         if(filtroDropdown !== "TODOS" && est !== filtroDropdown) return false;
 
         if (userRoleLower.includes("sundde") && !userRoleLower.includes("asistente") && !userRoleLower.includes("fiscal")) {
@@ -171,6 +214,9 @@ function getDriveBtn(url, text, colorClass) {
     return `<a href="${url}" target="_blank" class="btn-sm ${colorClass}" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-link"></i> ${text}</a>`;
 }
 
+// =======================================================
+// GESTIÓN DE MODAL SUPER CARD E INTEGRACIÓN DE CHAT
+// =======================================================
 function openSuperCard(rowIndex) {
     selectedRowData = globalDenunciasData.find(d => d.rowIndex === rowIndex);
     if(!selectedRowData) return;
@@ -200,6 +246,7 @@ function openSuperCard(rowIndex) {
     estBadge.style.background = statusColor;
     estBadge.style.color = (estatusActual==="Atendido") ? "#000" : "white";
 
+    // Carga de Soportes Históricos
     let histHtml = "";
     const role = currentUser.role.toLowerCase();
     const isAdminOrAsist = role.includes("admin") || role.includes("seguimiento") || role.includes("asistente");
@@ -246,6 +293,10 @@ function openSuperCard(rowIndex) {
     if(!histHtml) histHtml = "<p style='font-size:0.85rem; color:#64748B;'>Aún no hay soportes históricos cargados.</p>";
     document.getElementById('historico-content').innerHTML = histHtml;
 
+    // Ejecutar actualización de hilos de chat del expediente abierto
+    loadChatMessages(selectedRowData.ID_Denuncia || ('F-' + selectedRowData.rowIndex));
+
+    // Lógica estructural de Formularios por Roles
     const formC = document.getElementById('modal-action-form');
     formC.innerHTML = ""; 
     
@@ -323,6 +374,73 @@ function openSuperCard(rowIndex) {
 
 function closeSuperCard() { document.getElementById('super-card-modal').style.display = "none"; }
 
+// =======================================================
+// LÓGICA DE ACTUALIZACIÓN DEL CHAT INTERNO (JS)
+// =======================================================
+async function loadChatMessages(idDenuncia) {
+    const container = document.getElementById('chat-box-messages');
+    if (!container) return;
+    container.innerHTML = "<p style='font-size:0.8rem; color:#64748B;'><i class='fas fa-spinner fa-spin'></i> Sincronizando bitácora...</p>";
+    
+    const response = await sendToBackend("getChatMessages", { idDenuncia: idDenuncia });
+    container.innerHTML = "";
+    
+    if (response && Array.isArray(response) && response.length > 0) {
+        response.forEach(msg => {
+            const div = document.createElement('div');
+            div.style.padding = "10px 12px";
+            div.style.borderRadius = "10px";
+            div.style.fontSize = "0.85rem";
+            div.style.maxWidth = "85%;";
+            div.style.boxShadow = "0 2px 4px rgba(0,0,0,0.02)";
+            
+            if (msg.usuario === currentUser.nombre) {
+                div.style.background = "rgba(30, 58, 138, 0.12)";
+                div.style.alignSelf = "flex-end";
+                div.style.borderLeft = "4px solid var(--primary)";
+            } else {
+                div.style.background = "rgba(255, 255, 255, 0.9)";
+                div.style.alignSelf = "flex-start";
+                div.style.borderLeft = "4px solid var(--secondary)";
+            }
+            
+            div.innerHTML = `<strong>${msg.usuario}</strong> <span style="font-size:0.75rem; color:#64748B; font-weight:600;">(${msg.rol}) - ${msg.fecha}</span><br><p style="margin-top:4px; word-break:break-all; color:#334155;">${msg.mensaje}</p>`;
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    } else {
+        container.innerHTML = "<p style='font-size:0.8rem; color:#64748B; text-align:center; padding: 15px;'>No hay anotaciones registradas en este expediente.</p>";
+    }
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById('chat-input-message');
+    const msgText = input.value.trim();
+    if (!msgText) return;
+    
+    const idDenuncia = selectedRowData.ID_Denuncia || ('F-' + selectedRowData.rowIndex);
+    const btn = document.getElementById('btn-send-chat');
+    btn.disabled = true;
+    
+    const res = await sendToBackend("sendChatMessage", {
+        idDenuncia: idDenuncia,
+        usuario: currentUser.nombre,
+        rol: currentUser.role,
+        mensaje: msgText
+    });
+      
+    if (res && res.success) {
+        input.value = "";
+        await loadChatMessages(idDenuncia);
+    } else {
+        showCustomAlert("Error", "No se pudo transmitir la anotación al chat.", "error");
+    }
+    btn.disabled = false;
+}
+
+// =======================================================
+// LECTORES BASE64
+// =======================================================
 function parseFileToBase64(event) {
     const file = event.target.files[0]; if (!file) return; attachedFileName = file.name;
     const r = new FileReader(); r.onload = function(e) { attachedFileBase64 = e.target.result; const lbl = document.getElementById('file-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
@@ -332,6 +450,9 @@ function parsePhotoToBase64(event) {
     const r = new FileReader(); r.onload = function(e) { attachedPhotoBase64 = e.target.result; const lbl = document.getElementById('photo-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
 }
 
+// =======================================================
+// EJECUTOR DE FLUJOS AL BACKEND
+// =======================================================
 async function executeWorkflowTransition(subAction) {
     let dataPayload = { rowIndex: selectedRowData.rowIndex, correoDenunciante: selectedRowData.Correo_Denunciante || "", fileBase64: attachedFileBase64, fileName: attachedFileName, photoBase64: attachedPhotoBase64, photoName: attachedPhotoName };
 
