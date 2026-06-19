@@ -5,7 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sistema Centralizado de Denuncias - SUNDDE</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;       
+            --secondary: #0284C7;     
+            --success: #10B981;       
+            --warning: #F59E0B;       
+            --danger: #EF4444;        
+            --dark: #0F172A;          
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #E0E7FF 0%, #E0F2FE 50%, #F1F5F9 100%);
+            color: var(--dark);
+            min-height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow);
+        }
+
+        .hidden { display: none !important; }
+
+        /* ================= LOGIN ================= */
+        #login-view { width: 90%; max-width: 440px; padding: 40px; text-align: center; animation: fadeIn 0.5s ease-out; }
+        .login-header h2 { font-size: 1.8rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
+        .login-header p { color: #475569; font-size: 0.95rem; margin-bottom: 30px; }
+
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; }
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748B; }
+
+        input, select, textarea {
+            width: 100%; padding: 12px 12px 12px 40px; border-radius: 10px; border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.6); font-size: 1rem; color: var(--dark); outline: none; transition: all 0.3s ease;
+        }
+        select { padding-left: 12px; cursor: pointer; } 
+        .input-wrapper select { padding-left: 40px; }
+        textarea { padding-left: 12px; }
+        input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+
+        .btn-action {
+            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, #1D4ED8 100%);
+            color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35); }
+        .btn-action:disabled { background: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* ================= APP LAYOUT ================= */
+        #app-view { display: none; width: 100vw; height: 100vh; max-width: 100%; overflow: hidden; }
+        #app-view.show-app { display: grid; grid-template-columns: 280px 1fr; }
+
+        .sidebar { padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); height: 100%; overflow-y: auto;}
+        .brand { display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 25px; }
+
+        .user-profile-card { background: rgba(255, 255, 255, 0.4); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .user-profile-card h4 { font-size: 0.95rem; color: var(--dark); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-profile-card p { font-size: 0.8rem; color: #475569; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-profile-card .tag-role { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; background: var(--primary); color: white; margin-top: 8px; }
+
+        .menu-items { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #475569; font-weight: 600; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
+        .menu-link:hover, .menu-link.active { background: rgba(255, 255, 255, 0.7); color: var(--primary); }
+        .logout-link { color: var(--danger); border-top: 1px solid rgba(0, 0, 0, 0.08); padding-top: 15px; margin-top: 15px;}
+        .logout-link:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .main-content { padding: 35px; overflow-y: auto; height: 100%; display: flex; flex-direction: column; gap: 20px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
+        .top-bar h1 { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .top-bar .date-pill { padding: 8px 16px; border-radius: 20px; background: rgba(255, 255, 255, 0.6); font-size: 0.9rem; font-weight: 600; color: var(--primary); border: 1px solid var(--glass-border); }
+
+        /* Filtro de Estatus */
+        .filter-container { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.4); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 10px;}
+        .filter-container label { font-weight: 700; color: var(--primary); font-size: 0.9rem; margin: 0; }
+        .filter-container select { padding: 8px 12px; width: auto; border-radius: 8px; font-weight: 600; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .stat-card { padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .stat-card .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;}
+        .stat-card h5 { font-size: 0.85rem; color: #475569; text-transform: uppercase; }
+        .stat-card p { font-size: 1.7rem; font-weight: 700; color: var(--dark); }
+
+        .workspace-view { display: none; }
+        .workspace-view.active { display: block; animation: fadeInUp 0.4s ease-out; }
+
+        /* ================= TABLA LIQUID GLASS ================= */
+        .table-container { width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid var(--glass-border); -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(255, 255, 255, 0.2); min-width: 800px; }
+        th { background: rgba(30, 58, 138, 0.05); padding: 14px 16px; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid var(--glass-border); white-space: nowrap;}
+        td { padding: 14px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05); color: #334155; }
+        tr:hover td { background: rgba(255, 255, 255, 0.4); }
+
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; white-space: nowrap;}
+        .status-nuevo { background: rgba(30, 58, 138, 0.15); color: var(--primary); }
+        .status-envcomp { background: rgba(2, 132, 199, 0.15); color: var(--secondary); }
+        .status-atcomp { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .status-devuelto { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .status-cerradofisc { background: #D1FAE5; color: #065F46; }
+        .status-final { background: #F3F4F6; color: #374151; }
+
+        .dropzone-container { border: 2px dashed var(--secondary); border-radius: 12px; padding: 20px; text-align: center; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; margin-bottom: 10px; }
+        .dropzone-container:hover { background: rgba(255, 255, 255, 0.6); border-color: var(--primary); }
+        .dropzone-container i { font-size: 2rem; color: var(--secondary); margin-bottom: 5px; }
+        .file-selected-text { font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 5px; display: none; word-break: break-all;}
+
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; white-space: nowrap;}
+        .btn-sm-primary { background: var(--primary); color: white; }
+        .btn-sm-success { background: var(--success); color: white; }
+        .btn-sm-warning { background: var(--warning); color: #000; }
+        .btn-sm-danger { background: var(--danger); color: white; }
+
+        /* ================= MODAL SUPER CARD (Fusión de Info y Formulario) ================= */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 15px;}
+        .modal-content { width: 100%; max-width: 750px; padding: 30px; animation: zoomIn 0.3s ease-out; max-height: 95vh; overflow-y: auto;}
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-header h3 { color: var(--primary); font-weight: 700; font-size: 1.3rem;}
+        .close-modal { font-size: 1.5rem; cursor: pointer; color: #64748B; padding: 5px;}
+
+        /* Diseño de la Info del Denunciante tipo Card (Imagen 5) */
+        .info-card-section { background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 20px; }
+        .info-card-section h4 { color: var(--primary); font-size: 1rem; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px; text-transform: uppercase;}
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.9rem; }
+        .detail-grid > div { padding: 5px; word-break: break-word;}
+        .detail-grid .full-width { grid-column: span 2; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .history-box { background: rgba(255,255,255,0.7); padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 15px; font-size: 0.9rem; }
+        .history-box h5 { color: var(--dark); font-size: 0.95rem; margin-bottom: 5px;}
+        
+        .action-zone { margin-top: 20px; padding-top: 20px; border-top: 2px dashed rgba(0,0,0,0.1); }
+
+        /* ================= ESTILOS DEL CHAT INTERNO ================= */
+        .chat-bubble { max-width: 75%; padding: 10px 14px; border-radius: 14px; font-size: 0.9rem; line-height: 1.4; position: relative; word-break: break-word; display: flex; flex-direction: column; }
+        .chat-bubble.sent { background: linear-gradient(135deg, var(--primary) 0%, #1D4ED8 100%); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15); }
+        .chat-bubble.received { background: rgba(255, 255, 255, 0.75); color: var(--dark); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); }
+        .chat-meta { font-size: 0.7rem; margin-top: 4px; opacity: 0.8; text-align: right; }
+        .chat-sender { font-size: 0.75rem; font-weight: 700; margin-bottom: 2px; color: var(--secondary); }
+        .chat-bubble.sent .chat-sender { color: #93C5FD; }
+
+        /* ================= MAGIA RESPONSIVA MÓVIL ================= */
+        @media (max-width: 768px) {
+            body { overflow-y: auto; display: block; padding: 0; }
+            #login-view { margin: 5vh auto; padding: 30px 20px; }
+            
+            #app-view.show-app { display: flex; flex-direction: column; width: 100%; height: auto; overflow: visible; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 20px 15px; flex-shrink: 0; border-radius: 0;}
+            .user-profile-card { text-align: center; }
+            .menu-items { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 5px;}
+            .menu-link { padding: 8px 10px; font-size: 0.85rem; flex: 1 1 45%; justify-content: center; text-align: center; white-space: nowrap;}
+            .logout-link { width: 100%; flex: 1 1 100%; justify-content: center; border-top: none; padding-top: 5px; margin-top: 5px;}
+            
+            .main-content { padding: 15px 10px; height: auto; overflow: visible; gap: 15px; }
+            .top-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .top-bar h1 { font-size: 1.4rem; }
+            .filter-container { flex-direction: column; align-items: stretch; }
+            
+            .detail-grid, .modal-grid { grid-template-columns: 1fr !important; }
+            .detail-grid .full-width { grid-column: span 1; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .table-container { border: none; background: transparent; overflow-x: visible; margin-top: 10px; }
+            
+            /* TABLA SE CONVIERTE EN TARJETAS */
+            table, thead, tbody, th, td, tr { display: block; min-width: auto; }
+            thead { display: none; } 
+            
+            tr { 
+                margin-bottom: 20px; 
+                background: rgba(255, 255, 255, 0.55); 
+                border: 1px solid var(--glass-border); 
+                border-radius: 14px; 
+                padding: 16px; 
+                box-shadow: var(--glass-shadow);
+            }
+            
+            td { 
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08); 
+                padding: 10px 4px; 
+                display: flex; 
+                flex-direction: column; 
+                text-align: left; 
+            }
+            td:last-child { border-bottom: none; padding-top: 15px; }
+            
+            /* Inyección dinámica de cabeceras en móvil */
+            td::before { 
+                content: attr(data-label); 
+                font-size: 0.75rem; 
+                font-weight: 800; 
+                color: var(--primary); 
+                text-transform: uppercase; 
+                margin-bottom: 4px; 
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
 </head>
 <body>
 
@@ -13,7 +220,7 @@
         <div class="glass-panel modal-content" style="max-width: 400px; text-align: center;">
             <div id="alert-icon" style="font-size: 3rem; margin-bottom: 15px;"></div>
             <h3 id="alert-title" style="margin-bottom: 10px; color: var(--primary);"></h3>
-            <p id="alert-message" style="color: #475569; margin-bottom: 20px Papel;"></p>
+            <p id="alert-message" style="color: #475569; margin-bottom: 20px;"></p>
             <button class="btn-action" onclick="closeCustomAlert()">Entendido</button>
         </div>
     </div>
@@ -45,17 +252,8 @@
                 <div id="historico-content"></div>
             </div>
 
-            <div class="info-card-section" id="modal-chat-section">
-                <h4><i class="fas fa-comments"></i> Bitácora y Chat del Expediente</h4>
-                <div id="chat-box-messages" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.4); border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05);">
-                    </div>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="chat-input-message" placeholder="Escribe una observación interna..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7);">
-                    <button class="btn-action" id="btn-send-chat" onclick="sendChatMessage()" style="width: auto; padding: 0 18px; border-radius: 8px;"><i class="fas fa-paper-plane"></i></button>
+            <div class="action-zone" id="modal-action-form">
                 </div>
-            </div>
-
-            <div class="action-zone" id="modal-action-form"></div>
         </div>
     </div>
 
@@ -106,6 +304,9 @@
                 </div>
                 <div class="menu-link" id="link-stats" onclick="switchView('view-analytics')" style="display: none;">
                     <i class="fas fa-chart-pie"></i> Estadísticas Globales
+                </div>
+                <div class="menu-link" id="link-chat" onclick="switchView('view-chat')">
+                    <i class="fas fa-comments"></i> Chat Interno
                 </div>
                 <div class="menu-link logout-link" onclick="triggerLogout()">
                     <i class="fas fa-power-off"></i> Cerrar Sesión Activa
@@ -186,9 +387,636 @@
                     </div>
                 </div>
             </div>
+
+            <div id="view-chat" class="workspace-view">
+                <div class="glass-panel" style="padding: 20px; display: flex; flex-direction: column; gap: 15px; height: calc(100vh - 170px); min-height: 450px;">
+                    
+                    <div id="chat-admin-selectors" style="display: none; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 10px; align-items: flex-end; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 10px; border: 1px solid var(--glass-border);">
+                        <div class="form-group" style="margin: 0;">
+                            <label style="font-size: 0.75rem;">Seleccionar Rol Destinatario</label>
+                            <select id="chat-select-role" onchange="loadChatMessages()" style="padding: 8px 12px; font-size: 0.9rem;">
+                                <option value="sundde">Analista SUNDDE</option>
+                                <option value="empresa">Empresa / Denunciado</option>
+                                <option value="fiscal">Fiscal Nacional</option>
+                                <option value="asistente">Asistente / Seguimiento</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label style="font-size: 0.75rem;">Filtrar por Empresa</label>
+                            <select id="chat-select-empresa" onchange="loadChatMessages()" style="padding: 8px 12px; font-size: 0.9rem;">
+                                <option value="GENERAL">General / Sin Empresa</option>
+                            </select>
+                        </div>
+                        <button class="btn-action" onclick="loadChatMessages()" style="padding: 10px 15px; width: auto; height: 40px;"><i class="fas fa-sync"></i></button>
+                    </div>
+
+                    <div id="chat-user-info" style="display: none; background: rgba(30, 58, 138, 0.1); padding: 10px 15px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: var(--primary);">
+                        <i class="fas fa-info-circle"></i> Canal de comunicación directa con el Administrador Central de Seguimiento.
+                    </div>
+
+                    <div id="chat-history-container" style="flex: 1; overflow-y: auto; background: rgba(255,255,255,0.2); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 12px;">
+                        <p style="text-align: center; color: #64748B; font-size: 0.9rem; margin-top: 20px;">Sincronizando con el servidor de mensajería...</p>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="chat-message-input" placeholder="Escriba un mensaje interno..." style="padding-left: 15px; flex: 1; height: 45px;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                        <button class="btn-action" id="btn-send-chat" onclick="sendChatMessage()" style="width: auto; padding: 0 20px; height: 45px;">
+                            <i class="fas fa-paper-plane"></i> Enviar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // URL NUEVA CORREGIDA
+        const webappurl = "https://script.google.com/macros/s/AKfycbwWXfBCKhl6addzTvQCO_Ap_TYruZ2-UKttkgzO12xXhIksB8B8asg7330UfF6JqQU/exec";
+        
+        let currentUser = null;
+        let globalDenunciasData = [];
+        let selectedRowData = null;
+        let attachedFileBase64 = "", attachedFileName = "";
+        let attachedPhotoBase64 = "", attachedPhotoName = "";
+
+        document.getElementById('live-date').innerText = new Date().toLocaleDateString('es-VE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // =======================================================
+        // PERSISTENCIA DE SESIÓN (AUTO-LOGIN)
+        // =======================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedSession = localStorage.getItem("sundde_session");
+            if (savedSession) {
+                currentUser = JSON.parse(savedSession);
+                buildAppWorkspace();
+            }
+        });
+
+        function buildAppWorkspace() {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('app-view').classList.add('show-app');
+
+            document.getElementById('user-display-name').innerText = currentUser.nombre;
+            document.getElementById('user-display-email').innerText = currentUser.email;
+            document.getElementById('user-display-role').innerText = currentUser.role;
+
+            if (currentUser.empresa) {
+                const empTag = document.getElementById('user-display-empresa');
+                empTag.innerText = `Asignado a: ${currentUser.empresa}`;
+                empTag.style.display = "block";
+            }
+
+            const rolLower = currentUser.role.toLowerCase();
+            if (rolLower.includes("director") || rolLower.includes("admin")) {
+                document.getElementById('link-stats').style.display = "flex";
+                document.getElementById('admin-filter').style.display = "flex";
+            } else if (rolLower.includes("asistente") || rolLower.includes("seguimiento")) {
+                document.getElementById('admin-filter').style.display = "flex"; // Para que asistente filtre lo que puede ver
+            }
+
+            loadDataGrid();
+        }
+
+        function triggerLogout() {
+            currentUser = null;
+            localStorage.removeItem("sundde_session");
+            document.getElementById('app-view').classList.remove('show-app');
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('login-email').value = "";
+            document.getElementById('login-pass').value = "";
+            document.getElementById('tbody-denuncias').innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>Inicie sesión para descargar los expedientes del servidor...</td></tr>";
+            document.getElementById('link-stats').style.display = "none";
+            document.getElementById('admin-filter').style.display = "none";
+        }
+
+        // =======================================================
+        // ALERTAS
+        // =======================================================
+        function showCustomAlert(title, message, type="info") {
+            const alertModal = document.getElementById('custom-alert');
+            const icon = document.getElementById('alert-icon');
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = message;
+            
+            if(type === 'error') icon.innerHTML = '<i class="fas fa-circle-exclamation" style="color: var(--danger);"></i>';
+            else if(type === 'success') icon.innerHTML = '<i class="fas fa-circle-check" style="color: var(--success);"></i>';
+            else icon.innerHTML = '<i class="fas fa-circle-info" style="color: var(--secondary);"></i>';
+            
+            alertModal.style.display = 'flex';
+        }
+
+        function closeCustomAlert() { document.getElementById('custom-alert').style.display = 'none'; }
+
+        // =======================================================
+        // PETICIONES BACKEND
+        // =======================================================
+        async function sendToBackend(action, payload) {
+            try {
+                const response = await fetch(webappurl, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ action: action, payload: payload })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error("Falla:", error);
+                return { success: false, message: "Error crítico de red." };
+            }
+        }
+
+        async function attemptLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            const btn = document.getElementById('btn-login');
+
+            if (!email || !pass) { showCustomAlert("Campos Vacíos", "Debe completar los campos de seguridad.", "error"); return; }
+            
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Validando..."; btn.disabled = true;
+
+            const dataResponse = await sendToBackend("loginUser", { email: email, pass: pass });
+
+            if (dataResponse && dataResponse.success) {
+                currentUser = { email: dataResponse.email, role: dataResponse.role, empresa: dataResponse.empresa, nombre: dataResponse.nombre };
+                localStorage.setItem("sundde_session", JSON.stringify(currentUser));
+                buildAppWorkspace();
+            } else {
+                showCustomAlert("Acceso Denegado", dataResponse ? dataResponse.message : "Credenciales rechazadas.", "error");
+            }
+
+            btn.innerHTML = "<i class='fas fa-right-to-bracket'></i> Autenticar Ingreso"; btn.disabled = false;
+        }
+
+        async function loadDataGrid() {
+            const tbody = document.getElementById('tbody-denuncias');
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Extrayendo registros de Google Sheets...</td></tr>";
+
+            const responseData = await sendToBackend("getDenuncias", { user: currentUser.email });
+
+            if (!responseData || !Array.isArray(responseData)) {
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:var(--danger); font-weight:600;'>Error al sincronizar con la base de datos de Denuncias.</td></tr>";
+                return;
+            }
+
+            globalDenunciasData = responseData;
+            renderDataGrid();
+        }
+
+        // =======================================================
+        // RENDERIZADO Y LÓGICA DE FILTRADO POR ROLES
+        // =======================================================
+        function renderDataGrid() {
+            const tbody = document.getElementById('tbody-denuncias');
+            tbody.innerHTML = "";
+            const userRoleLower = currentUser.role.toLowerCase();
+            const filtroDropdown = document.getElementById('select-filtro-estatus').value;
+
+            let filtered = globalDenunciasData.filter(item => {
+                const est = (item.Estatus || "Nuevo").toString().trim();
+                
+                // Si el filtro no es "TODOS", forzamos match (aplicable a Admin y Asistente)
+                if(filtroDropdown !== "TODOS" && est !== filtroDropdown) return false;
+
+                // Lógica dura por Rol
+                if (userRoleLower.includes("sundde") && !userRoleLower.includes("asistente") && !userRoleLower.includes("fiscal")) {
+                    return est === "Nuevo"; // Analista SUNDDE
+                }
+                if (userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) {
+                    if (item.Empresa && item.Empresa.toString().toLowerCase() !== currentUser.empresa.toString().toLowerCase()) return false;
+                    return est === "Admitido" || est === "En Revisión"; // Analista Denunciado
+                }
+                if (userRoleLower.includes("fiscal")) {
+                    return est === "Atendido"; // Fiscal Nacional
+                }
+                if (userRoleLower.includes("seguimiento") || userRoleLower.includes("asistente")) {
+                    if (est === "Archivado") return false; // Asistente no ve archivados
+                    return est === "Cerrado" || est === "Atendido" || est === "En Revisión" || est === "Admitido"; // Ve el resto para monitoreo + Cerrado para accionar
+                }
+                if (userRoleLower.includes("administrador") || userRoleLower.includes("admin") || userRoleLower.includes("director")) {
+                    return true; // Ve todo
+                }
+                return false;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>No hay expedientes en su bandeja en este momento.</td></tr>";
+                return;
+            }
+
+            filtered.forEach(item => {
+                let statusClass = "status-nuevo";
+                const estatusActual = item.Estatus ? item.Estatus.toString().trim() : "Nuevo";
+
+                if (estatusActual === "Admitido") statusClass = "status-envcomp";
+                if (estatusActual === "Atendido") statusClass = "status-atcomp";
+                if (estatusActual === "En Revisión") statusClass = "status-devuelto";
+                if (estatusActual === "Cerrado") statusClass = "status-cerradofisc";
+                if (estatusActual === "Archivado") statusClass = "status-final";
+
+                let actionButton = `<button class="btn-sm" style="background:#E2E8F0; color:#475569;" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-eye"></i> Ver Avance</button>`;
+
+                if (userRoleLower.includes("sundde") && !userRoleLower.includes("asistente") && !userRoleLower.includes("fiscal") && estatusActual === "Nuevo") {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-file-signature"></i> Gestionar Admisión</button>`;
+                } else if ((userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) && (estatusActual === "Admitido" || estatusActual === "En Revisión")) {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-gavel"></i> Cargar Atención</button>`;
+                } else if (userRoleLower.includes("fiscal") && estatusActual === "Atendido") {
+                    actionButton = `<button class="btn-sm btn-sm-primary" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-balance-scale"></i> Evaluar</button>`;
+                } else if ((userRoleLower.includes("seguimiento") || userRoleLower.includes("asistente")) && estatusActual === "Cerrado") {
+                    actionButton = `<button class="btn-sm btn-sm-success" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-poll"></i> Verificar y Archivar</button>`;
+                } else if (userRoleLower.includes("admin") && (estatusActual === "Admitido" || estatusActual === "En Revisión")) {
+                    // Admin Alerta
+                    actionButton = `<button class="btn-sm btn-sm-warning" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-bell"></i> Ver y Alertar</button>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td data-label="ID Expediente" style="font-weight:700; color:var(--primary); white-space:nowrap; cursor:pointer;" onclick="openSuperCard(${item.rowIndex})">
+                        <i class="fas fa-expand" style="margin-right:5px; color:var(--secondary);"></i> ${item.ID_Denuncia || ('F-' + item.rowIndex)}
+                    </td>
+                    <td data-label="Sujeto de Aplicación / Empresa"><strong>${item.Empresa || 'N/A'}</strong><br><span style="font-size:0.75rem; color:#64748B;">${item['Sujeto de Aplicación'] || ''}</span></td>
+                    <td data-label="Denunciante">${item.Denunciante || 'Anónimo'}<br><span style="font-size:0.75rem; color:#64748B;">V-${item.Cedula_Denunciante || ''}</span></td>
+                    <td data-label="Producto / Servicio">${item.Producto || 'No detallado'}</td>
+                    <td data-label="Estatus Actual"><span class="badge ${statusClass}">${estatusActual}</span></td>
+                    <td data-label="Acción Requerida">${actionButton}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if(userRoleLower.includes("admin") || userRoleLower.includes("director")) loadAnalyticsData();
+        }
+
+        // =======================================================
+        // SÚPER CARD (Construcción Dinámica Imagen 1 a 5)
+        // =======================================================
+        function getDriveBtn(url, text, colorClass) {
+            if (!url) return "";
+            return `<a href="${url}" target="_blank" class="btn-sm ${colorClass}" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-link"></i> ${text}</a>`;
+        }
+
+        function openSuperCard(rowIndex) {
+            selectedRowData = globalDenunciasData.find(d => d.rowIndex === rowIndex);
+            if(!selectedRowData) return;
+
+            const modal = document.getElementById('super-card-modal');
+            attachedFileBase64 = ""; attachedFileName = ""; attachedPhotoBase64 = ""; attachedPhotoName = "";
+            
+            document.getElementById('modal-title').innerText = `Expediente: ${selectedRowData.ID_Denuncia || 'N/A'}`;
+            
+            // 1. Llenar Info del Denunciante
+            document.getElementById('md-empresa').innerText = selectedRowData.Empresa || 'N/A';
+            document.getElementById('md-denunciante').innerText = selectedRowData.Denunciante || 'Anónimo';
+            document.getElementById('md-cedula').innerText = selectedRowData.Cedula_Denunciante || 'N/A';
+            document.getElementById('md-telefono').innerText = selectedRowData.Telefono || 'N/A';
+            document.getElementById('md-correo').innerText = selectedRowData.Correo_Denunciante || 'N/A';
+            document.getElementById('md-producto').innerText = selectedRowData.Producto || 'N/A';
+            document.getElementById('md-motivo').innerText = selectedRowData.Motivo_De_La_Denuncia || 'N/A';
+            document.getElementById('md-fecha').innerText = selectedRowData.Fecha_Creacion ? selectedRowData.Fecha_Creacion.substring(0,10) : (selectedRowData.Fecha_de_Registro || 'N/A');
+            
+            const estatusActual = selectedRowData.Estatus || 'Nuevo';
+            let statusColor = "var(--primary)";
+            if(estatusActual === "Atendido") statusColor = "var(--warning)";
+            if(estatusActual === "En Revisión") statusColor = "var(--danger)";
+            if(estatusActual === "Cerrado") statusColor = "var(--success)";
+            
+            const estBadge = document.getElementById('md-estatus');
+            estBadge.innerText = estatusActual;
+            estBadge.style.background = statusColor;
+            estBadge.style.color = (estatusActual==="Atendido") ? "#000" : "white";
+
+            // 2. Construir Histórico y Soportes según Rol
+            let histHtml = "";
+            const role = currentUser.role.toLowerCase();
+            const isAdminOrAsist = role.includes("admin") || role.includes("seguimiento") || role.includes("asistente");
+
+            // Acta SUNDDE
+            if (selectedRowData.PDF_SUNDDE && (estatusActual !== "Nuevo" || isAdminOrAsist)) {
+                histHtml += `<div class="history-box" style="border-left-color: var(--primary);">
+                                <h5><i class="fas fa-file-pdf"></i> Soporte SUNDDE</h5>
+                                ${getDriveBtn(selectedRowData.PDF_SUNDDE, "Ver Acta SUNDDE", "btn-sm-primary")}
+                             </div>`;
+            }
+
+            // 1ra Respuesta Empresa
+            if (selectedRowData.Respuesta_Empresa && (role.includes("fiscal") || estatusActual === "En Revisión" || isAdminOrAsist)) {
+                histHtml += `<div class="history-box" style="border-left-color: var(--warning);">
+                                <h5><i class="fas fa-industry"></i> Atención de la Empresa</h5>
+                                <p style="margin-bottom:8px;">${selectedRowData.Respuesta_Empresa}</p>
+                                ${getDriveBtn(selectedRowData.PDF_Empresa, "Acta Empresa", "btn-sm-warning")}
+                                ${getDriveBtn(selectedRowData.Foto_Empresa, "Foto Entrega", "btn-sm-primary")}
+                             </div>`;
+            }
+
+            // Comentario Fiscal (Devolución)
+            if (selectedRowData.Comentario_Fiscal && (estatusActual === "En Revisión" || isAdminOrAsist || (role.includes("fiscal") && selectedRowData.Comentario_Devolucion_Empresa))) {
+                histHtml += `<div class="history-box" style="border-left-color: var(--danger);">
+                                <h5><i class="fas fa-times-circle"></i> Devolución Fiscal</h5>
+                                <p>${selectedRowData.Comentario_Fiscal}</p>
+                             </div>`;
+            }
+
+            // Nueva Respuesta Empresa (Columnas Nuevas)
+            if (selectedRowData.Comentario_Devolucion_Empresa && (role.includes("fiscal") || isAdminOrAsist)) {
+                histHtml += `<div class="history-box" style="border-left-color: var(--secondary);">
+                                <h5><i class="fas fa-industry"></i> Corrección de la Empresa</h5>
+                                <p style="margin-bottom:8px;">${selectedRowData.Comentario_Devolucion_Empresa}</p>
+                                ${getDriveBtn(selectedRowData.PDF_Devolucion_Empresa, "PDF Corrección", "btn-sm-warning")}
+                                ${getDriveBtn(selectedRowData.Foto_Devolucion_Empresa, "Foto Corrección", "btn-sm-primary")}
+                             </div>`;
+            }
+
+            // Acta Cierre Fiscal
+            if (selectedRowData.PDF_Fiscal && isAdminOrAsist) {
+                histHtml += `<div class="history-box" style="border-left-color: var(--success);">
+                                <h5><i class="fas fa-check-double"></i> Cierre Definitivo Fiscal</h5>
+                                ${getDriveBtn(selectedRowData.PDF_Fiscal, "Ver Certificación Fiscal", "btn-sm-success")}
+                             </div>`;
+            }
+
+            if(!histHtml) histHtml = "<p style='font-size:0.85rem; color:#64748B;'>Aún no hay soportes históricos cargados.</p>";
+            document.getElementById('historico-content').innerHTML = histHtml;
+
+            // 3. Construir Formulario de Acción según Rol
+            const formC = document.getElementById('modal-action-form');
+            formC.innerHTML = ""; // Limpiar previo
+            
+            if (role.includes("sundde") && !role.includes("asistente") && !role.includes("fiscal") && estatusActual === "Nuevo") {
+                formC.innerHTML = `
+                    <h4 style="color:var(--primary); margin-bottom:15px;">Admitir Caso a la Empresa</h4>
+                    <div class="form-group">
+                        <label>Adjuntar Documentación (PDF)</label>
+                        <div class="dropzone-container" onclick="document.getElementById('modal-file').click()">
+                            <i class="fas fa-file-pdf"></i><p>Toca para examinar</p>
+                            <span id="file-selected-name" class="file-selected-text"></span>
+                            <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
+                        </div>
+                    </div>
+                    <button class="btn-action" onclick="executeWorkflowTransition('SUNDDE_ADMITIR')"><i class="fas fa-check"></i> Admitir a la Empresa</button>
+                `;
+            } 
+            else if ((role.includes("denunciado") || role.includes("empresa"))) {
+                if(estatusActual === "Admitido") {
+                    formC.innerHTML = `
+                        <h4 style="color:var(--primary); margin-bottom:15px;">Cargar Atención de Denuncia</h4>
+                        <div class="form-group"><label>Mensaje Adicional / Solución</label><textarea id="empresa-comentario" style="height:70px;"></textarea></div>
+                        <div class="modal-grid">
+                            <div class="form-group"><label>Acta (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf" style="font-size:1.5rem;"></i><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div>
+                            <div class="form-group"><label>Foto Entrega</label><div class="dropzone-container" onclick="document.getElementById('modal-photo').click()"><i class="fas fa-image" style="font-size:1.5rem;"></i><span id="photo-selected-name" class="file-selected-text"></span><input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)"></div></div>
+                        </div>
+                        <button class="btn-action" onclick="executeWorkflowTransition('EMPRESA_ATENDER')"><i class="fas fa-paper-plane"></i> Reportar Atención al Fiscal</button>
+                    `;
+                } else if(estatusActual === "En Revisión") {
+                    formC.innerHTML = `
+                        <h4 style="color:var(--danger); margin-bottom:15px;">Corregir Devolución</h4>
+                        <div class="form-group"><label>Mensaje de Corrección</label><textarea id="empresa-comentario-dev" style="height:70px;"></textarea></div>
+                        <div class="modal-grid">
+                            <div class="form-group"><label>Nueva Acta (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf" style="font-size:1.5rem;"></i><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div>
+                            <div class="form-group"><label>Nueva Foto Entrega</label><div class="dropzone-container" onclick="document.getElementById('modal-photo').click()"><i class="fas fa-image" style="font-size:1.5rem;"></i><span id="photo-selected-name" class="file-selected-text"></span><input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)"></div></div>
+                        </div>
+                        <button class="btn-action" style="background:var(--success);" onclick="executeWorkflowTransition('EMPRESA_ATENDER_DEVOLUCION')"><i class="fas fa-paper-plane"></i> Enviar Corrección</button>
+                    `;
+                }
+            }
+            else if (role.includes("fiscal") && estatusActual === "Atendido") {
+                formC.innerHTML = `
+                    <h4 style="color:var(--primary); margin-bottom:15px;">Evaluación Fiscal</h4>
+                    <div class="form-group"><label>Motivo de Devolución (Solo si No Conforme)</label><textarea id="fiscal-obs" placeholder="Explique por qué devuelve..." style="height:60px;"></textarea></div>
+                    <div class="form-group"><label>Acta Fiscal (Solo si Conforme)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()" style="padding:15px; margin-bottom:15px;"><i class="fas fa-file-signature" style="font-size:1.5rem;"></i><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div>
+                    <div class="modal-grid">
+                        <button class="btn-action" style="background:linear-gradient(135deg, var(--success) 0%, #059669 100%);" onclick="executeWorkflowTransition('FISCAL_CONFORME')"><i class="fas fa-thumbs-up"></i> Conforme (Cerrar)</button>
+                        <button class="btn-action" style="background:var(--danger);" onclick="executeWorkflowTransition('FISCAL_REVISION')"><i class="fas fa-undo"></i> No Conforme (Devolver)</button>
+                    </div>
+                `;
+            }
+            else if ((role.includes("seguimiento") || role.includes("asistente")) && estatusActual === "Cerrado") {
+                formC.innerHTML = `
+                    <h4 style="color:var(--primary); margin-bottom:15px;">Encuesta de Seguimiento</h4>
+                    <div class="form-group">
+                        <label>Resultado de la Encuesta con el Ciudadano</label>
+                        <select id="encuesta-resultado">
+                            <option value="">Seleccione puntuación...</option>
+                            <option value="5">5 - Excelente / Totalmente Conforme</option>
+                            <option value="4">4 - Bueno / Conforme</option>
+                            <option value="3">3 - Regular / Aceptable</option>
+                            <option value="2">2 - Malo / Poco Conforme</option>
+                            <option value="1">1 - Pésimo / Nada Conforme</option>
+                        </select>
+                    </div>
+                    <button class="btn-action" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR')"><i class="fas fa-box-archive"></i> Archivar Definitivo</button>
+                `;
+            }
+            else if (role.includes("admin") && (estatusActual === "Admitido" || estatusActual === "En Revisión")) {
+                formC.innerHTML = `<button class="btn-action btn-sm-warning" style="width:100%; padding:14px;" onclick="executeWorkflowTransition('ADMIN_ALERTA')"><i class="fas fa-bell"></i> Generar Alerta a Empresa por Retraso</button>`;
+            }
+
+            modal.style.display = "flex";
+        }
+
+        function closeSuperCard() { document.getElementById('super-card-modal').style.display = "none"; }
+
+        // =======================================================
+        // LECTORES BASE64
+        // =======================================================
+        function parseFileToBase64(event) {
+            const file = event.target.files[0]; if (!file) return; attachedFileName = file.name;
+            const r = new FileReader(); r.onload = function(e) { attachedFileBase64 = e.target.result; const lbl = document.getElementById('file-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
+        }
+        function parsePhotoToBase64(event) {
+            const file = event.target.files[0]; if (!file) return; attachedPhotoName = file.name;
+            const r = new FileReader(); r.onload = function(e) { attachedPhotoBase64 = e.target.result; const lbl = document.getElementById('photo-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
+        }
+
+        // =======================================================
+        // EJECUTOR DE FLUJOS AL BACKEND
+        // =======================================================
+        async function executeWorkflowTransition(subAction) {
+            let dataPayload = { rowIndex: selectedRowData.rowIndex, correoDenunciante: selectedRowData.Correo_Denunciante || "", fileBase64: attachedFileBase64, fileName: attachedFileName, photoBase64: attachedPhotoBase64, photoName: attachedPhotoName };
+
+            if (subAction === "EMPRESA_ATENDER") {
+                const com = document.getElementById('empresa-comentario').value.trim();
+                if (!com || !attachedFileBase64 || !attachedPhotoBase64) { showCustomAlert("Faltan Datos", "Debe agregar mensaje, acta PDF y foto.", "error"); return; }
+                dataPayload.comentario = com;
+            }
+            if (subAction === "EMPRESA_ATENDER_DEVOLUCION") {
+                const comDev = document.getElementById('empresa-comentario-dev').value.trim();
+                if (!comDev || !attachedFileBase64 || !attachedPhotoBase64) { showCustomAlert("Faltan Datos", "Debe agregar mensaje de corrección, acta PDF y foto.", "error"); return; }
+                dataPayload.comentarioDevolucion = comDev;
+            }
+            if (subAction === "FISCAL_REVISION") {
+                const obs = document.getElementById('fiscal-obs').value.trim();
+                if (!obs) { showCustomAlert("Faltan Datos", "Debe justificar la devolución.", "error"); return; }
+                dataPayload.comentarioFiscal = obs;
+            }
+            if (subAction === "FISCAL_CONFORME") {
+                if (!attachedFileBase64) { showCustomAlert("Faltan Datos", "Debe adjuntar el Acta Fiscal PDF para cerrar el caso.", "error"); return; }
+            }
+            if (subAction === "SEGUIMIENTO_ARCHIVAR") {
+                const enc = document.getElementById('encuesta-resultado').value;
+                if (!enc) { showCustomAlert("Faltan Datos", "Debe registrar la encuesta para archivar.", "error"); return; }
+                dataPayload.encuesta = enc;
+            }
+
+            closeSuperCard();
+            const tbody = document.getElementById('tbody-denuncias');
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Transmitiendo al servidor de Google Drive...</td></tr>";
+
+            const res = await sendToBackend("procesarDenuncia", { subAction: subAction, data: dataPayload });
+
+            if (res && res.success) { showCustomAlert("Éxito", res.message ? res.message : "Procesado correctamente.", "success"); } 
+            else { showCustomAlert("Error de Servidor", res ? res.message : "Fallo conectando a Apps Script.", "error"); }
+
+            await loadDataGrid();
+        }
+
+        async function loadAnalyticsData() {
+            const stats = await sendToBackend("getStats", {});
+            if (stats) {
+                document.getElementById('stat-recibidas').innerText = stats.recibidas || 0;
+                document.getElementById('stat-atendidas').innerText = stats.atendidas || 0;
+                document.getElementById('stat-cerradas').innerText = stats.cerradas || 0;
+                document.getElementById('stat-satisfaccion').innerText = `${stats.promedioSatisfaccion || 0.0} / 5`;
+            }
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(viewId === 'view-analytics') {
+                document.getElementById('current-view-title').innerText = "Estadísticas Institucionales";
+                document.getElementById('admin-filter').style.display = "none";
+            } else if(viewId === 'view-chat') {
+                document.getElementById('current-view-title').innerText = "Chat de Comunicación Interna";
+                document.getElementById('admin-filter').style.display = "none";
+                initChatView();
+            } else {
+                document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
+                if(currentUser.role.includes("admin") || currentUser.role.includes("asistente")) {
+                    document.getElementById('admin-filter').style.display = "flex";
+                }
+            }
+        }
+
+        // =======================================================
+        // LÓGICA DEL CHAT INTERNO
+        // =======================================================
+        function initChatView() {
+            const roleLower = currentUser.role.toLowerCase();
+            const isAdmin = roleLower.includes("admin") || roleLower.includes("director");
+            
+            if (isAdmin) {
+                document.getElementById('chat-admin-selectors').style.display = "grid";
+                document.getElementById('chat-user-info').style.display = "none";
+                populateChatCompanies();
+            } else {
+                document.getElementById('chat-admin-selectors').style.display = "none";
+                document.getElementById('chat-user-info').style.display = "block";
+                loadChatMessages();
+            }
+        }
+
+        function populateChatCompanies() {
+            const selectEmpresa = document.getElementById('chat-select-empresa');
+            selectEmpresa.innerHTML = '<option value="GENERAL">General / Sin Empresa</option>';
+            
+            // Extraer empresas únicas cargadas en memoria desde la base de datos de Google Sheets
+            const empresas = [...new Set(globalDenunciasData.map(item => item.Empresa).filter(Boolean))];
+            empresas.forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp;
+                opt.innerText = emp;
+                selectEmpresa.appendChild(opt);
+            });
+        }
+
+        async function loadChatMessages() {
+            const container = document.getElementById('chat-history-container');
+            let targetRole = "";
+            let targetEmpresa = "";
+
+            const roleLower = currentUser.role.toLowerCase();
+            const isAdmin = roleLower.includes("admin") || roleLower.includes("director");
+
+            if (isAdmin) {
+                targetRole = document.getElementById('chat-select-role').value;
+                targetEmpresa = document.getElementById('chat-select-empresa').value;
+            } else {
+                // Mapear rol simplificado para canal directo
+                targetRole = roleLower.includes("sundde") ? "sundde" : (roleLower.includes("fiscal") ? "fiscal" : (roleLower.includes("asistente") || roleLower.includes("seguimiento") ? "asistente" : "empresa"));
+                targetEmpresa = currentUser.empresa || "GENERAL";
+            }
+
+            container.innerHTML = `<p style="text-align:center; color:#64748B; font-size:0.9rem; margin-top:20px;"><i class="fas fa-spinner fa-spin"></i> Cargando historial de mensajes...</p>`;
+
+            const response = await sendToBackend("getChatMessages", { role: targetRole, empresa: targetEmpresa });
+
+            if (response && response.success && Array.isArray(response.messages)) {
+                container.innerHTML = "";
+                if (response.messages.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; color:#64748B; font-size:0.85rem; margin-top:20px;">No hay mensajes previos en este canal interno.</p>`;
+                    return;
+                }
+
+                response.messages.forEach(msg => {
+                    const isMe = msg.sender === currentUser.email;
+                    const bubble = document.createElement('div');
+                    bubble.className = `chat-bubble ${isMe ? 'sent' : 'received'}`;
+                    
+                    bubble.innerHTML = `
+                        <div class="chat-sender">${isMe ? 'Tú' : (msg.senderName || msg.sender)}</div>
+                        <div>${msg.message}</div>
+                        <div class="chat-meta">${msg.timestamp ? msg.timestamp.substring(11, 16) : ''}</div>
+                    `;
+                    container.appendChild(bubble);
+                });
+                container.scrollTop = container.scrollHeight;
+            } else {
+                container.innerHTML = `<p style="text-align:center; color:var(--danger); font-size:0.85rem; margin-top:20px;">No se pudo conectar con el servidor de mensajería o el servicio no está implementado.</p>`;
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-message-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let targetRole = "";
+            let targetEmpresa = "";
+            const roleLower = currentUser.role.toLowerCase();
+            const isAdmin = roleLower.includes("admin") || roleLower.includes("director");
+
+            if (isAdmin) {
+                targetRole = document.getElementById('chat-select-role').value;
+                targetEmpresa = document.getElementById('chat-select-empresa').value;
+            } else {
+                targetRole = roleLower.includes("sundde") ? "sundde" : (roleLower.includes("fiscal") ? "fiscal" : (roleLower.includes("asistente") || roleLower.includes("seguimiento") ? "asistente" : "empresa"));
+                targetEmpresa = currentUser.empresa || "GENERAL";
+            }
+
+            const btn = document.getElementById('btn-send-chat');
+            btn.disabled = true; input.disabled = true;
+
+            const payload = {
+                role: targetRole,
+                empresa: targetEmpresa,
+                message: text,
+                sender: currentUser.email,
+                senderName: currentUser.nombre,
+                isAdminMessage: isAdmin
+            };
+
+            const response = await sendToBackend("sendChatMessage", payload);
+
+            if (response && response.success) {
+                input.value = "";
+                await loadChatMessages();
+            } else {
+                showCustomAlert("Error", "No se pudo enviar el mensaje interno.", "error");
+            }
+
+            btn.disabled = false; input.disabled = false;
+            input.focus();
+        }
+    </script>
 </body>
 </html>
