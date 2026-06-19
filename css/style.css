@@ -10,18 +10,30 @@
     --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+}
 
 body {
     background: linear-gradient(135deg, #E0E7FF 0%, #E0F2FE 50%, #F1F5F9 100%);
     color: var(--dark);
-    min-height: 100vh; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; 
+    overflow: hidden;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
 }
 
 .glass-panel {
-    background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow);
+    background: var(--glass-bg); 
+    backdrop-filter: blur(20px); 
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border); 
+    border-radius: 16px; 
+    box-shadow: var(--glass-shadow);
 }
 
 .hidden { display: none !important; }
@@ -117,14 +129,13 @@ tr:hover td { background: rgba(255, 255, 255, 0.4); }
 .btn-sm-warning { background: var(--warning); color: #000; }
 .btn-sm-danger { background: var(--danger); color: white; }
 
-/* ================= MODAL SUPER CARD (Fusión de Info y Formulario) ================= */
+/* ================= MODAL SUPER CARD ================= */
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 15px;}
 .modal-content { width: 100%; max-width: 750px; padding: 30px; animation: zoomIn 0.3s ease-out; max-height: 95vh; overflow-y: auto;}
 .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 15px; margin-bottom: 20px; }
 .modal-header h3 { color: var(--primary); font-weight: 700; font-size: 1.3rem;}
 .close-modal { font-size: 1.5rem; cursor: pointer; color: #64748B; padding: 5px;}
 
-/* Diseño de la Info del Denunciante tipo Card */
 .info-card-section { background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 20px; }
 .info-card-section h4 { color: var(--primary); font-size: 1rem; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px; text-transform: uppercase;}
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.9rem; }
@@ -132,12 +143,14 @@ tr:hover td { background: rgba(255, 255, 255, 0.4); }
 .detail-grid .full-width { grid-column: span 2; }
 .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
+
 .history-box { background: rgba(255,255,255,0.7); padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 15px; font-size: 0.9rem; }
 .history-box h5 { color: var(--dark); font-size: 0.95rem; margin-bottom: 5px;}
 
+
 .action-zone { margin-top: 20px; padding-top: 20px; border-top: 2px dashed rgba(0,0,0,0.1); }
 
-/* ================= MAGIA RESPONSIVA MÓVIL ================= */
+/* ================= DISPOSITIVOS MÓVILES ================= */
 @media (max-width: 768px) {
     body { overflow-y: auto; display: block; padding: 0; }
     #login-view { margin: 5vh auto; padding: 30px 20px; }
@@ -159,7 +172,6 @@ tr:hover td { background: rgba(255, 255, 255, 0.4); }
     .stats-grid { grid-template-columns: 1fr; }
     .table-container { border: none; background: transparent; overflow-x: visible; margin-top: 10px; }
     
-    /* TABLA SE CONVIERTE EN TARJETAS */
     table, thead, tbody, th, td, tr { display: block; min-width: auto; }
     thead { display: none; } 
     
@@ -181,7 +193,6 @@ tr:hover td { background: rgba(255, 255, 255, 0.4); }
     }
     td:last-child { border-bottom: none; padding-top: 15px; }
     
-    /* Inyección dinámica de cabeceras en móvil */
     td::before { 
         content: attr(data-label); 
         font-size: 0.75rem; 
