@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Acceso - SUNDDE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="custom-alert" class="modal" style="z-index: 3000;">
+        <div class="glass-panel modal-content" style="max-width: 400px; text-align: center;">
+            <div id="alert-icon" style="font-size: 3rem; margin-bottom: 15px;"></div>
+            <h3 id="alert-title" style="margin-bottom: 10px; color: var(--primary);"></h3>
+            <p id="alert-message" style="color: #475569; margin-bottom: 20px;"></p>
+            <button class="btn-action" onclick="closeCustomAlert()">Entendido</button>
+        </div>
+    </div>
+
+    <div id="login-view" class="glass-panel">
+        <div class="login-header">
+            <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 150px; margin-bottom: 15px;">
+            <h2>Sistema Centralizado</h2>
+            <p>Seguimiento de Denuncias</p>
+        </div>
+        
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="login-email" placeholder="usuario@sundde.gob.ve">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="login-pass" placeholder="••••••••">
+            </div>
+        </div>
+
+        <button class="btn-action" id="btn-login" onclick="attemptLogin()">
+            <i class="fas fa-right-to-bracket"></i> Autenticar Ingreso
+        </button>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>
