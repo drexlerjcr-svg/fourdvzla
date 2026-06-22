@@ -1,4 +1,4 @@
-// URL de tu Apps Script
+// URL de tu Apps Script 
 const webappurl = "https://script.google.com/macros/s/AKfycbx3WevFFa8gvlllgxm4zDqCQo7q3cso0ci9S2L3ZYnQXB2agBpFfRgRnA0PdaQLIbE-/exec";
 const SECURITY_TOKEN = "SUNDDE_SECURE_2026_TOKEN";
 
