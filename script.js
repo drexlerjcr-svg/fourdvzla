@@ -1,4 +1,4 @@
-const webappurl = "https://script.google.com/macros/s/AKfycbypsSbSP194UABFRsVsrF0XN8OaeZK7WUj-3triDEUem6gOO2QTqVl8r4-OFGv0bNHR/exec";
+const webappurl = "https://script.google.com/macros/s/AKfycbx3WevFFa8gvlllgxm4zDqCQo7q3cso0ci9S2L3ZYnQXB2agBpFfRgRnA0PdaQLIbE-/exec";
 
 let currentUser = null;
 let globalDenunciasData = [];
