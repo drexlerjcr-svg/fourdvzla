@@ -423,4 +423,4 @@ function switchView(viewId) {
             document.getElementById('admin-filter').style.display = "flex";
         }
     }
-}
+} 
