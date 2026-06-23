@@ -68,9 +68,12 @@ function buildAppWorkspace() {
     }
 
     const rolLower = currentUser.role.toLowerCase();
-    if (rolLower.includes("Administrador General") || rolLower.includes("admin")) {
+    if (rolLower.includes("administrador general") || rolLower.includes("admin")) {
         document.getElementById('link-stats').style.display = "flex";
         document.getElementById('subfilter-empresa-container').style.display = "block";
+        document.getElementById('admin-filter').style.display = "flex";
+    } else {
+        document.getElementById('admin-filter').style.display = "none";
     }
 
     loadDataGrid();
@@ -141,7 +144,7 @@ function renderDataGrid() {
         if (!estadosValidos.includes(estatusOriginal)) estatusNormalizado = "Nuevo";
 
         let cumplePermisosRol = false;
-        if (userRoleLower.includes("administrador") || userRoleLower.includes("admin") || userRoleLower.includes("Administrador General")) {
+        if (userRoleLower.includes("administrador general") || userRoleLower.includes("admin")) {
             cumplePermisosRol = true;
         } else if (userRoleLower.includes("denunciado") || userRoleLower.includes("empresa")) {
             if (item.EMPRESA && item.EMPRESA.toString().toLowerCase() === currentUser.empresa.toString().toLowerCase()) {
@@ -157,7 +160,7 @@ function renderDataGrid() {
 
         if (!cumplePermisosRol) return false;
         if (filtroDropdown !== "TODOS" && estatusNormalizado !== filtroDropdown) return false;
-        if ((userRoleLower.includes("admin") || userRoleLower.includes("Administrador General")) && subfiltroEmpresa !== "TODAS") {
+        if ((userRoleLower.includes("admin") || userRoleLower.includes("administrador general")) && subfiltroEmpresa !== "TODAS") {
             if (item.EMPRESA !== subfiltroEmpresa) return false;
         }
 
@@ -207,7 +210,7 @@ function renderDataGrid() {
         tbody.appendChild(tr);
     });
 
-    if(userRoleLower.includes("admin") || userRoleLower.includes("Administrador General")) loadAnalyticsData();
+    if(userRoleLower.includes("admin") || userRoleLower.includes("administrador general")) loadAnalyticsData();
 }
 
 function getDriveBtn(url, text, colorClass) {
@@ -284,7 +287,7 @@ function openSuperCard(rowIndex) {
     else if ((role.includes("seguimiento") || role.includes("asistente")) && estOriginal === "Cerrado") {
         formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Encuesta de Seguimiento</h4><div class="form-group"><label>Resultado Encuesta</label><select id="encuesta-resultado" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);"><option value="">Seleccione puntuación...</option><option value="5">5 - Excelente</option><option value="4">4 - Bueno</option><option value="3">3 - Regular</option><option value="2">2 - Malo</option><option value="1">1 - Pésimo</option></select></div><button class="btn-action" style="margin-top:15px;" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR')"><i class="fas fa-box-archive"></i> Archivar Definitivo</button>`;
     }
-    else if ((role.includes("admin") || role.includes("Administrador General")) && (estOriginal === "Admitido" || estOriginal === "En Revisión")) {
+    else if ((role.includes("admin") || role.includes("administrador general")) && (estOriginal === "Admitido" || estOriginal === "En Revisión")) {
         formC.innerHTML = `<h4 style="color:var(--warning); margin-bottom:10px;"><i class="fas fa-bell"></i> Emitir Notificación de Alerta</h4><div class="form-group"><label>Mensaje de Alerta Urgente</label><input type="text" id="admin-alerta-texto" placeholder="Escriba la advertencia por retraso..." style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.1); margin-bottom:12px;"></div><button class="btn-action" style="background:var(--warning); color:var(--dark);" onclick="executeWorkflowTransition('ADMIN_ALERTA')"><i class="fas fa-bullhorn"></i> Traspasar Alerta a la Campana</button>`;
     }
 
@@ -296,7 +299,7 @@ function closeSuperCard() { document.getElementById('super-card-modal').style.di
 // ================= LOGICA DE CANALES DE CHAT 1 A 1 =================
 function getInternalChatChannel() {
     const role = currentUser.role.toLowerCase();
-    const isAdmin = role.includes("admin") || role.includes("Administrador General");
+    const isAdmin = role.includes("admin") || role.includes("administrador general");
     
     if (isAdmin) {
         const targetRole = document.getElementById('chat-target-role').value;
@@ -326,7 +329,7 @@ function updateChatEmpresaSelector() {
 function openInternalChat() {
     document.getElementById('internal-chat-modal').style.display = 'flex';
     const role = currentUser.role.toLowerCase();
-    if (role.includes("admin") || role.includes("Administrador General")) {
+    if (role.includes("admin") || role.includes("administrador general")) {
         document.getElementById('chat-admin-selectors').style.display = 'flex';
     }
     loadGlobalChatMessages();
@@ -527,7 +530,7 @@ function switchView(viewId) {
     } else {
         document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
         
-        if(currentUser.role.toLowerCase().includes("admin") || currentUser.role.toLowerCase().includes("Administrador General")) {
+        if(currentUser.role.toLowerCase().includes("admin") || currentUser.role.toLowerCase().includes("administrador general")) {
             document.getElementById('admin-filter').style.display = "flex";
         } else {
             document.getElementById('admin-filter').style.display = "none";
