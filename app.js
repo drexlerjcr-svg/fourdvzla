@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentUser = JSON.parse(savedSession);
     buildAppWorkspace();
     
-    // Cierre del dropdown de notificaciones haciendo clic afuera
     document.addEventListener("click", () => {
         const drop = document.getElementById('alerts-dropdown');
         if(drop) drop.style.display = "none";
@@ -72,14 +71,9 @@ function buildAppWorkspace() {
     if (rolLower.includes("director") || rolLower.includes("admin")) {
         document.getElementById('link-stats').style.display = "flex";
         document.getElementById('subfilter-empresa-container').style.display = "block";
-        document.getElementById('admin-filter').style.display = "flex";
-    } else {
-        document.getElementById('admin-filter').style.display = "none";
     }
 
     loadDataGrid();
-    
-    // AUTOREFRESH SILENCIOSO CADA 10 SEGUNDOS
     setInterval(loadDataGridSilently, 10000);
 }
 
@@ -106,7 +100,6 @@ async function loadDataGridSilently() {
         renderDataGrid();
         updateAlertsNotification();
         
-        // Mantener actualizado el chat global si está abierto
         if (document.getElementById('internal-chat-modal').style.display === "flex") {
             loadGlobalChatMessages();
         }
@@ -114,16 +107,24 @@ async function loadDataGridSilently() {
 }
 
 function populateEmpresasSubfilter() {
-    const selectEmp = document.getElementById('select-filtro-empresa');
-    if (!selectEmp || selectEmp.options.length > 1) return; 
+    const selectEmpAdmin = document.getElementById('select-filtro-empresa');
+    const selectEmpChat = document.getElementById('chat-target-empresa');
     
     const empresasUnicas = [...new Set(globalDenunciasData.map(item => item.EMPRESA).filter(Boolean))];
-    empresasUnicas.forEach(emp => {
-        const opt = document.createElement('option');
-        opt.value = emp;
-        opt.innerText = emp;
-        selectEmp.appendChild(opt);
-    });
+    
+    if (selectEmpAdmin && selectEmpAdmin.options.length <= 1) {
+        empresasUnicas.forEach(emp => {
+            const opt = document.createElement('option'); opt.value = emp; opt.innerText = emp;
+            selectEmpAdmin.appendChild(opt);
+        });
+    }
+    
+    if (selectEmpChat && selectEmpChat.options.length <= 1) {
+        empresasUnicas.forEach(emp => {
+            const opt = document.createElement('option'); opt.value = emp; opt.innerText = emp;
+            selectEmpChat.appendChild(opt);
+        });
+    }
 }
 
 function renderDataGrid() {
@@ -139,7 +140,6 @@ function renderDataGrid() {
         const estadosValidos = ["Admitido", "Atendido", "En Revisión", "Cerrado", "Archivado"];
         if (!estadosValidos.includes(estatusOriginal)) estatusNormalizado = "Nuevo";
 
-        // PASO 1: Restricción Estricta por Rol (Evita filtraciones involuntarias)
         let cumplePermisosRol = false;
         if (userRoleLower.includes("administrador") || userRoleLower.includes("admin") || userRoleLower.includes("director")) {
             cumplePermisosRol = true;
@@ -152,16 +152,11 @@ function renderDataGrid() {
         } else if (userRoleLower.includes("fiscal")) {
             cumplePermisosRol = (estatusNormalizado === "Atendido");
         } else if (userRoleLower.includes("seguimiento") || userRoleLower.includes("asistente")) {
-            // El asistente solo puede listar los de su jurisdicción
             cumplePermisosRol = (estatusNormalizado === "Cerrado" || estatusNormalizado === "Atendido" || estatusNormalizado === "En Revisión" || estatusNormalizado === "Admitido");
         }
 
         if (!cumplePermisosRol) return false;
-
-        // PASO 2: Filtro por Estatus
         if (filtroDropdown !== "TODOS" && estatusNormalizado !== filtroDropdown) return false;
-
-        // PASO 3: Subfiltro de Empresa (Exclusivo Administrador)
         if ((userRoleLower.includes("admin") || userRoleLower.includes("director")) && subfiltroEmpresa !== "TODAS") {
             if (item.EMPRESA !== subfiltroEmpresa) return false;
         }
@@ -246,7 +241,6 @@ function openSuperCard(rowIndex) {
     estBadge.innerText = estOriginal;
     estBadge.className = "badge status-nuevo"; 
 
-    // VISUALIZACIÓN GLOBAL DE SOPORTES
     let histHtml = "";
     if (selectedRowData.PDF_SUNDDE) {
         histHtml += `<div class="history-box" style="border-left-color: var(--primary);"><h5><i class="fas fa-file-pdf"></i> Soporte Inicial SUNDDE</h5>${getDriveBtn(selectedRowData.PDF_SUNDDE, "Ver Acta SUNDDE", "btn-sm-primary")}</div>`;
@@ -270,7 +264,6 @@ function openSuperCard(rowIndex) {
     if(!histHtml) histHtml = "<p style='font-size:0.85rem; color:#64748B;'>Aún no hay soportes cargados en este expediente.</p>";
     document.getElementById('historico-content').innerHTML = histHtml;
 
-    // Zonas de Acción del Formulario por Rol
     const formC = document.getElementById('modal-action-form');
     formC.innerHTML = "";
     const role = currentUser.role.toLowerCase();
@@ -300,9 +293,42 @@ function openSuperCard(rowIndex) {
 
 function closeSuperCard() { document.getElementById('super-card-modal').style.display = "none"; selectedRowData = null; }
 
-// LOGICA DE CHAT INTERNO GLOBAL (Comunicaciones directas con la administración)
+// ================= LOGICA DE CANALES DE CHAT 1 A 1 =================
+function getInternalChatChannel() {
+    const role = currentUser.role.toLowerCase();
+    const isAdmin = role.includes("admin") || role.includes("director");
+    
+    if (isAdmin) {
+        const targetRole = document.getElementById('chat-target-role').value;
+        const targetEmp = targetRole === 'empresa' ? document.getElementById('chat-target-empresa').value : 'GENERAL';
+        return `CHAT_${targetRole}_${targetEmp}`;
+    } else {
+        let myRoleGrp = "sundde";
+        if (role.includes("empresa") || role.includes("denunciado")) myRoleGrp = "empresa";
+        else if (role.includes("fiscal")) myRoleGrp = "fiscal";
+        else if (role.includes("asistente") || role.includes("seguimiento")) myRoleGrp = "asistente";
+        
+        const myEmp = myRoleGrp === "empresa" ? (currentUser.empresa || "GENERAL") : "GENERAL";
+        return `CHAT_${myRoleGrp}_${myEmp}`;
+    }
+}
+
+function updateChatEmpresaSelector() {
+    const roleSel = document.getElementById('chat-target-role').value;
+    const empSel = document.getElementById('chat-target-empresa');
+    if (roleSel === 'empresa') {
+        empSel.style.display = "inline-block";
+    } else {
+        empSel.style.display = "none";
+    }
+}
+
 function openInternalChat() {
     document.getElementById('internal-chat-modal').style.display = 'flex';
+    const role = currentUser.role.toLowerCase();
+    if (role.includes("admin") || role.includes("director")) {
+        document.getElementById('chat-admin-selectors').style.display = 'flex';
+    }
     loadGlobalChatMessages();
 }
 
@@ -314,8 +340,8 @@ async function loadGlobalChatMessages() {
     const container = document.getElementById('global-chat-box');
     if (!container) return;
     
-    // Utilizamos un ID maestro para el canal interno de la aplicación general
-    const response = await sendToBackend("getChatMessages", { idDenuncia: "CHAT_INTERNO_GLOBAL" });
+    const channelId = getInternalChatChannel();
+    const response = await sendToBackend("getChatMessages", { idDenuncia: channelId });
     container.innerHTML = "";
     
     if (response && Array.isArray(response) && response.length > 0) {
@@ -340,7 +366,7 @@ async function loadGlobalChatMessages() {
         });
         container.scrollTop = container.scrollHeight;
     } else {
-        container.innerHTML = "<p style='font-size:0.75rem; color:#64748B; text-align:center;'>No hay mensajes en el canal interno todavía.</p>";
+        container.innerHTML = "<p style='font-size:0.75rem; color:#64748B; text-align:center;'>No hay mensajes en este canal privado.</p>";
     }
 }
 
@@ -352,7 +378,9 @@ async function sendGlobalChatMessage() {
     const btn = document.getElementById('btn-send-global-chat');
     btn.disabled = true;
     
-    const res = await sendToBackend("sendChatMessage", { idDenuncia: "CHAT_INTERNO_GLOBAL", usuario: currentUser.nombre, rol: currentUser.role, mensaje: txt });
+    const channelId = getInternalChatChannel();
+    const res = await sendToBackend("sendChatMessage", { idDenuncia: channelId, usuario: currentUser.nombre, rol: currentUser.role, mensaje: txt });
+    
     if (res && res.success) {
         input.value = "";
         await loadGlobalChatMessages();
@@ -360,7 +388,7 @@ async function sendGlobalChatMessage() {
     btn.disabled = false;
 }
 
-// LOGICA INTEGRADA DE CAMPANA DE NOTIFICACIONES
+// ================= LOGICA DE CAMPANA DE ALERTAS (SOLO PARA EMPRESA) =================
 function toggleAlertsDropdown(e) {
     e.stopPropagation();
     const dropdown = document.getElementById('alerts-dropdown');
@@ -370,35 +398,43 @@ function toggleAlertsDropdown(e) {
 function updateAlertsNotification() {
     const listC = document.getElementById('alerts-list');
     const badge = document.getElementById('alert-badge');
+    const bellWrapper = document.getElementById('notification-bell-wrapper');
     if (!listC) return;
     
     listC.innerHTML = "";
-    let activeAlerts = globalDenunciasData.filter(item => item.Alerta && item.Alerta.toString().trim() !== "");
-    
     const role = currentUser.role.toLowerCase();
-    if (role.includes("denunciado") || role.includes("empresa")) {
-        activeAlerts = activeAlerts.filter(item => item.EMPRESA && item.EMPRESA.toString().toLowerCase() === currentUser.empresa.toString().toLowerCase());
-    }
     
-    if (activeAlerts.length > 0) {
-        badge.innerText = activeAlerts.length;
-        badge.style.display = "block";
+    // VISIBILIDAD EXCLUSIVA: Solo las empresas/denunciados ven la campana
+    if (role.includes("denunciado") || role.includes("empresa")) {
+        bellWrapper.style.display = "block";
         
-        activeAlerts.forEach(item => {
-            const div = document.createElement('div');
-            div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:rgba(239,68,68,0.08); border-left:4px solid var(--danger); padding:8px; border-radius:6px; font-size:0.78rem; gap:10px;";
-            div.innerHTML = `
-                <div style="flex:1;">
-                    <strong>Expediente: ${item.DENUNCIA || 'N/A'}</strong><br>
-                    <span style="color:#334155;">${item.Alerta}</span>
-                </div>
-                <i class="fas fa-trash-can" style="color:var(--danger); cursor:pointer; padding:4px;" onclick="deleteAlertFromServer(${item.rowIndex}, event)"></i>
-            `;
-            listC.appendChild(div);
-        });
+        let activeAlerts = globalDenunciasData.filter(item => 
+            item.Alerta && item.Alerta.toString().trim() !== "" && 
+            item.EMPRESA && item.EMPRESA.toString().toLowerCase() === currentUser.empresa.toString().toLowerCase()
+        );
+        
+        if (activeAlerts.length > 0) {
+            badge.innerText = activeAlerts.length;
+            badge.style.display = "block";
+            
+            activeAlerts.forEach(item => {
+                const div = document.createElement('div');
+                div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:rgba(239,68,68,0.08); border-left:4px solid var(--danger); padding:8px; border-radius:6px; font-size:0.78rem; gap:10px;";
+                div.innerHTML = `
+                    <div style="flex:1;">
+                        <strong>Expediente: ${item.DENUNCIA || 'N/A'}</strong><br>
+                        <span style="color:#334155;">${item.Alerta}</span>
+                    </div>
+                    <i class="fas fa-trash-can" style="color:var(--danger); cursor:pointer; padding:4px;" onclick="deleteAlertFromServer(${item.rowIndex}, event)"></i>
+                `;
+                listC.appendChild(div);
+            });
+        } else {
+            badge.style.display = "none";
+            listC.innerHTML = '<p style="font-size:0.75rem; color:#64748B; text-align:center; padding:10px;">No tienes alertas pendientes.</p>';
+        }
     } else {
-        badge.style.display = "none";
-        listC.innerHTML = '<p style="font-size:0.75rem; color:#64748B; text-align:center; padding:10px;">No tienes alertas pendientes.</p>';
+        bellWrapper.style.display = "none";
     }
 }
 
@@ -412,13 +448,14 @@ async function deleteAlertFromServer(rowIndex, e) {
     }
 }
 
+// CORRECCIÓN VISUAL: Añadido display = "block" para mostrar confirmación de carga
 function parseFileToBase64(event) {
     const file = event.target.files[0]; if (!file) return; attachedFileName = file.name;
-    const r = new FileReader(); r.onload = function(e) { attachedFileBase64 = e.target.result; const lbl = document.getElementById('file-selected-name'); lbl.innerText = "✓ " + file.name; }; r.readAsDataURL(file);
+    const r = new FileReader(); r.onload = function(e) { attachedFileBase64 = e.target.result; const lbl = document.getElementById('file-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
 }
 function parsePhotoToBase64(event) {
     const file = event.target.files[0]; if (!file) return; attachedPhotoName = file.name;
-    const r = new FileReader(); r.onload = function(e) { attachedPhotoBase64 = e.target.result; const lbl = document.getElementById('photo-selected-name'); lbl.innerText = "✓ " + file.name; }; r.readAsDataURL(file);
+    const r = new FileReader(); r.onload = function(e) { attachedPhotoBase64 = e.target.result; const lbl = document.getElementById('photo-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
 }
 
 async function executeWorkflowTransition(subAction) {
@@ -490,7 +527,6 @@ function switchView(viewId) {
     } else {
         document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
         
-        // CORRECCIÓN: Filtro visible única y exclusivamente para el rol de administrador o director
         if(currentUser.role.toLowerCase().includes("admin") || currentUser.role.toLowerCase().includes("director")) {
             document.getElementById('admin-filter').style.display = "flex";
         } else {
