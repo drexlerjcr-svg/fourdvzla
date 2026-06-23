@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard - SUNDDE</title>
+    <title>Denuncias - SUNDDE</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,6 +14,21 @@
             <h3 id="alert-title" style="margin-bottom: 10px; color: var(--primary);"></h3>
             <p id="alert-message" style="color: #475569; margin-bottom: 20px;"></p>
             <button class="btn-action" onclick="closeCustomAlert()">Entendido</button>
+        </div>
+    </div>
+
+    <!-- Modal del Chat Interno Global -->
+    <div class="modal" id="internal-chat-modal" style="z-index: 2500;">
+        <div class="glass-panel modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-comments"></i> Chat Interno de Soporte</h3>
+                <i class="fas fa-xmark close-modal" onclick="closeInternalChat()"></i>
+            </div>
+            <div id="global-chat-box" style="height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.4); border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05);"></div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="global-chat-input" placeholder="Escribe un mensaje al administrador..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7);">
+                <button class="btn-action" id="btn-send-global-chat" onclick="sendGlobalChatMessage()" style="width: auto; padding: 0 18px; border-radius: 8px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 
@@ -42,15 +57,6 @@
             <div class="info-card-section" id="modal-historico">
                 <h4><i class="fas fa-folder-open"></i> Soportes e Histórico</h4>
                 <div id="historico-content"></div>
-            </div>
-
-            <div class="info-card-section" id="modal-chat-section">
-                <h4><i class="fas fa-comments"></i> Bitácora y Chat del Expediente</h4>
-                <div id="chat-box-messages" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.4); border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05);"></div>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="chat-input-message" placeholder="Escribe un comentario interno..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7);">
-                    <button class="btn-action" id="btn-send-chat" onclick="sendChatMessage()" style="width: auto; padding: 0 18px; border-radius: 8px;"><i class="fas fa-paper-plane"></i></button>
-                </div>
             </div>
 
             <div class="action-zone" id="modal-action-form"></div>
@@ -88,6 +94,12 @@
                 <h1 id="current-view-title">Bandeja Unificada de Expedientes</h1>
                 
                 <div style="display: flex; align-items: center; gap: 20px;">
+                    <!-- Icono de Chat Interno Global -->
+                    <div class="chat-notification-icon" onclick="openInternalChat()" style="cursor: pointer; position: relative; display: inline-block; margin-right: 15px;">
+                        <i class="fas fa-comment-dots" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    </div>
+
+                    <!-- Icono de Campana de Notificaciones -->
                     <div id="notification-bell-wrapper" style="position: relative; cursor: pointer;" onclick="toggleAlertsDropdown(event)">
                         <i class="fas fa-bell" style="font-size: 1.4rem; color: var(--primary);"></i>
                         <span id="alert-badge" style="position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; font-weight: bold; display: none;">0</span>
@@ -102,7 +114,7 @@
                 </div>
             </div>
 
-            <div class="filter-container" id="admin-filter">
+            <div class="filter-container" id="admin-filter" style="display: none;">
                 <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%;">
                     <div>
                         <label><i class="fas fa-filter"></i> Filtrar por Estatus:</label>
