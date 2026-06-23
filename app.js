@@ -472,16 +472,22 @@ async function loadAnalyticsData() {
 }
 
 function switchView(viewId) {
-    document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
-    event.currentTarget.classList.add('active');
-    
-    if(viewId === 'view-analytics') {
-        document.getElementById('current-view-title').innerText = "Estadísticas";
-        document.getElementById('admin-filter').style.display = "none";
-    } else {
-        document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
-        document.getElementById('admin-filter').style.display = "flex";
-    }
-}
+            document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if(viewId === 'view-analytics') {
+                document.getElementById('current-view-title').innerText = "Estadísticas Institucionales";
+                document.getElementById('admin-filter').style.display = "none";
+            } else {
+                document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
+                
+                // CORRECCIÓN: Filtro visible única y exclusivamente para el rol de administrador
+                if(currentUser.role.includes("admin")) {
+                    document.getElementById('admin-filter').style.display = "flex";
+                } else {
+                    document.getElementById('admin-filter').style.display = "none";
+                }
+            }
+        }
