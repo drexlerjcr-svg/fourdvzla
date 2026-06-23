@@ -17,16 +17,29 @@
         </div>
     </div>
 
-    <!-- Modal del Chat Interno Global -->
     <div class="modal" id="internal-chat-modal" style="z-index: 2500;">
         <div class="glass-panel modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h3><i class="fas fa-comments"></i> Chat Interno de Soporte</h3>
+                <h3><i class="fas fa-comments"></i> Canal de Soporte Interno</h3>
                 <i class="fas fa-xmark close-modal" onclick="closeInternalChat()"></i>
             </div>
+            
+            <div id="chat-admin-selectors" style="display: none; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <select id="chat-target-role" onchange="updateChatEmpresaSelector(); loadGlobalChatMessages();" style="padding: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); font-size: 0.85rem; flex: 1;">
+                    <option value="sundde">Analistas SUNDDE</option>
+                    <option value="fiscal">Fiscales Nacionales</option>
+                    <option value="asistente">Asistentes de Seguimiento</option>
+                    <option value="empresa">Empresas / Denunciados</option>
+                </select>
+                <select id="chat-target-empresa" onchange="loadGlobalChatMessages()" style="display:none; padding: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); font-size: 0.85rem; flex: 1;">
+                    <option value="GENERAL">Seleccione Empresa...</option>
+                </select>
+            </div>
+
             <div id="global-chat-box" style="height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.4); border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05);"></div>
+            
             <div style="display: flex; gap: 8px;">
-                <input type="text" id="global-chat-input" placeholder="Escribe un mensaje al administrador..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7);">
+                <input type="text" id="global-chat-input" placeholder="Escribe un mensaje directo..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7);" onkeypress="if(event.key === 'Enter') sendGlobalChatMessage()">
                 <button class="btn-action" id="btn-send-global-chat" onclick="sendGlobalChatMessage()" style="width: auto; padding: 0 18px; border-radius: 8px;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -94,13 +107,11 @@
                 <h1 id="current-view-title">Bandeja Unificada de Expedientes</h1>
                 
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <!-- Icono de Chat Interno Global -->
                     <div class="chat-notification-icon" onclick="openInternalChat()" style="cursor: pointer; position: relative; display: inline-block; margin-right: 15px;">
                         <i class="fas fa-comment-dots" style="font-size: 1.5rem; color: var(--primary);"></i>
                     </div>
 
-                    <!-- Icono de Campana de Notificaciones -->
-                    <div id="notification-bell-wrapper" style="position: relative; cursor: pointer;" onclick="toggleAlertsDropdown(event)">
+                    <div id="notification-bell-wrapper" style="position: relative; cursor: pointer; display: none;" onclick="toggleAlertsDropdown(event)">
                         <i class="fas fa-bell" style="font-size: 1.4rem; color: var(--primary);"></i>
                         <span id="alert-badge" style="position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; font-weight: bold; display: none;">0</span>
                         
