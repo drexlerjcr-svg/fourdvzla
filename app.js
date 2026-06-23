@@ -72,11 +72,14 @@ function buildAppWorkspace() {
     if (rolLower.includes("director") || rolLower.includes("admin")) {
         document.getElementById('link-stats').style.display = "flex";
         document.getElementById('subfilter-empresa-container').style.display = "block";
+        document.getElementById('admin-filter').style.display = "flex";
+    } else {
+        document.getElementById('admin-filter').style.display = "none";
     }
 
     loadDataGrid();
     
-    // AUTOREFRESH SILENCIOSO CADA 10 SEGUNDOS (Sin botones visuales molestos)
+    // AUTOREFRESH SILENCIOSO CADA 10 SEGUNDOS
     setInterval(loadDataGridSilently, 10000);
 }
 
@@ -103,10 +106,9 @@ async function loadDataGridSilently() {
         renderDataGrid();
         updateAlertsNotification();
         
-        // Mantener actualizado el chat en tiempo real si la card está abierta
-        if (selectedRowData && document.getElementById('super-card-modal').style.display === "flex") {
-            const currentId = selectedRowData.DENUNCIA || ('F-' + selectedRowData.rowIndex);
-            loadChatMessages(currentId);
+        // Mantener actualizado el chat global si está abierto
+        if (document.getElementById('internal-chat-modal').style.display === "flex") {
+            loadGlobalChatMessages();
         }
     }
 }
@@ -150,7 +152,7 @@ function renderDataGrid() {
         } else if (userRoleLower.includes("fiscal")) {
             cumplePermisosRol = (estatusNormalizado === "Atendido");
         } else if (userRoleLower.includes("seguimiento") || userRoleLower.includes("asistente")) {
-            // El asistente solo puede listar los de su jurisdicción (Cerrado, Atendido, En Revisión, Admitido)
+            // El asistente solo puede listar los de su jurisdicción
             cumplePermisosRol = (estatusNormalizado === "Cerrado" || estatusNormalizado === "Atendido" || estatusNormalizado === "En Revisión" || estatusNormalizado === "Admitido");
         }
 
@@ -244,7 +246,7 @@ function openSuperCard(rowIndex) {
     estBadge.innerText = estOriginal;
     estBadge.className = "badge status-nuevo"; 
 
-    // VISUALIZACIÓN GLOBAL DE SOPORTES (Punto 5 resuelto de forma directa)
+    // VISUALIZACIÓN GLOBAL DE SOPORTES
     let histHtml = "";
     if (selectedRowData.PDF_SUNDDE) {
         histHtml += `<div class="history-box" style="border-left-color: var(--primary);"><h5><i class="fas fa-file-pdf"></i> Soporte Inicial SUNDDE</h5>${getDriveBtn(selectedRowData.PDF_SUNDDE, "Ver Acta SUNDDE", "btn-sm-primary")}</div>`;
@@ -267,10 +269,6 @@ function openSuperCard(rowIndex) {
 
     if(!histHtml) histHtml = "<p style='font-size:0.85rem; color:#64748B;'>Aún no hay soportes cargados en este expediente.</p>";
     document.getElementById('historico-content').innerHTML = histHtml;
-
-    // Carga de mensajería sincrónica del expediente
-    const idDenunciaChat = selectedRowData.DENUNCIA || ('F-' + selectedRowData.rowIndex);
-    loadChatMessages(idDenunciaChat);
 
     // Zonas de Acción del Formulario por Rol
     const formC = document.getElementById('modal-action-form');
@@ -302,12 +300,22 @@ function openSuperCard(rowIndex) {
 
 function closeSuperCard() { document.getElementById('super-card-modal').style.display = "none"; selectedRowData = null; }
 
-// LOGICA INTEGRADA DE CHAT DE EXPEDIENTE
-async function loadChatMessages(idDenuncia) {
-    const container = document.getElementById('chat-box-messages');
+// LOGICA DE CHAT INTERNO GLOBAL (Comunicaciones directas con la administración)
+function openInternalChat() {
+    document.getElementById('internal-chat-modal').style.display = 'flex';
+    loadGlobalChatMessages();
+}
+
+function closeInternalChat() {
+    document.getElementById('internal-chat-modal').style.display = 'none';
+}
+
+async function loadGlobalChatMessages() {
+    const container = document.getElementById('global-chat-box');
     if (!container) return;
     
-    const response = await sendToBackend("getChatMessages", { idDenuncia: idDenuncia });
+    // Utilizamos un ID maestro para el canal interno de la aplicación general
+    const response = await sendToBackend("getChatMessages", { idDenuncia: "CHAT_INTERNO_GLOBAL" });
     container.innerHTML = "";
     
     if (response && Array.isArray(response) && response.length > 0) {
@@ -332,23 +340,22 @@ async function loadChatMessages(idDenuncia) {
         });
         container.scrollTop = container.scrollHeight;
     } else {
-        container.innerHTML = "<p style='font-size:0.75rem; color:#64748B; text-align:center;'>No hay comentarios internos en la bitácora.</p>";
+        container.innerHTML = "<p style='font-size:0.75rem; color:#64748B; text-align:center;'>No hay mensajes en el canal interno todavía.</p>";
     }
 }
 
-async function sendChatMessage() {
-    const input = document.getElementById('chat-input-message');
+async function sendGlobalChatMessage() {
+    const input = document.getElementById('global-chat-input');
     const txt = input.value.trim();
     if (!txt) return;
     
-    const idDenuncia = selectedRowData.DENUNCIA || ('F-' + selectedRowData.rowIndex);
-    const btn = document.getElementById('btn-send-chat');
+    const btn = document.getElementById('btn-send-global-chat');
     btn.disabled = true;
     
-    const res = await sendToBackend("sendChatMessage", { idDenuncia: idDenuncia, usuario: currentUser.nombre, rol: currentUser.role, mensaje: txt });
+    const res = await sendToBackend("sendChatMessage", { idDenuncia: "CHAT_INTERNO_GLOBAL", usuario: currentUser.nombre, rol: currentUser.role, mensaje: txt });
     if (res && res.success) {
         input.value = "";
-        await loadChatMessages(idDenuncia);
+        await loadGlobalChatMessages();
     }
     btn.disabled = false;
 }
@@ -472,22 +479,22 @@ async function loadAnalyticsData() {
 }
 
 function switchView(viewId) {
-            document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            
-            if(viewId === 'view-analytics') {
-                document.getElementById('current-view-title').innerText = "Estadísticas Institucionales";
-                document.getElementById('admin-filter').style.display = "none";
-            } else {
-                document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
-                
-                // CORRECCIÓN: Filtro visible única y exclusivamente para el rol de administrador
-                if(currentUser.role.includes("admin")) {
-                    document.getElementById('admin-filter').style.display = "flex";
-                } else {
-                    document.getElementById('admin-filter').style.display = "none";
-                }
-            }
+    document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    event.currentTarget.classList.add('active');
+    
+    if(viewId === 'view-analytics') {
+        document.getElementById('current-view-title').innerText = "Estadísticas Institucionales";
+        document.getElementById('admin-filter').style.display = "none";
+    } else {
+        document.getElementById('current-view-title').innerText = "Bandeja Unificada de Expedientes";
+        
+        // CORRECCIÓN: Filtro visible única y exclusivamente para el rol de administrador o director
+        if(currentUser.role.toLowerCase().includes("admin") || currentUser.role.toLowerCase().includes("director")) {
+            document.getElementById('admin-filter').style.display = "flex";
+        } else {
+            document.getElementById('admin-filter').style.display = "none";
         }
+    }
+}
