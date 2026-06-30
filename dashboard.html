@@ -91,13 +91,22 @@
 
             <div class="menu-items">
                 <div class="menu-link active" onclick="switchView('view-bandeja')">
-                    <i class="fas fa-folder-open"></i> Bandeja Unificada
+                    <i class="fas fa-home"></i> <span>Bandeja</span>
                 </div>
+                
+                <!-- Opciones que solo aparecerán en el Navbar del Móvil -->
+                <div class="menu-link mobile-nav-item" onclick="openInternalChat()">
+                    <i class="fas fa-comment-dots"></i> <span>Chat</span>
+                </div>
+                <div class="menu-link mobile-nav-item" onclick="toggleAlertsDropdown(event)">
+                    <i class="fas fa-bell"></i> <span>Notificaciones</span>
+                </div>
+
                 <div class="menu-link" id="link-stats" onclick="switchView('view-analytics')" style="display: none;">
-                    <i class="fas fa-chart-pie"></i> Estadísticas Globales
+                    <i class="fas fa-chart-pie"></i> <span>Estadísticas</span>
                 </div>
                 <div class="menu-link logout-link" onclick="triggerLogout()">
-                    <i class="fas fa-power-off"></i> Cerrar Sesión Activa
+                    <i class="fas fa-power-off"></i> <span>Salir</span>
                 </div>
             </div>
         </div>
@@ -107,11 +116,12 @@
                 <h1 id="current-view-title">Bandeja Unificada de Expedientes</h1>
                 
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <div class="chat-notification-icon" onclick="openInternalChat()" style="cursor: pointer; position: relative; display: inline-block; margin-right: 15px;">
+                    <!-- Clases desktop-nav-item agregadas para ocultar en móvil -->
+                    <div class="chat-notification-icon desktop-nav-item" onclick="openInternalChat()" style="cursor: pointer; position: relative; display: inline-block; margin-right: 15px;">
                         <i class="fas fa-comment-dots" style="font-size: 1.5rem; color: var(--primary);"></i>
                     </div>
 
-                    <div id="notification-bell-wrapper" style="position: relative; cursor: pointer; display: none;" onclick="toggleAlertsDropdown(event)">
+                    <div id="notification-bell-wrapper" class="desktop-nav-item" style="position: relative; cursor: pointer; display: none;" onclick="toggleAlertsDropdown(event)">
                         <i class="fas fa-bell" style="font-size: 1.4rem; color: var(--primary);"></i>
                         <span id="alert-badge" style="position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; font-weight: bold; display: none;">0</span>
                         
@@ -182,4 +192,4 @@
 
     <script src="app.js"></script>
 </body>
-                    </html>
+</html>
