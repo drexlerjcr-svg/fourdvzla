@@ -55,14 +55,14 @@
             <div class="info-card-section" id="modal-info-denunciante">
                 <h4><i class="fas fa-user-circle"></i> Información de la Denuncia</h4>
                 <div class="detail-grid">
-                    <div class="full-width"><strong>Sujeto de Aplicación / Empresa:</strong><br><span id="md-empresa"></span></div>
-                    <div><strong>Denunciante:</strong><br><span id="md-denunciante"></span></div>
-                    <div><strong>Cédula / RIF:</strong><br><span id="md-cedula"></span></div>
-                    <div><strong>Teléfonos de Contacto:</strong><br><span id="md-telefono"></span></div>
-                    <div><strong>Fecha de Registro:</strong><br><span id="md-fecha"></span></div>
-                    <div class="full-width"><strong>Dirección:</strong><br><span id="md-direccion"></span></div>
-                    <div class="full-width"><strong>Bien / Servicio:</strong><br><span id="md-producto"></span></div>
-                    <div class="full-width"><strong>Observaciones:</strong><br><span id="md-motivo"></span></div>
+                    <div class="full-width"><strong>Sujeto de Aplicación / Empresa:</strong><span id="md-empresa"></span></div>
+                    <div><strong>Denunciante:</strong><span id="md-denunciante"></span></div>
+                    <div><strong>Cédula / RIF:</strong><span id="md-cedula"></span></div>
+                    <div><strong>Teléfonos de Contacto:</strong><span id="md-telefono"></span></div>
+                    <div><strong>Fecha de Registro:</strong><span id="md-fecha"></span></div>
+                    <div class="full-width"><strong>Dirección:</strong><span id="md-direccion"></span></div>
+                    <div class="full-width"><strong>Bien / Servicio:</strong><span id="md-producto"></span></div>
+                    <div class="full-width"><strong>Observaciones:</strong><span id="md-motivo"></span></div>
                     <div class="full-width"><strong>Estatus Actual:</strong><br><span id="md-estatus" class="badge"></span></div>
                 </div>
             </div>
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div id="app-view" class="show-app" style="width: 100%; height: 100%; display: flex;">
+    <div id="app-view" class="show-app">
         <div class="sidebar">
             <div class="brand">
                 <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 120px;">
@@ -94,7 +94,6 @@
                     <i class="fas fa-home"></i> <span>Bandeja</span>
                 </div>
                 
-                <!-- Opciones que solo aparecerán en el Navbar del Móvil -->
                 <div class="menu-link mobile-nav-item" onclick="openInternalChat()">
                     <i class="fas fa-comment-dots"></i> <span>Chat</span>
                 </div>
@@ -116,7 +115,6 @@
                 <h1 id="current-view-title">Bandeja Unificada de Expedientes</h1>
                 
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <!-- Clases desktop-nav-item agregadas para ocultar en móvil -->
                     <div class="chat-notification-icon desktop-nav-item" onclick="openInternalChat()" style="cursor: pointer; position: relative; display: inline-block; margin-right: 15px;">
                         <i class="fas fa-comment-dots" style="font-size: 1.5rem; color: var(--primary);"></i>
                     </div>
