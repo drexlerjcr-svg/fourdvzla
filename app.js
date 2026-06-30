@@ -81,12 +81,12 @@ function buildAppWorkspace() {
 }
 
 async function loadDataGrid() {
-    const tbody = document.getElementById('tbody-denuncias');
-    tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Sincronizando con Google Sheets...</td></tr>";
+    const grid = document.getElementById('grid-denuncias');
+    grid.innerHTML = "<div style='grid-column: 1 / -1; text-align:center; padding: 20px; color:#64748B;'><i class='fas fa-spinner fa-spin'></i> Sincronizando con Google Sheets...</div>";
     
     const responseData = await sendToBackend("getDenuncias", { user: currentUser.email });
     if (!responseData || !Array.isArray(responseData)) {
-        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:var(--danger);'>Error sincronizando datos.</td></tr>";
+        grid.innerHTML = "<div style='grid-column: 1 / -1; text-align:center; padding: 20px; color:var(--danger);'>Error sincronizando datos.</div>";
         return;
     }
     globalDenunciasData = responseData;
@@ -131,8 +131,8 @@ function populateEmpresasSubfilter() {
 }
 
 function renderDataGrid() {
-    const tbody = document.getElementById('tbody-denuncias');
-    tbody.innerHTML = "";
+    const grid = document.getElementById('grid-denuncias');
+    grid.innerHTML = "";
     const userRoleLower = currentUser.role.toLowerCase();
     const filtroDropdown = document.getElementById('select-filtro-estatus').value;
     const subfiltroEmpresa = document.getElementById('select-filtro-empresa')?.value || "TODAS";
@@ -168,7 +168,7 @@ function renderDataGrid() {
     });
 
     if (filtered.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#64748B;'>No hay expedientes asignados en este criterio.</td></tr>";
+        grid.innerHTML = "<div style='grid-column: 1 / -1; text-align:center; padding: 20px; color:#64748B;'>No hay expedientes asignados en este criterio.</div>";
         return;
     }
 
@@ -184,7 +184,7 @@ function renderDataGrid() {
         if (estatusNormalizado === "Cerrado") statusClass = "status-cerradofisc";
         if (estatusNormalizado === "Archivado") statusClass = "status-final";
 
-        let actionButton = `<button class="btn-sm" style="background:#E2E8F0; color:#475569;" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-eye"></i> Ver</button>`;
+        let actionButton = `<button class="btn-sm" style="background:#E2E8F0; color:#475569;" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-eye"></i> Ver Detalle</button>`;
 
         if (userRoleLower.includes("sundde") && !userRoleLower.includes("asistente") && !userRoleLower.includes("fiscal") && estatusNormalizado === "Nuevo") {
             actionButton = `<button class="btn-sm btn-sm-primary" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-file-signature"></i> Admitir</button>`;
@@ -196,18 +196,25 @@ function renderDataGrid() {
             actionButton = `<button class="btn-sm btn-sm-success" onclick="openSuperCard(${item.rowIndex})"><i class="fas fa-box-archive"></i> Archivar</button>`;
         }
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td data-label="ID Denuncia" style="font-weight:700; color:var(--primary); cursor:pointer;" onclick="openSuperCard(${item.rowIndex})">
-                <i class="fas fa-expand" style="margin-right:5px; color:var(--secondary);"></i> ${item.DENUNCIA || ('F-' + item.rowIndex)}
-            </td>
-            <td data-label="Empresa"><strong>${item.EMPRESA || 'N/A'}</strong><br><span style="font-size:0.75rem; color:#64748B;">${item['R.I.F / C.I.'] || ''}</span></td>
-            <td data-label="Denunciante">${item.DENUNCIANTE || 'Anónimo'}<br><span style="font-size:0.75rem; color:#64748B;">V-${item['C.I.'] || ''}</span></td>
-            <td data-label="Bien / Servicio">${item['BIEN/SERVICIO'] || 'No detallado'}</td>
-            <td data-label="Estatus"><span class="badge ${statusClass}">${estatusNormalizado}</span></td>
-            <td data-label="Acción Requerida">${actionButton}</td>
+        const card = document.createElement('div');
+        card.className = "denuncia-card";
+        card.innerHTML = `
+            <div class="card-header">
+                <span style="font-weight:700; color:var(--primary); cursor:pointer;" onclick="openSuperCard(${item.rowIndex})">
+                    <i class="fas fa-expand" style="margin-right:5px; color:var(--secondary);"></i> ${item.DENUNCIA || ('F-' + item.rowIndex)}
+                </span>
+                <span class="badge ${statusClass}">${estatusNormalizado}</span>
+            </div>
+            <div class="card-body">
+                <div><strong>Empresa:</strong> ${item.EMPRESA || 'N/A'} <span style="font-size:0.75rem; color:#64748B;">(${item['R.I.F / C.I.'] || ''})</span></div>
+                <div><strong>Denunciante:</strong> ${item.DENUNCIANTE || 'Anónimo'} <span style="font-size:0.75rem; color:#64748B;">(V-${item['C.I.'] || ''})</span></div>
+                <div><strong>Bien / Servicio:</strong> ${item['BIEN/SERVICIO'] || 'No detallado'}</div>
+            </div>
+            <div class="card-footer">
+                ${actionButton}
+            </div>
         `;
-        tbody.appendChild(tr);
+        grid.appendChild(card);
     });
 
     if(userRoleLower.includes("admin") || userRoleLower.includes("administrador general")) loadAnalyticsData();
@@ -272,23 +279,23 @@ function openSuperCard(rowIndex) {
     const role = currentUser.role.toLowerCase();
 
     if (role.includes("sundde") && !role.includes("asistente") && !role.includes("fiscal") && estOriginal === "Nuevo") {
-        formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Admitir Caso a la Empresa</h4><div class="form-group"><label>Adjuntar Documentación (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf"></i><p>Toca para examinar</p><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><button class="btn-action" onclick="executeWorkflowTransition('SUNDDE_ADMITIR')"><i class="fas fa-check"></i> Admitir a la Empresa</button>`;
+        formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Admitir Caso a la Empresa</h4><div class="form-group"><label>Adjuntar Documentación (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf"></i><p>Toca para examinar</p><span class="file-selected-text"></span><input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><button id="btn-submit-action" class="btn-action" onclick="executeWorkflowTransition('SUNDDE_ADMITIR', this)"><i class="fas fa-check"></i> Admitir a la Empresa</button>`;
     } 
     else if ((role.includes("denunciado") || role.includes("empresa"))) {
         if(estOriginal === "Admitido") {
-            formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Cargar Atención</h4><div class="form-group"><label>Mensaje Adicional</label><textarea id="empresa-comentario" style="height:70px; width:100%; border-radius:8px; padding:10px; border:1px solid rgba(0,0,0,0.1);"></textarea></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;"><div class="form-group"><label>Acta (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf"></i><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><div class="form-group"><label>Foto Entrega</label><div class="dropzone-container" onclick="document.getElementById('modal-photo').click()"><i class="fas fa-image"></i><span id="photo-selected-name" class="file-selected-text"></span><input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)"></div></div></div><button class="btn-action" onclick="executeWorkflowTransition('EMPRESA_ATENDER')"><i class="fas fa-paper-plane"></i> Reportar Atención al Fiscal</button>`;
+            formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Cargar Atención</h4><div class="form-group"><label>Mensaje Adicional</label><textarea id="empresa-comentario" style="height:70px; width:100%; border-radius:8px; padding:10px; border:1px solid rgba(0,0,0,0.1);"></textarea></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;"><div class="form-group"><label>Acta (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf"></i><span class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><div class="form-group"><label>Foto Entrega</label><div class="dropzone-container" onclick="document.getElementById('modal-photo').click()"><i class="fas fa-image"></i><span class="file-selected-text"></span><input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)"></div></div></div><button id="btn-submit-action" class="btn-action" onclick="executeWorkflowTransition('EMPRESA_ATENDER', this)"><i class="fas fa-paper-plane"></i> Reportar Atención al Fiscal</button>`;
         } else if(estOriginal === "En Revisión") {
-            formC.innerHTML = `<h4 style="color:var(--danger); margin-bottom:15px;">Corregir Devolución</h4><div class="form-group"><label>Mensaje de Corrección</label><textarea id="empresa-comentario-dev" style="height:70px; width:100%; border-radius:8px; padding:10px; border:1px solid rgba(0,0,0,0.1);"></textarea></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;"><div class="form-group"><label>Nueva Acta (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf"></i><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><div class="form-group"><label>Nueva Foto Entrega</label><div class="dropzone-container" onclick="document.getElementById('modal-photo').click()"><i class="fas fa-image"></i><span id="photo-selected-name" class="file-selected-text"></span><input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)"></div></div></div><button class="btn-action" style="background:var(--success);" onclick="executeWorkflowTransition('EMPRESA_ATENDER_DEVOLUCION')"><i class="fas fa-paper-plane"></i> Enviar Corrección</button>`;
+            formC.innerHTML = `<h4 style="color:var(--danger); margin-bottom:15px;">Corregir Devolución</h4><div class="form-group"><label>Mensaje de Corrección</label><textarea id="empresa-comentario-dev" style="height:70px; width:100%; border-radius:8px; padding:10px; border:1px solid rgba(0,0,0,0.1);"></textarea></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;"><div class="form-group"><label>Nueva Acta (PDF)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-pdf"></i><span class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><div class="form-group"><label>Nueva Foto Entrega</label><div class="dropzone-container" onclick="document.getElementById('modal-photo').click()"><i class="fas fa-image"></i><span class="file-selected-text"></span><input type="file" id="modal-photo" accept="image/*" style="display:none;" onchange="parsePhotoToBase64(event)"></div></div></div><button id="btn-submit-action" class="btn-action" style="background:var(--success);" onclick="executeWorkflowTransition('EMPRESA_ATENDER_DEVOLUCION', this)"><i class="fas fa-paper-plane"></i> Enviar Corrección</button>`;
         }
     }
     else if (role.includes("fiscal") && estOriginal === "Atendido") {
-        formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Evaluación Fiscal</h4><div class="form-group"><label>Motivo de Devolución (Solo si No Conforme)</label><textarea id="fiscal-obs" style="height:60px; width:100%; border-radius:8px; padding:10px; border:1px solid rgba(0,0,0,0.1); margin-bottom:10px;"></textarea></div><div class="form-group"><label>Acta Fiscal de Conclusión (PDF obligatorio para Cierre)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-signature"></i><span id="file-selected-name" class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;"><button class="btn-action" style="background:var(--success);" onclick="executeWorkflowTransition('FISCAL_CONFORME')"><i class="fas fa-thumbs-up"></i> Conforme (Cerrar)</button><button class="btn-action" style="background:var(--danger);" onclick="executeWorkflowTransition('FISCAL_REVISION')"><i class="fas fa-undo"></i> Devolver</button></div>`;
+        formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Evaluación Fiscal</h4><div class="form-group"><label>Motivo de Devolución (Solo si No Conforme)</label><textarea id="fiscal-obs" style="height:60px; width:100%; border-radius:8px; padding:10px; border:1px solid rgba(0,0,0,0.1); margin-bottom:10px;"></textarea></div><div class="form-group"><label>Acta Fiscal de Conclusión (PDF obligatorio para Cierre)</label><div class="dropzone-container" onclick="document.getElementById('modal-file').click()"><i class="fas fa-file-signature"></i><span class="file-selected-text"></span><input type="file" id="modal-file" accept=".pdf" style="display:none;" onchange="parseFileToBase64(event)"></div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;"><button id="btn-submit-action" class="btn-action" style="background:var(--success);" onclick="executeWorkflowTransition('FISCAL_CONFORME', this)"><i class="fas fa-thumbs-up"></i> Conforme (Cerrar)</button><button class="btn-action" style="background:var(--danger);" onclick="executeWorkflowTransition('FISCAL_REVISION', this)"><i class="fas fa-undo"></i> Devolver</button></div>`;
     }
     else if ((role.includes("seguimiento") || role.includes("asistente")) && estOriginal === "Cerrado") {
-        formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Encuesta de Seguimiento</h4><div class="form-group"><label>Resultado Encuesta</label><select id="encuesta-resultado" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);"><option value="">Seleccione puntuación...</option><option value="5">5 - Excelente</option><option value="4">4 - Bueno</option><option value="3">3 - Regular</option><option value="2">2 - Malo</option><option value="1">1 - Pésimo</option></select></div><button class="btn-action" style="margin-top:15px;" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR')"><i class="fas fa-box-archive"></i> Archivar Definitivo</button>`;
+        formC.innerHTML = `<h4 style="color:var(--primary); margin-bottom:15px;">Encuesta de Seguimiento</h4><div class="form-group"><label>Resultado Encuesta</label><select id="encuesta-resultado" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);"><option value="">Seleccione puntuación...</option><option value="5">5 - Excelente</option><option value="4">4 - Bueno</option><option value="3">3 - Regular</option><option value="2">2 - Malo</option><option value="1">1 - Pésimo</option></select></div><button id="btn-submit-action" class="btn-action" style="margin-top:15px;" onclick="executeWorkflowTransition('SEGUIMIENTO_ARCHIVAR', this)"><i class="fas fa-box-archive"></i> Archivar Definitivo</button>`;
     }
     else if ((role.includes("admin") || role.includes("administrador general")) && (estOriginal === "Admitido" || estOriginal === "En Revisión")) {
-        formC.innerHTML = `<h4 style="color:var(--warning); margin-bottom:10px;"><i class="fas fa-bell"></i> Emitir Notificación de Alerta</h4><div class="form-group"><label>Mensaje de Alerta Urgente</label><input type="text" id="admin-alerta-texto" placeholder="Escriba la advertencia por retraso..." style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.1); margin-bottom:12px;"></div><button class="btn-action" style="background:var(--warning); color:var(--dark);" onclick="executeWorkflowTransition('ADMIN_ALERTA')"><i class="fas fa-bullhorn"></i> Traspasar Alerta a la Campana</button>`;
+        formC.innerHTML = `<h4 style="color:var(--warning); margin-bottom:10px;"><i class="fas fa-bell"></i> Emitir Notificación de Alerta</h4><div class="form-group"><label>Mensaje de Alerta Urgente</label><input type="text" id="admin-alerta-texto" placeholder="Escriba la advertencia por retraso..." style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.1); margin-bottom:12px;"></div><button id="btn-submit-action" class="btn-action" style="background:var(--warning); color:var(--dark);" onclick="executeWorkflowTransition('ADMIN_ALERTA', this)"><i class="fas fa-bullhorn"></i> Traspasar Alerta a la Campana</button>`;
     }
 
     modal.style.display = "flex";
@@ -407,7 +414,6 @@ function updateAlertsNotification() {
     listC.innerHTML = "";
     const role = currentUser.role.toLowerCase();
     
-    // VISIBILIDAD EXCLUSIVA: Solo las empresas/denunciados ven la campana
     if (role.includes("denunciado") || role.includes("empresa")) {
         bellWrapper.style.display = "block";
         
@@ -451,17 +457,38 @@ async function deleteAlertFromServer(rowIndex, e) {
     }
 }
 
-// CORRECCIÓN VISUAL: Añadido display = "block" para mostrar confirmación de carga
+// LOGICA DE ANIMACIÓN AL SELECCIONAR UN ARCHIVO
 function parseFileToBase64(event) {
     const file = event.target.files[0]; if (!file) return; attachedFileName = file.name;
-    const r = new FileReader(); r.onload = function(e) { attachedFileBase64 = e.target.result; const lbl = document.getElementById('file-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
-}
-function parsePhotoToBase64(event) {
-    const file = event.target.files[0]; if (!file) return; attachedPhotoName = file.name;
-    const r = new FileReader(); r.onload = function(e) { attachedPhotoBase64 = e.target.result; const lbl = document.getElementById('photo-selected-name'); lbl.innerText = "✓ " + file.name; lbl.style.display = "block"; }; r.readAsDataURL(file);
+    const container = event.target.closest('.dropzone-container');
+    const r = new FileReader(); 
+    r.onload = function(e) { 
+        attachedFileBase64 = e.target.result; 
+        const lbl = container.querySelector('.file-selected-text'); 
+        lbl.innerText = "✓ " + file.name; lbl.style.display = "block";
+        container.classList.add('file-loaded');
+        container.querySelector('i').className = 'fas fa-check-circle';
+        container.querySelector('i').style.color = 'var(--success)';
+    }; 
+    r.readAsDataURL(file);
 }
 
-async function executeWorkflowTransition(subAction) {
+function parsePhotoToBase64(event) {
+    const file = event.target.files[0]; if (!file) return; attachedPhotoName = file.name;
+    const container = event.target.closest('.dropzone-container');
+    const r = new FileReader(); 
+    r.onload = function(e) { 
+        attachedPhotoBase64 = e.target.result; 
+        const lbl = container.querySelector('.file-selected-text'); 
+        lbl.innerText = "✓ " + file.name; lbl.style.display = "block";
+        container.classList.add('file-loaded');
+        container.querySelector('i').className = 'fas fa-check-circle';
+        container.querySelector('i').style.color = 'var(--success)';
+    }; 
+    r.readAsDataURL(file);
+}
+
+async function executeWorkflowTransition(subAction, btnElement) {
     let dataPayload = { rowIndex: selectedRowData.rowIndex, fileBase64: attachedFileBase64, fileName: attachedFileName, photoBase64: attachedPhotoBase64, photoName: attachedPhotoName };
 
     if (subAction === "EMPRESA_ATENDER") {
@@ -493,16 +520,28 @@ async function executeWorkflowTransition(subAction) {
         dataPayload.mensajeAlerta = textA;
     }
 
-    closeSuperCard();
-    const tbody = document.getElementById('tbody-denuncias');
-    tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'><i class='fas fa-spinner fa-spin'></i> Transmitiendo flujos al servidor...</td></tr>";
+    // ANIMACIÓN AL ENVIAR ARCHIVOS
+    if (btnElement) {
+        btnElement.disabled = true;
+        btnElement.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Subiendo archivos al servidor...`;
+        
+        // Agregar pulso a los dropzones involucrados
+        document.querySelectorAll('.dropzone-container').forEach(dz => {
+            if(dz.querySelector('.file-selected-text').style.display === "block") {
+                dz.classList.add('uploading-animation');
+            }
+        });
+    }
 
     const res = await sendToBackend("procesarDenuncia", { subAction: subAction, data: dataPayload });
+    closeSuperCard();
+    
     if (res && res.success) { 
-        showCustomAlert("Éxito", "Operación procesada.", "success"); 
+        showCustomAlert("Éxito", "Operación procesada correctamente.", "success"); 
     } else { 
         showCustomAlert("Error", res.message || "Fallo del servidor.", "error"); 
     }
+    
     await loadDataGrid();
 }
 
