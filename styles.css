@@ -24,6 +24,9 @@ body {
     border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow);
 }
 
+/* Clases de control de vista */
+.mobile-nav-item { display: none !important; }
+
 /* ================= LOGIN ================= */
 #login-view { width: 90%; max-width: 440px; padding: 40px; text-align: center; animation: fadeIn 0.5s ease-out; }
 .login-header h2 { font-size: 1.8rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
@@ -70,7 +73,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 .logout-link { color: var(--danger); border-top: 1px solid rgba(0, 0, 0, 0.08); padding-top: 15px; margin-top: 15px;}
 
 .main-content { 
-    padding: 35px 20px 80px 35px; /* Reducido a la derecha para ganar espacio */
+    padding: 35px 20px 80px 35px;
     overflow-y: auto; 
     height: 100vh; 
     display: flex; 
@@ -153,7 +156,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 .status-cerradofisc { background: #D1FAE5; color: #065F46; }
 .status-final { background: #F3F4F6; color: #374151; }
 
-/* ================= ANIMACIONES DE CARGA (FILE UPLOAD) ================= */
+/* ================= ANIMACIONES DE CARGA ================= */
 .dropzone-container { border: 2px dashed var(--secondary); border-radius: 12px; padding: 20px; text-align: center; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: all 0.3s ease; margin-bottom: 10px; }
 .dropzone-container:hover { background: rgba(255, 255, 255, 0.6); border-color: var(--primary); }
 .dropzone-container i { font-size: 2rem; color: var(--secondary); margin-bottom: 5px; transition: all 0.3s ease; }
@@ -204,15 +207,69 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 .history-box h5 { color: var(--dark); font-size: 0.95rem; margin-bottom: 5px;}
 .action-zone { margin-top: 20px; padding-top: 20px; border-top: 2px dashed rgba(0,0,0,0.1); }
 
-/* ================= RESPONSIVO ================= */
+
+/* ================= RESPONSIVO (MÓVILES) ================= */
 @media (max-width: 768px) {
     body { overflow-y: auto; display: block; padding: 0; }
     #login-view { margin: 5vh auto; padding: 30px 20px; }
-    #app-view.show-app { display: flex; flex-direction: column; height: auto; overflow: visible; }
-    .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 20px 15px; }
-    .user-profile-card { text-align: center; }
-    .menu-items { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 5px;}
-    .menu-link { padding: 8px 10px; font-size: 0.85rem; flex: 1 1 45%; justify-content: center; text-align: center; white-space: nowrap;}
+    
+    /* Reglas para ocultar/mostrar elementos dependiendo del dispositivo */
+    .desktop-nav-item { display: none !important; }
+    .mobile-nav-item { display: flex !important; }
+
+    /* Añadimos padding inferior para que el contenido no quede tapado por el navbar */
+    #app-view.show-app { display: flex; flex-direction: column; height: auto; overflow: visible; padding-bottom: 90px; }
+    
+    /* Sidebar superior (Mantiene Logo y Perfil arriba) */
+    .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 15px; }
+    .user-profile-card { text-align: center; margin-bottom: 0; }
+    
+    /* Transformación del menú a BOTTOM NAVBAR (Estilo Píldora Flotante) */
+    .menu-items { 
+        position: fixed; 
+        bottom: 15px; 
+        left: 5%; 
+        width: 90%; 
+        background: rgba(255, 255, 255, 0.7); 
+        backdrop-filter: blur(20px); 
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6); 
+        border-radius: 40px; 
+        display: flex; 
+        flex-direction: row; 
+        justify-content: space-around; 
+        align-items: center; 
+        padding: 8px 15px; 
+        z-index: 2500; 
+        box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.15);
+        gap: 0;
+    }
+
+    /* Estilo de los botones del navbar */
+    .menu-link { 
+        flex-direction: column; 
+        padding: 8px; 
+        font-size: 0.65rem; 
+        flex: 1; 
+        justify-content: center; 
+        text-align: center; 
+        white-space: nowrap;
+        border-radius: 25px;
+        background: transparent;
+        gap: 4px;
+        color: #475569;
+    }
+    
+    .menu-link i { font-size: 1.3rem; }
+    
+    /* Estilo del botón activo (Resalta igual que en tu foto) */
+    .menu-link.active { 
+        background: rgba(255, 255, 255, 0.9); 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        color: var(--primary); 
+    }
+    
+    .logout-link { border-top: none; padding-top: 8px; margin-top: 0; }
     
     .main-content { padding: 15px 10px; height: auto; overflow: visible; gap: 15px; }
     .detail-grid, .modal-grid { grid-template-columns: 1fr !important; }
@@ -220,15 +277,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
     .stats-grid { grid-template-columns: 1fr; }
     .denuncias-grid { grid-template-columns: 1fr; } 
 
-    /* Corrección de recuadro de notificaciones en móvil */
+    /* Notificaciones en móvil */
     #alerts-dropdown {
         position: fixed !important;
-        top: 80px !important; 
+        top: 20px !important; 
         left: 50% !important;
         transform: translateX(-50%) !important;
-        width: 90vw !important; 
-        right: auto !important;
-        max-width: none !important;
+        width: 90% !important;
     }
 }
 
