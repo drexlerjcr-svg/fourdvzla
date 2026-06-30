@@ -28,7 +28,7 @@
             <label>Correo Electrónico</label>
             <div class="input-wrapper">
                 <i class="fas fa-envelope"></i>
-                <input type="email" id="login-email" placeholder="usuario@sundde.gob.ve">
+                <input type="email" id="login-email" placeholder="usuario@sundde.gob.ve" onkeypress="if(event.key === 'Enter') attemptLogin()">
             </div>
         </div>
 
@@ -36,7 +36,7 @@
             <label>Contraseña</label>
             <div class="input-wrapper">
                 <i class="fas fa-lock"></i>
-                <input type="password" id="login-pass" placeholder="••••••••">
+                <input type="password" id="login-pass" placeholder="••••••••" onkeypress="if(event.key === 'Enter') attemptLogin()">
             </div>
         </div>
 
