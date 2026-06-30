@@ -209,30 +209,33 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 
 
 /* ================= RESPONSIVO (MÓVILES) ================= */
+/* ================= RESPONSIVO (MÓVILES) ================= */
 @media (max-width: 768px) {
     body { overflow-y: auto; display: block; padding: 0; }
     #login-view { margin: 5vh auto; padding: 30px 20px; }
     
-    /* Reglas para ocultar/mostrar elementos dependiendo del dispositivo */
+    /* 1. Control de visibilidad de ítems */
     .desktop-nav-item { display: none !important; }
     .mobile-nav-item { display: flex !important; }
 
-    /* Añadimos padding inferior para que el contenido no quede tapado por el navbar */
-    #app-view.show-app { display: flex; flex-direction: column; height: auto; overflow: visible; padding-bottom: 90px; }
+    /* 2. Layout principal con espacio reservado abajo */
+    #app-view.show-app { 
+        display: flex; flex-direction: column; 
+        height: auto; min-height: 100vh;
+        padding-bottom: 95px; /* ESPACIO NECESARIO PARA QUE EL NAVBAR NO TAPE NADA */
+    }
     
-    /* Sidebar superior (Mantiene Logo y Perfil arriba) */
     .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 15px; }
     .user-profile-card { text-align: center; margin-bottom: 0; }
     
-    /* Transformación del menú a BOTTOM NAVBAR (Estilo Píldora Flotante) */
+    /* 3. Píldora de navegación inferior */
     .menu-items { 
         position: fixed; 
         bottom: 15px; 
         left: 5%; 
         width: 90%; 
-        background: rgba(255, 255, 255, 0.7); 
+        background: rgba(255, 255, 255, 0.85); 
         backdrop-filter: blur(20px); 
-        -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.6); 
         border-radius: 40px; 
         display: flex; 
@@ -240,12 +243,23 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
         justify-content: space-around; 
         align-items: center; 
         padding: 8px 15px; 
-        z-index: 2500; 
-        box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.15);
-        gap: 0;
+        z-index: 1000; /* Z-index bajo para que no interfiera */
+        box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
     }
 
-    /* Estilo de los botones del navbar */
+    /* 4. Asegurar que los modales tengan prioridad absoluta sobre el navbar */
+    .modal { 
+        z-index: 9999 !important; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content { 
+        width: 95%; 
+        max-height: 85vh; 
+        overflow-y: auto;
+    }
+
     .menu-link { 
         flex-direction: column; 
         padding: 8px; 
@@ -255,19 +269,24 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
         text-align: center; 
         white-space: nowrap;
         border-radius: 25px;
-        background: transparent;
-        gap: 4px;
         color: #475569;
+        gap: 4px;
     }
     
     .menu-link i { font-size: 1.3rem; }
     
-    /* Estilo del botón activo (Resalta igual que en tu foto) */
     .menu-link.active { 
         background: rgba(255, 255, 255, 0.9); 
         box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
         color: var(--primary); 
     }
+    
+    .logout-link { border-top: none; padding-top: 8px; margin-top: 0; }
+    
+    .main-content { padding: 15px 10px; height: auto; gap: 15px; }
+    .denuncias-grid { grid-template-columns: 1fr; padding-bottom: 20px; }
+    }
+
     
     .logout-link { border-top: none; padding-top: 8px; margin-top: 0; }
     
