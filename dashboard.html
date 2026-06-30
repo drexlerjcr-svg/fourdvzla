@@ -150,24 +150,10 @@
             </div>
 
             <div id="view-bandeja" class="workspace-view active">
-                <div class="table-container">
-                    <div class="table-wrapper"> <table id="table-denuncias">
-                            <thead>
-                                <tr>
-                                    <th>ID Denuncia</th>
-                                    <th>Sujeto de Aplicación / Empresa</th>
-                                    <th>Denunciante</th>
-                                    <th>Bien / Servicio</th>
-                                    <th>Estatus del Sistema</th>
-                                    <th>Acción Requerida</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-denuncias">
-                                <tr>
-                                    <td colspan="6" style="text-align:center; color:#64748B;">Sincronizando expedientes...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- AQUI COMIENZA EL GRID -->
+                <div id="grid-denuncias" class="denuncias-grid">
+                    <div style="grid-column: 1 / -1; text-align:center; padding: 20px; color:#64748B;">
+                        <i class="fas fa-spinner fa-spin"></i> Sincronizando denuncias...
                     </div>
                 </div>
             </div>
@@ -197,5 +183,4 @@
 
     <script src="app.js"></script>
 </body>
-    </html>
-    
+</html>
