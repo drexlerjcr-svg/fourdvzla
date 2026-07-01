@@ -27,7 +27,7 @@ body {
 /* Clases de control de vista */
 .mobile-nav-item { display: none !important; }
 
-/* ================= LOGIN (Corregido para Móvil y PC) ================= */
+/* ================= LOGIN ================= */
 #login-view { 
     position: fixed !important; 
     top: 50% !important;
@@ -68,7 +68,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 58, 138, 0.35); }
 .btn-action:disabled { background: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-/* Botones generados dinámicamente en las tarjetas (Ej. "Ver Detalle") */
 .denuncia-card button, 
 .card-footer button,
 #historico-content button {
@@ -147,7 +146,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
 .status-nuevo { background: rgba(30, 58, 138, 0.15); color: var(--primary); }
 
-/* ================= CAJA DE ALERTAS (CORRECCIÓN IMAGEN 1) ================= */
+/* ================= CAJA DE ALERTAS / CHAT ================= */
 .chat-input-container, .chat-input-wrapper {
     display: flex;
     align-items: center;
@@ -229,22 +228,25 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
     transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 58, 138, 0.35);
 }
 
-/* ================= ESCRITORIO (CORRECCIÓN IMAGEN 4) ================= */
+/* ================= ESCRITORIO ================= */
 @media (min-width: 769px) {
-    .header-actions, .top-bar-actions {
+    /* CORRECCIÓN: DROPDOWN DE ALERTAS ESCRITORIO */
+    .top-bar, .header-actions {
         position: relative; 
     }
     
     #alerts-dropdown {
-        position: absolute;
-        top: 100%;
+        position: absolute !important;
+        top: 100% !important;
         right: 0 !important; 
         left: auto !important; 
-        transform: none !important;
         min-width: 300px;
         max-width: 350px;
+        max-height: 400px;
+        overflow-y: auto;
         z-index: 2000;
         margin-top: 10px;
+        transform: none !important;
     }
 }
 
@@ -256,18 +258,23 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
     .desktop-nav-item { display: none !important; }
     .mobile-nav-item { display: flex !important; }
 
-    /* CORRECCIÓN IMAGEN 2: Centrar tarjeta de perfil en móvil */
+    /* CORRECCIÓN: PERFIL DE USUARIO CENTRADO MÓVIL */
     .user-profile-card, .sidebar-profile {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
         width: 100%;
     }
-    .user-profile-card div, .sidebar-profile div {
-        text-align: center;
+    .user-profile-card h4, .user-profile-card p, .sidebar-profile div {
+        text-align: center !important;
         width: 100%;
+        display: block;
+    }
+    .user-profile-card .tag-role {
+        margin: 8px auto 0 auto !important;
+        display: inline-block !important;
     }
     
     .menu-items { 
@@ -279,9 +286,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
         padding: 10px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
     
-    /* CORRECCIÓN IMAGEN 3: Posición relativa para el globo rojo */
+    /* CORRECCIÓN: GLOBO DE NOTIFICACIONES ROJO (CÍRCULO PERFECTO) */
     .menu-link { 
-        position: relative; 
+        position: relative !important; /* Vital para anclar la burbuja */
         flex-direction: column; 
         font-size: 0.65rem; 
         gap: 4px; 
@@ -296,23 +303,24 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
         justify-content: center;
     }
 
-    /* CORRECCIÓN IMAGEN 3: Píldora de notificaciones */
-    .menu-link .badge, .menu-link #badge-notificaciones {
-        position: absolute;
-        top: 2px;
-        right: 25%;
-        background: var(--danger);
-        color: white;
-        border-radius: 50%;
-        padding: 3px 6px;
-        font-size: 0.65rem;
+    .menu-link #badge-notificaciones, .menu-link .badge {
+        position: absolute !important;
+        top: 0px !important;
+        right: 25% !important;
+        background: var(--danger) !important;
+        color: white !important;
+        border-radius: 50px !important; /* Forma de píldora/círculo */
+        padding: 2px 5px !important;
+        font-size: 0.6rem !important;
         font-weight: bold;
         display: flex !important;
         align-items: center;
         justify-content: center;
         z-index: 10;
-        min-width: 18px;
-        height: 18px;
+        min-width: 16px;
+        height: 16px;
+        line-height: 1;
+        border: 1.5px solid white; /* Bordecito blanco para resaltar */
     }
 
     .menu-link i { font-size: 1.2rem; margin-bottom: 2px; }
