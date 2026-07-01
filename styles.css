@@ -27,18 +27,18 @@ body {
 /* Clases de control de vista */
 .mobile-nav-item { display: none !important; }
 
-/* ================= LOGIN ================= */
+/* ================= LOGIN (Corregido para Móvil y PC) ================= */
 #login-view { 
-    /* Centrado absoluto sin importar la pantalla */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: fixed !important; /* Fixed asegura que esté centrado respecto a la pantalla siempre */
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     width: 90%; 
     max-width: 440px; 
     padding: 40px; 
     text-align: center; 
     animation: fadeIn 0.5s ease-out; 
+    z-index: 1000;
 }
 .login-header h2 { font-size: 1.8rem; color: var(--primary); font-weight: 700; letter-spacing: -0.5px; }
 .login-header p { color: #475569; font-size: 0.95rem; margin-bottom: 30px; }
@@ -57,6 +57,7 @@ select { padding-left: 12px; cursor: pointer; }
 textarea { padding-left: 12px; }
 input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
 
+/* ================= BOTONES GLOBALES Y CORRECCIÓN "WINDOWS XP" ================= */
 .btn-action {
     width: 100%; padding: 14px; border-radius: 10px; border: none;
     background: linear-gradient(135deg, var(--primary) 0%, #1D4ED8 100%);
@@ -66,6 +67,30 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 }
 .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 58, 138, 0.35); }
 .btn-action:disabled { background: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Botones generados dinámicamente en las tarjetas (Ej. "Ver Detalle") */
+.denuncia-card button, 
+.card-footer button,
+#historico-content button {
+    background: linear-gradient(135deg, var(--secondary) 0%, #0369A1 100%);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+.denuncia-card button:hover, 
+.card-footer button:hover,
+#historico-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4);
+}
 
 /* ================= APP LAYOUT ================= */
 #app-view { width: 100vw; height: 100vh; max-width: 100%; overflow: hidden; display: none; }
@@ -139,26 +164,28 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); back
 .detail-grid div { font-size: 0.95rem; color: #334155; }
 .detail-grid strong { color: var(--dark); font-weight: 700; display: block; margin-bottom: 4px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;}
 
-/* === ESTILOS MEJORADOS PARA HISTORIAL DE SOPORTES === */
+/* === ESTILOS CORREGIDOS: HISTORIAL DE SOPORTES Y ARCHIVOS === */
 #historico-content {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 15px; /* Separación obligatoria entre cada archivo/registro */
     margin-top: 15px;
 }
-#historico-content > div, 
-#historico-content p {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.08);
+/* Todo lo que genere JS aquí dentro se volverá una tarjeta separada */
+#historico-content > * {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
     padding: 15px;
     border-radius: 12px;
     font-size: 0.9rem;
     color: #334155;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.04);
     border-left: 4px solid var(--secondary);
+    display: block;
+    width: 100%;
 }
 #historico-content hr {
-    display: none; /* Oculta las líneas divisorias feas por defecto */
+    display: none !important; /* Oculta las feas rayas por defecto */
 }
 #historico-content strong {
     color: var(--primary);
