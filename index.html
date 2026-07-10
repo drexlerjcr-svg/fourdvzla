@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartelera Fiscal</title>
+  <title>Cartelera Interactiva</title>
   <style>
     :root {
       --primary-color: #ffffff;
@@ -151,6 +151,23 @@
       cursor: zoom-out;
     }
 
+    /* NUEVO BOTÓN PARA CERRAR EL ZOOM */
+    .close-lightbox-btn {
+      position: absolute;
+      top: 25px;
+      right: 35px;
+      font-size: 3.5rem;
+      color: #ffffff;
+      cursor: pointer;
+      z-index: 2010;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+      transition: color 0.3s;
+    }
+
+    .close-lightbox-btn:hover {
+      color: #e74c3c;
+    }
+
     .lightbox img {
       max-width: 90vw;
       max-height: 90vh;
@@ -206,6 +223,11 @@
       .doc-gallery img {
         height: 120px;
       }
+      .close-lightbox-btn {
+        top: 15px;
+        right: 25px;
+        font-size: 2.5rem;
+      }
     }
 
     /* =======================================
@@ -247,12 +269,17 @@
       .doc-gallery img {
         height: 280px;
       }
+      .close-lightbox-btn {
+        top: 35px;
+        right: 45px;
+        font-size: 4.5rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>Cartelera Fiscal Actuallizada</h1>
+  <h1>Cartelera Institucional</h1>
   <div id="loading">Cargando información...</div>
   <div class="grid-container" id="card-container"></div>
 
@@ -266,6 +293,7 @@
   </div>
 
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="close-lightbox-btn" onclick="closeLightbox()">&times;</span>
     <img id="lightbox-img" src="" alt="Documento ampliado">
   </div>
 
