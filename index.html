@@ -239,50 +239,16 @@
 
     function fetchData(isSilent) {
       if (!isSilent) {
-        // Optimización y Modo Local: Buscar datos cacheados
-        const cachedData = localStorage.getItem('carteleraDataCache');
-        if (cachedData) {
-          try {
-            renderCards(JSON.parse(cachedData));
-          } catch(e) {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('card-container').innerHTML = '';
-          }
-        } else {
-          document.getElementById('loading').style.display = 'block';
-          document.getElementById('card-container').innerHTML = '';
-        }
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('card-container').innerHTML = '';
       }
-
-      // Validar si hay conexión a internet
-      if (!navigator.onLine) {
-        if (!isSilent && localStorage.getItem('carteleraDataCache')) {
-          showCustomAlert("Estás en modo sin conexión. Mostrando información guardada localmente.");
-        }
-        document.getElementById('loading').style.display = 'none';
-        return; // Detiene la búsqueda de nuevos datos
-      }
-
-      // Si hay internet, buscar actualizaciones silenciosamente
       if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run
-          .withSuccessHandler(data => {
-            localStorage.setItem('carteleraDataCache', JSON.stringify(data)); // Guarda nueva data localmente
-            renderCards(data);
-          })
-          .withFailureHandler(err => {
-            if (!localStorage.getItem('carteleraDataCache')) showError(err);
-          }).getCarteleraData();
+        google.script.run.withSuccessHandler(renderCards).withFailureHandler(showError).getCarteleraData();
       } else {
         fetch(webAppUrl + '?json=true')
           .then(res => { if (!res.ok) throw new Error('Error de red'); return res.json(); })
-          .then(data => {
-            localStorage.setItem('carteleraDataCache', JSON.stringify(data)); // Guarda nueva data localmente
-            renderCards(data);
-          })
-          .catch(err => {
-            if (!localStorage.getItem('carteleraDataCache')) showError(err);
-          });
+          .then(data => renderCards(data))
+          .catch(err => showError(err));
       }
     }
 
@@ -469,11 +435,6 @@
     }
 
     function sendEmail() {
-      if (!navigator.onLine) {
-        showCustomAlert("No tienes conexión a internet. Esta acción requiere estar en línea.");
-        return;
-      }
-
       const email = document.getElementById('target-email').value.trim();
       const imgUrl = document.getElementById('lightbox-img').src;
       
@@ -567,11 +528,6 @@
     }
 
     async function handleUpload() {
-      if (!navigator.onLine) {
-        showCustomAlert("No tienes conexión a internet. No puedes subir documentos en este momento.");
-        return;
-      }
-
       const isNew = document.getElementById('is-new-item').checked;
       let titulo = ''; let idItem = ''; let logoData = null;
       const fileInput = document.getElementById('upload-file');
@@ -660,17 +616,6 @@
       if (event.target === uploadModal) closeUploadModal();
       if (event.target === emailModal) closeEmailModal();
       if (event.target === customAlert) closeCustomAlert();
-    }
-
-    // ==============================================================
-    // REGISTRO DEL SERVICE WORKER PARA CACHÉ DE IMÁGENES OFFLINE
-    // ==============================================================
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service Worker registrado correctamente'))
-          .catch(err => console.error('Error al registrar Service Worker:', err));
-      });
     }
   </script>
 </body>
