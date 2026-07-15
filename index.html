@@ -77,9 +77,20 @@
     .lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 2000; justify-content: center; align-items: center; cursor: zoom-out; overflow: hidden; }
     .close-lightbox-btn { position: absolute; top: 25px; right: 35px; font-size: 3.5rem; color: #ffffff; cursor: pointer; z-index: 2010; text-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: color 0.3s; }
     .close-lightbox-btn:hover { color: #e74c3c; }
+
+    /* Nuevo Botón Enviar Email */
+    .send-email-btn { position: absolute; top: 25px; left: 35px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 2010; }
+    .send-email-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); color: #2980b9; }
+    .send-email-btn svg { width: 24px; height: 24px; color: #fff; transition: color 0.2s;}
+    .send-email-btn:hover svg { color: #2980b9; }
+
     .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.8); animation: zoomIn 0.3s ease; transition: transform 0.1s ease-out; transform-origin: center center; will-change: transform; transform: translateZ(0); }
     @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     #loading { text-align: center; font-size: 1.5rem; margin-top: 50px; }
+
+    /* Modal de Correo Electrónico */
+    #email-modal { z-index: 3000; }
+    #email-modal .modal-content { max-width: 400px; text-align: center; }
 
     /* Media Queries */
     @media (max-height: 600px) and (orientation: landscape) {
@@ -89,6 +100,7 @@
       .card { padding: 15px; border-radius: 15px; } .card img { max-width: 80px; height: 60px; margin-bottom: 10px; } .card h2 { font-size: 1.1rem; }
       .modal-content { padding: 20px; max-height: 90vh; } .doc-gallery { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; } .doc-gallery img { height: 120px; }
       .close-lightbox-btn { top: 15px; right: 25px; font-size: 2.5rem; }
+      .send-email-btn { top: 15px; left: 25px; width: 40px; height: 40px; }
       #btn-history { bottom: 10px; right: 15px; padding: 8px 15px; font-size: 0.9rem; }
     }
     @media (min-width: 1500px) {
@@ -96,6 +108,8 @@
       h1 { font-size: 3.8rem; margin-bottom: 60px; } .card { padding: 45px 30px; border-radius: 25px; } .card img { max-width: 180px; height: 140px; margin-bottom: 25px; } .card h2 { font-size: 1.9rem; }
       .modal-content { max-width: 1200px; padding: 40px; } .modal-content h2 { font-size: 2.2rem; } .doc-gallery { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; } .doc-gallery img { height: 280px; }
       .close-lightbox-btn { top: 35px; right: 45px; font-size: 4.5rem; }
+      .send-email-btn { top: 35px; left: 45px; width: 60px; height: 60px; }
+      .send-email-btn svg { width: 32px; height: 32px; }
       #btn-history { bottom: 30px; right: 40px; padding: 15px 30px; font-size: 1.2rem; }
     }
   </style>
@@ -159,6 +173,17 @@
         <input type="file" id="upload-file" multiple accept="image/*, application/pdf"> 
       </div>
 
+      <div class="upload-form-group" style="display: flex; flex-direction: row; gap: 15px;">
+        <div style="flex: 1;">
+          <label>Fecha de Creación:</label>
+          <input type="date" id="fecha-creacion" style="width: 100%; box-sizing: border-box;">
+        </div>
+        <div style="flex: 1;">
+          <label>Fecha de Vencimiento:</label>
+          <input type="date" id="fecha-vencimiento" style="width: 100%; box-sizing: border-box;">
+        </div>
+      </div>
+
       <button class="btn-submit" onclick="handleUpload()" id="btn-upload">Subir Archivos</button>
     </div>
   </div>
@@ -176,14 +201,33 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="email-modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeEmailModal()">&times;</span>
+      <h3 style="margin-top:0;">Enviar Documento</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">El documento actualmente visualizado será enviado al correo ingresado.</p>
+      
+      <div class="upload-form-group">
+        <label>Correo Electrónico:</label>
+        <input type="email" id="target-email" placeholder="ejemplo@correo.com">
+      </div>
+      <button class="btn-submit" id="btn-send-email" onclick="sendEmail()">Enviar Correo</button>
+    </div>
+  </div>
+
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <span class="close-lightbox-btn" onclick="closeLightbox()">&times;</span>
+    <div class="send-email-btn" onclick="event.stopPropagation(); openEmailModal()" title="Enviar por correo">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+      </svg>
+    </div>
     <img id="lightbox-img" src="" alt="Documento ampliado" onclick="event.stopPropagation()">
   </div>
 
   <script>
     let carteleraData = [];
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbxSlrs9zHDC9dDDlilhyH1s4LL4w2K9H0oTAW2pbAoUQLjiGmMVuCs3nmgKh2EAhb2Y/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbypsSbSP194UABFRsVsrF0XN8OaeZK7WUj-3triDEUem6gOO2QTqVl8r4-OFGv0bNHR/exec';
 
     let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, touchStartDist = 0, lastScale = 1;
 
@@ -361,6 +405,8 @@
       document.getElementById('new-title').value = '';
       document.getElementById('new-logo').value = '';
       document.getElementById('upload-file').value = '';
+      document.getElementById('fecha-creacion').value = '';
+      document.getElementById('fecha-vencimiento').value = '';
       document.getElementById('btn-upload').disabled = false;
       document.getElementById('upload-modal').style.display = 'flex';
       document.body.style.overflow = 'hidden';
@@ -376,6 +422,67 @@
       });
     }
 
+    /* =================================
+       LÓGICA PARA ENVIAR POR CORREO
+       ================================= */
+    function openEmailModal() {
+      document.getElementById('target-email').value = '';
+      document.getElementById('email-modal').style.display = 'flex';
+    }
+    
+    function closeEmailModal() { 
+      document.getElementById('email-modal').style.display = 'none'; 
+    }
+
+    function sendEmail() {
+      const email = document.getElementById('target-email').value.trim();
+      const imgUrl = document.getElementById('lightbox-img').src;
+      
+      if (!email || !email.includes('@')) {
+        showCustomAlert("Por favor ingresa un correo electrónico válido.");
+        return;
+      }
+      
+      setLoaderState('loading');
+      document.getElementById('btn-send-email').disabled = true;
+      
+      let payload = { action: 'sendEmail', email: email, url: imgUrl };
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => {
+            if(res.success) {
+              setLoaderState('success', 'Documento enviado con éxito.');
+              setTimeout(closeEmailModal, 2000);
+            } else {
+              setLoaderState('error', res.error);
+            }
+            document.getElementById('btn-send-email').disabled = false;
+          })
+          .withFailureHandler(err => {
+            setLoaderState('error', err.message);
+            document.getElementById('btn-send-email').disabled = false;
+          })
+          .enviarDocumentoPorCorreo(payload);
+      } else {
+        fetch(webAppUrl, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            setLoaderState('success', 'Documento enviado con éxito.');
+            setTimeout(closeEmailModal, 2000);
+          } else {
+            setLoaderState('error', res.error);
+          }
+          document.getElementById('btn-send-email').disabled = false;
+        })
+        .catch(err => {
+          setLoaderState('error', err.message);
+          document.getElementById('btn-send-email').disabled = false;
+        });
+      }
+    }
+
     // MANEJO DEL LOADER DINÁMICO
     function setLoaderState(state, msg) {
       const container = document.getElementById('loader-card-content');
@@ -385,7 +492,7 @@
           <svg class="status-icon loader-icon-blue spinner-anim" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <p class="loader-title">Verificando credenciales</p>
+          <p class="loader-title">Procesando</p>
           <p class="loader-subtitle">Por favor espere...</p>
         `;
         document.getElementById('custom-loader-modal').style.display = 'flex';
@@ -397,12 +504,14 @@
             <path d="M10.2 16.2l-3.6-3.6 1.4-1.4 2.2 2.2 5.8-5.8 1.4 1.4-7.2 7.2z" fill="#fff"/>
           </svg>
           <p class="loader-title" style="color: #7ac142;">¡Éxito!</p>
-          <p class="loader-subtitle">Archivos subidos exitosamente.</p>
+          <p class="loader-subtitle">${msg || 'Archivos subidos exitosamente.'}</p>
         `;
         setTimeout(() => {
           document.getElementById('custom-loader-modal').style.display = 'none';
-          closeUploadModal();
-          fetchData(true);
+          if(!msg || msg.includes('subidos')) {
+            closeUploadModal();
+            fetchData(true);
+          }
         }, 2000);
         
       } else if (state === 'error') {
@@ -411,7 +520,7 @@
             <circle cx="12" cy="12" r="12" fill="#e74c3c"/>
             <path d="M15.4 7.2l1.4 1.4-3.4 3.4 3.4 3.4-1.4 1.4-3.4-3.4-3.4 3.4-1.4-1.4 3.4-3.4-3.4-3.4 1.4-1.4 3.4 3.4 3.4-3.4z" fill="#fff"/>
           </svg>
-          <p class="loader-title" style="color: #e74c3c;">Error al subir</p>
+          <p class="loader-title" style="color: #e74c3c;">Error</p>
           <p class="loader-subtitle">${msg}</p>
           <button class="btn-alert" onclick="document.getElementById('custom-loader-modal').style.display='none'">Cerrar</button>
         `;
@@ -422,6 +531,8 @@
       const isNew = document.getElementById('is-new-item').checked;
       let titulo = ''; let idItem = ''; let logoData = null;
       const fileInput = document.getElementById('upload-file');
+      const fechaCreacion = document.getElementById('fecha-creacion').value;
+      const fechaVencimiento = document.getElementById('fecha-vencimiento').value;
 
       if (isNew) {
         idItem = document.getElementById('new-id').value.trim();
@@ -440,6 +551,11 @@
         if (fileInput.files.length === 0) { showCustomAlert("Por favor, selecciona al menos un archivo."); return; }
       }
 
+      if (fileInput.files.length > 0 && (!fechaCreacion || !fechaVencimiento)) {
+         showCustomAlert("Por favor, ingresa la fecha de creación y de vencimiento del documento.");
+         return;
+      }
+
       // 1. Mostrar estado Loading
       setLoaderState('loading');
       document.getElementById('btn-upload').disabled = true;
@@ -453,7 +569,15 @@
         }
       }
 
-      let payload = { titulo: titulo, files: filesData, isNew: isNew, id: idItem, logo: logoData };
+      let payload = { 
+        titulo: titulo, 
+        files: filesData, 
+        isNew: isNew, 
+        id: idItem, 
+        logo: logoData, 
+        fechaCreacion: fechaCreacion, 
+        fechaVencimiento: fechaVencimiento 
+      };
 
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         google.script.run
@@ -484,11 +608,13 @@
     window.onclick = function(event) {
       const modal = document.getElementById('modal');
       const uploadModal = document.getElementById('upload-modal');
+      const emailModal = document.getElementById('email-modal');
       const lightbox = document.getElementById('lightbox');
       const customAlert = document.getElementById('custom-alert-modal');
 
       if (event.target === modal && lightbox.style.display !== 'flex') closeModal();
       if (event.target === uploadModal) closeUploadModal();
+      if (event.target === emailModal) closeEmailModal();
       if (event.target === customAlert) closeCustomAlert();
     }
   </script>
