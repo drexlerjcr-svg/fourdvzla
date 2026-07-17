@@ -137,9 +137,43 @@
       .send-email-btn svg { width: 32px; height: 32px; }
       #btn-history { bottom: 30px; right: 40px; padding: 15px 30px; font-size: 1.2rem; }
     }
+
+    /* Cintillo Flotante (Ticker) */
+    #ticker-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      color: var(--primary-color);
+      padding: 8px 0;
+      z-index: 9999;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 30s linear infinite;
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: 0.5px;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
   </style>
 </head>
 <body>
+
+  <div id="ticker-container">
+    <div class="ticker-text" id="ticker-text">Cargando tasas...</div>
+  </div>
 
   <div class="upload-icon-btn" onclick="openUploadModal()" title="Subir Documentos">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -264,10 +298,46 @@
     let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, touchStartDist = 0, lastScale = 1;
 
     window.onload = function() {
+      fetchTickerData();
       fetchData(false);
       initTouchZoom();
-      setInterval(function() { fetchData(true); }, 15000);
+      setInterval(function() { fetchData(true); }, 20000);
     };
+
+    function fetchTickerData() {
+      fetch('https://ve.dolarapi.com/v1/dolares/oficial')
+        .then(response => response.json())
+        .then(data => {
+          const fecha = new Date(data.fechaActualizacion);
+          const dia = String(fecha.getDate()).padStart(2, '0');
+          const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+          const anio = fecha.getFullYear();
+          const fechaFormateada = `${dia}/${mes}/${anio}`;
+          
+          const baseText = `Actualización BCV: ${data.promedio}Bs - Fecha: ${fechaFormateada}`;
+          const separator = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+          
+          // Repetimos el mensaje en la cadena para llenar toda la pantalla y que el movimiento sea continuo
+          document.getElementById('ticker-text').innerHTML = Array(4).fill(baseText).join(separator);
+        })
+        .catch(error => console.error('Error obteniendo datos del BCV:', error));
+        
+      scheduleNextTickerUpdate();
+    }
+
+    function scheduleNextTickerUpdate() {
+      const now = new Date();
+      const nextUpdate = new Date(now);
+      nextUpdate.setHours(3, 0, 0, 0);
+      
+      // Si ya pasaron las 3 AM hoy, programamos la ejecución para las 3 AM de mañana
+      if (now.getTime() >= nextUpdate.getTime()) {
+        nextUpdate.setDate(nextUpdate.getDate() + 1);
+      }
+      
+      const timeToNextUpdate = nextUpdate.getTime() - now.getTime();
+      setTimeout(fetchTickerData, timeToNextUpdate);
+    }
 
     function fetchData(isSilent) {
       if (!isSilent) {
