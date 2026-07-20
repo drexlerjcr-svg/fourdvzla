@@ -297,84 +297,6 @@
 
     let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, touchStartDist = 0, lastScale = 1;
 
-    /* =================================
-       BASE DE DATOS INTERNA (IndexedDB)
-       ================================= */
-    const dbName = "CarteleraCacheDB";
-    function initDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(dbName, 1);
-        request.onupgradeneeded = event => {
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains('images')) {
-            db.createObjectStore('images');
-          }
-        };
-        request.onsuccess = event => resolve(event.target.result);
-        request.onerror = event => reject(event.target.error);
-      });
-    }
-
-    async function cacheImage(url) {
-      if (!url) return;
-      try {
-        const db = await initDB();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction('images', 'readonly');
-          const store = tx.objectStore('images');
-          const getReq = store.get(url);
-          getReq.onsuccess = async () => {
-            if (getReq.result) {
-              resolve(); 
-            } else {
-              try {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                  const base64data = reader.result;
-                  const db2 = await initDB();
-                  const tx2 = db2.transaction('images', 'readwrite');
-                  tx2.objectStore('images').put(base64data, url);
-                  tx2.oncomplete = () => resolve();
-                };
-                reader.readAsDataURL(blob);
-              } catch (e) { resolve(); } 
-            }
-          };
-          getReq.onerror = () => resolve();
-        });
-      } catch (e) { console.error("DB Error", e); }
-    }
-
-    async function getCachedImage(url) {
-      if (!url) return '';
-      try {
-        const db = await initDB();
-        return new Promise((resolve) => {
-          const tx = db.transaction('images', 'readonly');
-          const store = tx.objectStore('images');
-          const getReq = store.get(url);
-          getReq.onsuccess = () => {
-            if (getReq.result) resolve(getReq.result);
-            else resolve(url);
-          };
-          getReq.onerror = () => resolve(url);
-        });
-      } catch (e) { return url; }
-    }
-
-    async function cacheAllImages(data) {
-      for (const item of data) {
-        if (item.logo_url) cacheImage(item.logo_url);
-        if (item.documentos && item.documentos.length > 0) {
-          for (const docUrl of item.documentos) {
-             cacheImage(docUrl);
-          }
-        }
-      }
-    }
-
     window.onload = function() {
       fetchTickerData();
       fetchData(false);
@@ -382,36 +304,23 @@
       setInterval(function() { fetchData(true); }, 20000);
     };
 
-    function renderTickerData(data, isOffline = false) {
-      const fecha = new Date(data.fechaActualizacion);
-      const dia = String(fecha.getDate()).padStart(2, '0');
-      const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-      const anio = fecha.getFullYear();
-      const fechaFormateada = `${dia}/${mes}/${anio}`;
-      
-      let baseText = `Actualización BCV: ${data.promedio}Bs - Fecha: ${fechaFormateada}`;
-      if (isOffline) baseText += ' (Modo Offline)';
-      
-      const separator = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-      document.getElementById('ticker-text').innerHTML = Array(4).fill(baseText).join(separator);
-    }
-
     function fetchTickerData() {
       fetch('https://ve.dolarapi.com/v1/dolares/oficial')
         .then(response => response.json())
         .then(data => {
-          localStorage.setItem('bcvDataCache', JSON.stringify(data));
-          renderTickerData(data, false);
+          const fecha = new Date(data.fechaActualizacion);
+          const dia = String(fecha.getDate()).padStart(2, '0');
+          const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+          const anio = fecha.getFullYear();
+          const fechaFormateada = `${dia}/${mes}/${anio}`;
+          
+          const baseText = `Actualización BCV: ${data.promedio}Bs - Fecha: ${fechaFormateada}`;
+          const separator = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+          
+          // Repetimos el mensaje en la cadena para llenar toda la pantalla y que el movimiento sea continuo
+          document.getElementById('ticker-text').innerHTML = Array(4).fill(baseText).join(separator);
         })
-        .catch(error => {
-          console.error('Error obteniendo datos del BCV:', error);
-          const cachedBcv = localStorage.getItem('bcvDataCache');
-          if (cachedBcv) {
-            renderTickerData(JSON.parse(cachedBcv), true);
-          } else {
-            document.getElementById('ticker-text').innerHTML = "Sin conexión y sin datos en caché.";
-          }
-        });
+        .catch(error => console.error('Error obteniendo datos del BCV:', error));
         
       scheduleNextTickerUpdate();
     }
@@ -421,6 +330,7 @@
       const nextUpdate = new Date(now);
       nextUpdate.setHours(3, 0, 0, 0);
       
+      // Si ya pasaron las 3 AM hoy, programamos la ejecución para las 3 AM de mañana
       if (now.getTime() >= nextUpdate.getTime()) {
         nextUpdate.setDate(nextUpdate.getDate() + 1);
       }
@@ -435,58 +345,37 @@
         document.getElementById('card-container').innerHTML = '';
       }
       if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run.withSuccessHandler(data => {
-            localStorage.setItem('carteleraDataCache', JSON.stringify(data));
-            renderCards(data);
-        }).withFailureHandler(showError).getCarteleraData();
+        google.script.run.withSuccessHandler(renderCards).withFailureHandler(showError).getCarteleraData();
       } else {
         fetch(webAppUrl + '?json=true')
           .then(res => { if (!res.ok) throw new Error('Error de red'); return res.json(); })
-          .then(data => {
-             localStorage.setItem('carteleraDataCache', JSON.stringify(data));
-             renderCards(data);
-          })
-          .catch(err => {
-             const cachedData = localStorage.getItem('carteleraDataCache');
-             if (cachedData) {
-                renderCards(JSON.parse(cachedData));
-             } else {
-                showError(err);
-             }
-          });
+          .then(data => renderCards(data))
+          .catch(err => showError(err));
       }
     }
 
-    async function renderCards(data) {
+    function renderCards(data) {
       document.getElementById('loading').style.display = 'none';
       const container = document.getElementById('card-container');
       container.innerHTML = ''; 
       carteleraData = data;
 
-      // Guarda todas las imágenes en segundo plano silenciosamente
-      cacheAllImages(data);
-
-      for (let index = 0; index < data.length; index++) {
-        const item = data[index];
+      data.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'card';
         card.onclick = () => openModal(index);
-        const originalLogo = item.logo_url ? item.logo_url : 'https://via.placeholder.com/120?text=' + item.titulo;
-        
-        // Solicita a la base de datos si ya tiene esta imagen, si no, usa la URL
-        const logoSrc = await getCachedImage(originalLogo);
-        
-        card.innerHTML = `<img src="${logoSrc}" alt="Logo de ${item.titulo}"><h2>${item.titulo}</h2>`;
+        const logo = item.logo_url ? item.logo_url : 'https://via.placeholder.com/120?text=' + item.titulo;
+        card.innerHTML = `<img src="${logo}" alt="Logo de ${item.titulo}"><h2>${item.titulo}</h2>`;
         container.appendChild(card);
-      }
+      });
     }
 
-    function showError(err) { document.getElementById('loading').innerText = "Error: " + err.message + ". Comprueba tu conexión."; }
+    function showError(err) { document.getElementById('loading').innerText = "Error: " + err.message; }
 
     /* =================================
        LÓGICA DEL MODAL VER DOCUMENTOS
        ================================= */
-    async function openModal(index) {
+    function openModal(index) {
       const item = carteleraData[index];
       document.getElementById('modal-title').innerText = item.titulo;
       
@@ -503,9 +392,9 @@
         noDocMsg.style.display = 'none';
         latestImg.style.display = 'block';
         
-        // Muestra la imagen principal procesada por IndexedDB
+        // Muestra la imagen principal (el más nuevo)
         const latestDocUrl = item.documentos[item.documentos.length - 1];
-        latestImg.src = await getCachedImage(latestDocUrl);
+        latestImg.src = latestDocUrl;
         latestImg.onclick = function() { openLightbox(latestDocUrl); };
         
         // Muestra el botón de historial (ubicado abajo a la derecha por CSS)
@@ -520,7 +409,7 @@
       document.getElementById('modal').style.display = 'flex';
     }
 
-    async function showHistory(index) {
+    function showHistory(index) {
       const item = carteleraData[index];
       const latestImg = document.getElementById('latest-doc-img');
       const btnHistory = document.getElementById('btn-history');
@@ -535,21 +424,18 @@
       // Muestra el histórico invirtiendo el orden (más nuevos primero)
       const reversedDocs = [...item.documentos].reverse();
       
-      for (const docUrl of reversedDocs) {
+      reversedDocs.forEach(docUrl => {
         const img = document.createElement('img');
-        img.src = await getCachedImage(docUrl); 
-        img.title = "Haz clic para ampliar";
+        img.src = docUrl; img.title = "Haz clic para ampliar";
         img.onclick = function() { openLightbox(docUrl); };
         gallery.appendChild(img);
-      }
+      });
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; document.body.style.overflow = ''; }
     
-    async function openLightbox(imgUrl) { 
-      const lightboxImg = document.getElementById('lightbox-img');
-      lightboxImg.src = await getCachedImage(imgUrl);
-      lightboxImg.setAttribute('data-original-url', imgUrl); // Guarda el URL real para enviar por correo
+    function openLightbox(imgUrl) { 
+      document.getElementById('lightbox-img').src = imgUrl; 
       document.getElementById('lightbox').style.display = 'flex'; 
       document.body.style.overflow = 'hidden'; 
     }
@@ -557,9 +443,7 @@
     function closeLightbox() { 
       document.getElementById('lightbox').style.display = 'none'; 
       const img = document.getElementById('lightbox-img');
-      img.src = ''; 
-      img.removeAttribute('data-original-url');
-      img.style.transform = '';
+      img.src = ''; img.style.transform = '';
       scale = 1; pointX = 0; pointY = 0;
       if (document.getElementById('modal').style.display !== 'flex') document.body.style.overflow = '';
     }
@@ -654,9 +538,7 @@
 
     function sendEmail() {
       const email = document.getElementById('target-email').value.trim();
-      // Extrae la URL original si está disponible (necesario si la imagen se cargó desde la BD en base64)
-      const lightboxImg = document.getElementById('lightbox-img');
-      const imgUrl = lightboxImg.getAttribute('data-original-url') || lightboxImg.src;
+      const imgUrl = document.getElementById('lightbox-img').src;
       
       if (!email || !email.includes('@')) {
         showCustomAlert("Por favor ingresa un correo electrónico válido.");
