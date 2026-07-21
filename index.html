@@ -1,1008 +1,724 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sala de Mando Operativa - Monitoreo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-
-    <style>
-        :root {
-            --primary: #1e3a8a;
-            --primary-light: #2d4fa3;
-            --accent: #3b82f6;
-            --accent-light: #60a5fa;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --purple: #8b5cf6;
-            --bg: #dce8f7;
-            --bg2: #c8dbf0;
-            --white: #ffffff;
-            --text: #1e293b;
-            --muted: #64748b;
-            --shadow: 0 8px 32px rgba(30,58,138,0.13);
-            --glass-bg: rgba(255,255,255,0.55);
-            --glass-border: rgba(255,255,255,0.75);
-            --glass-shadow: 0 8px 32px rgba(30,58,138,0.12), 0 1.5px 0 rgba(255,255,255,0.9) inset;
-            --glass-blur: blur(18px) saturate(180%);
-            --sidebar-glass: rgba(255,255,255,0.6);
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
-            background: var(--bg);
-            margin: 0;
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* === ANIMATED BACKGROUND BLOBS === */
-        body::before, body::after {
-            content: '';
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: 0;
-            pointer-events: none;
-        }
-        body::before {
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, rgba(30,58,138,0.12) 60%, transparent 100%);
-            top: -150px; left: -100px;
-            animation: blobMove1 12s ease-in-out infinite alternate;
-        }
-        body::after {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(139,92,246,0.18) 0%, rgba(59,130,246,0.1) 60%, transparent 100%);
-            bottom: -100px; right: -80px;
-            animation: blobMove2 15s ease-in-out infinite alternate;
-        }
-        @keyframes blobMove1 { from { transform: translate(0,0) scale(1); } to { transform: translate(80px,60px) scale(1.15); } }
-        @keyframes blobMove2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-60px,-50px) scale(1.2); } }
-
-        .blob-extra {
-            position: fixed;
-            width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
-            top: 40%; left: 45%;
-            border-radius: 50%;
-            filter: blur(70px);
-            pointer-events: none;
-            z-index: 0;
-            animation: blobMove3 18s ease-in-out infinite alternate;
-        }
-        @keyframes blobMove3 { from { transform: translate(0,0); } to { transform: translate(-40px,80px); } }
-
-        .app-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ===== SIDEBAR & NAVBAR (ESCRITORIO) ===== */
-        .sidebar {
-            width: 270px;
-            min-width: 270px;
-            background: rgba(255,255,255,0.62);
-            backdrop-filter: blur(24px) saturate(200%);
-            -webkit-backdrop-filter: blur(24px) saturate(200%);
-            border-right: 1.5px solid rgba(255,255,255,0.8);
-            box-shadow: 4px 0 32px rgba(30,58,138,0.10), 1px 0 0 rgba(255,255,255,0.9) inset;
-            display: flex;
-            flex-direction: column;
-            z-index: 1001;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .sidebar.collapsed { margin-left: -270px; }
-
-        .sidebar-header {
-            padding: 18px 20px;
-            background: linear-gradient(135deg, rgba(30,58,138,0.92) 0%, rgba(59,130,246,0.85) 100%);
-            backdrop-filter: blur(16px);
-            color: white;
-            font-weight: 800;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            letter-spacing: 0.08em;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        .sidebar-header i { cursor: pointer; transition: transform 0.2s; }
-        .sidebar-header i:hover { transform: scale(1.15); }
-
-        .sidebar-content { 
-            display: flex; flex-direction: column; flex-grow: 1; 
-            padding: 10px 0 0; overflow: hidden; 
-        }
-        
-        .nav-main-items { display: flex; flex-direction: column; }
-        .states-wrapper { 
-            display: flex; flex-direction: column; flex-grow: 1; 
-            overflow-y: auto; padding-bottom: 10px; margin-top: 5px; 
-        }
-        .states-wrapper::-webkit-scrollbar { width: 4px; }
-        .states-wrapper::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.3); border-radius: 4px; }
-        
-        .sidebar-footer-btn { 
-            padding: 10px 0; border-top: 1px solid rgba(0,0,0,0.06); 
-            background: rgba(255,255,255,0.3); 
-        }
-        
-        .mobile-states-btn { display: none !important; }
-        .mobile-logout-btn { display: none !important; }
-
-        .state-item {
-            padding: 10px 16px;
-            margin: 3px 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--muted);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-        .state-item:hover {
-            background: rgba(59,130,246,0.1);
-            border-color: rgba(59,130,246,0.2);
-            color: var(--primary);
-        }
-        .state-item.active {
-            background: linear-gradient(135deg, rgba(30,58,138,0.88) 0%, rgba(59,130,246,0.82) 100%);
-            backdrop-filter: blur(12px);
-            color: white;
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 4px 14px rgba(30,58,138,0.25);
-        }
-        .state-item i { margin-right: 8px; font-size: 0.75rem; }
-        
-        .text-danger { color: #ef4444 !important; }
-        .text-danger:hover { background: rgba(239, 68, 68, 0.08) !important; border-color: rgba(239, 68, 68, 0.2) !important; color: #ef4444 !important;}
-
-        /* ===== LIQUID NAVBAR RESPONSIVO (MÓVIL) ===== */
-        @media (max-width: 768px) {
-            .sidebar { 
-                position: fixed; 
-                bottom: 20px; 
-                left: 50%; 
-                transform: translateX(-50%);
-                height: auto; 
-                width: 94%; 
-                max-width: 450px; 
-                min-width: unset;
-                flex-direction: row; 
-                border-radius: 24px;
-                background: var(--glass-bg);
-                backdrop-filter: var(--glass-blur);
-                -webkit-backdrop-filter: var(--glass-blur);
-                border: 1px solid var(--glass-border);
-                box-shadow: var(--glass-shadow);
-                margin: 0; 
-                padding: 8px 10px;
-                z-index: 10000;
-            }
-            .sidebar.collapsed { margin-left: 0; }
-            .sidebar-header { display: none; }
-            
-            .sidebar-content { 
-                flex-direction: row; width: 100%; overflow: visible; padding: 0; align-items: center; justify-content: space-between;
-            }
-            
-            .nav-main-items { 
-                display: flex; flex-direction: row; flex-grow: 1; justify-content: space-between; align-items: center; width: 100%;
-            }
-            
-            /* Controles de display móvil/escritorio */
-            .sidebar-footer-btn.desktop-logout-btn { display: none !important; }
-            .mobile-states-btn { display: flex !important; }
-            .mobile-logout-btn { display: flex !important; }
-            
-            /* Botones del Navbar inferior unificados */
-            .sidebar-content .state-item { 
-                margin: 0 2px; padding: 8px 6px; border-radius: 14px; flex: 1; text-align: center; justify-content: center;
-            }
-            .sidebar-content .state-item span {
-                display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; font-size: 0.60rem;
-            }
-            .sidebar-content .state-item i { margin-right: 0; font-size: 1.15rem; }
-
-            /* Panel emergente de Estados */
-            .states-wrapper {
-                display: none;
-                position: absolute;
-                bottom: 85px; 
-                left: 50%; 
-                transform: translateX(-50%);
-                width: 92%; 
-                max-height: 55vh; 
-                background: var(--glass-bg);
-                backdrop-filter: var(--glass-blur);
-                -webkit-backdrop-filter: var(--glass-blur);
-                border: 1px solid var(--glass-border);
-                border-radius: 18px;
-                box-shadow: 0 -10px 40px rgba(30,58,138,0.25);
-                padding: 12px; 
-                flex-direction: column;
-                z-index: 10001;
-            }
-            .states-wrapper.show {
-                display: flex;
-                animation: popUpStates 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
-            }
-            @keyframes popUpStates {
-                from { opacity: 0; transform: translate(-50%, 15px) scale(0.95); }
-                to { opacity: 1; transform: translate(-50%, 0) scale(1); }
-            }
-            /* Restablecer estilo de items de estado dentro del panel emergente */
-            .states-wrapper .state-item {
-                margin: 4px 0; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.6); flex: none; justify-content: flex-start;
-            }
-            .states-wrapper .state-item span {
-                flex-direction: row; justify-content: flex-start; font-size: 0.85rem;
-            }
-            .states-wrapper .state-item i { margin-right: 12px; font-size: 1rem; }
-
-            .main-view { padding-bottom: 120px; }
-        }
-
-        /* ===== MAIN VIEW ===== */
-        .main-view {
-            flex-grow: 1;
-            padding: 22px 24px;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            position: relative;
-            z-index: 1;
-        }
-        .main-view::-webkit-scrollbar { width: 5px; }
-        .main-view::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.25); border-radius: 4px; }
-
-        .floating-toggle {
-            position: fixed;
-            top: 16px; left: 16px;
-            z-index: 999;
-            background: rgba(30,58,138,0.85);
-            backdrop-filter: blur(12px);
-            color: white;
-            border: 1.5px solid rgba(255,255,255,0.25);
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 16px rgba(30,58,138,0.3);
-        }
-
-        /* ===== BANNER ===== */
-        .banner {
-            background: linear-gradient(135deg, rgba(30,58,138,0.88) 0%, rgba(59,130,246,0.78) 100%);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            color: white;
-            padding: 24px 28px;
-            border-radius: 18px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255,255,255,0.22);
-            box-shadow: 0 8px 32px rgba(30,58,138,0.22), 0 1px 0 rgba(255,255,255,0.3) inset;
-            position: relative;
-            overflow: hidden;
-        }
-        .banner::before {
-            content: '';
-            position: absolute;
-            top: -50%; right: -10%;
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .banner h1 {
-            margin: 0;
-            font-size: 1.55rem;
-            text-transform: uppercase;
-            font-weight: 900;
-            letter-spacing: 0.06em;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .banner-sub {
-            font-size: 0.78rem;
-            opacity: 0.85;
-            margin-top: 4px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-        }
-
-        .calendar-box {
-            margin-top: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(8px);
-            padding: 7px 14px;
-            border-radius: 10px;
-            width: fit-content;
-            border: 1px solid rgba(255,255,255,0.28);
-        }
-        .calendar-box span { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-        .calendar-box input {
-            background: rgba(255,255,255,0.92);
-            border: none;
-            border-radius: 6px;
-            padding: 4px 9px;
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 0.82rem;
-            color: var(--primary);
-            outline: none;
-            cursor: pointer;
-            width: 105px;
-        }
-
-        @media (max-width: 768px) {
-            .banner { padding-top: 24px; text-align: center; }
-            .floating-toggle { display: none !important; }
-            .calendar-box { margin: 14px auto 0; }
-        }
-
-        /* ===== GRID & CARDS ===== */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .card {
-            background: rgba(255,255,255,0.58);
-            backdrop-filter: blur(18px) saturate(180%);
-            -webkit-backdrop-filter: blur(18px) saturate(180%);
-            padding: 18px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.78);
-            box-shadow: 0 6px 24px rgba(30,58,138,0.10), 0 1px 0 rgba(255,255,255,0.95) inset;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .card::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(30,58,138,0.16), 0 1px 0 rgba(255,255,255,0.95) inset;
-        }
-        .card[onclick] { cursor: pointer; }
-
-        .card-label { font-size: 0.62rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
-        .card-val { font-size: 1.75rem; font-weight: 900; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1; }
-
-        /* ===== CHARTS ===== */
-        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
-        @media (max-width: 768px) { .charts-row { grid-template-columns: 1fr; } }
-
-        .chart-container {
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.75);
-            box-shadow: 0 6px 24px rgba(30,58,138,0.09), 0 1px 0 rgba(255,255,255,0.9) inset;
-            display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;
-        }
-        .chart-container::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-        }
-        .chart-container h3 { font-size: 0.7rem; margin: 0 0 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
-        .chart-box { position: relative; width: 100%; max-width: 240px; aspect-ratio: 1 / 1; }
-
-        /* ===== RANKING / TIPOLOGIA ===== */
-        .ranking-card {
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            padding: 22px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.75);
-            box-shadow: 0 6px 24px rgba(30,58,138,0.09), 0 1px 0 rgba(255,255,255,0.9) inset; margin-bottom: 28px; position: relative; overflow: hidden;
-        }
-        .ranking-card::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-        }
-        .ranking-item { margin-bottom: 14px; }
-        .ranking-item:last-child { margin-bottom: 0; }
-        .ranking-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
-        .bar-container { height: 8px; background: rgba(30,58,138,0.08); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); }
-        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 1s ease; border-radius: 6px; }
-
-        .section-title {
-            font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase;
-            letter-spacing: 0.08em; margin: 28px 0 16px; display: flex; align-items: center; gap: 10px;
-        }
-        .section-title::before {
-            content: ''; width: 4px; height: 16px; background: linear-gradient(180deg, var(--warning), var(--accent));
-            border-radius: 3px; flex-shrink: 0;
-        }
-
-        /* ====================================
-           AUTH & VERIFY OVERLAYS
-        ==================================== */
-        #auth-overlay, #verify-overlay { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; z-index: 5000; }
-        #auth-overlay { background-image: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 1px), linear-gradient(135deg, #c8daf0 0%, #dce8f7 50%, #c5d5ee 100%); background-size: 24px 24px, 100% 100%; }
-        #verify-overlay { background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(8px); display: none; z-index: 6000; }
-        #verify-overlay.active { display: flex; }
-
-        .auth-card {
-            background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(35px) saturate(210%);
-            padding: 45px 35px; border-radius: 20px; text-align: center; width: 90%; max-width: 380px;
-            border: 1.5px solid rgba(255, 255, 255, 0.85); box-shadow: 0 25px 60px rgba(30, 58, 138, 0.22), 0 0 40px rgba(59, 130, 246, 0.1) inset; position: relative; z-index: 1; overflow: hidden;
-        }
-        .auth-logo { width: 125px; margin-bottom: 20px; }
-        .auth-card h2 { font-size: 1.15rem; color: var(--primary); margin: 0 0 6px; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .auth-subtitle { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 30px; font-weight: 700; display: block; }
-        .cyber-input-wrapper { position: relative; margin-bottom: 25px; }
-        .pin-input { width: 100%; padding: 16px 16px 16px 46px; font-size: 1.4rem; text-align: center; border-radius: 12px; font-family: 'Share Tech Mono', monospace; font-weight: 700; color: var(--primary); }
-        .auth-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; font-weight: 800; cursor: pointer; }
-
-        .verify-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(32px) saturate(220%); border: 1.5px solid rgba(255,255,255,0.88); border-radius: 22px; padding: 38px 40px; text-align: center; width: 90%; max-width: 320px; }
-        .verify-icon-wrap { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 1.7rem; }
-        .verify-title { font-size: 1.05rem; font-weight: 800; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin-bottom: 6px; }
-        .verify-sub { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
-
-        /* ===========================
-           MODAL — MULTINIVEL
-        =========================== */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(30,58,138,0.4);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px;
-        }
-        .modal-card {
-            background: rgba(255,255,255,0.95); width: 95%; max-width: 1200px; height: 85vh;
-            border-radius: 16px; overflow: hidden; box-shadow: 0 24px 60px rgba(30,58,138,0.3);
-            animation: modalIn 0.3s ease; display: flex; flex-direction: column;
-        }
-        @keyframes modalIn {
-            from { transform: translateY(18px) scale(0.97); opacity: 0; }
-            to   { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        .modal-header { padding: 16px 22px; background: #3b82f6; color: white; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .modal-header h3 { margin: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 800; }
-        .close-modal { cursor: pointer; font-size: 1.1rem; opacity: 0.85; transition: opacity 0.2s; }
-        .close-modal:hover { opacity: 1; }
-
-        /* Escritorio: Distribución de Columnas */
-        .modal-content-wrapper {
-            display: flex; flex-direction: row; flex-grow: 1; overflow: hidden; background: #f8fafc; scroll-behavior: smooth;
-        }
-        .modal-col {
-            flex: 1; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; border-right: 1px solid rgba(0,0,0,0.06);
-        }
-        .modal-col:last-child { flex: 1.5; border-right: none; background: #eef2f6; } /* Más espacio para detalles en escritorio */
-        .modal-col::-webkit-scrollbar { width: 4px; }
-        .modal-col::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.2); border-radius: 4px; }
-
-        /* === SISTEMA GRID PARA LA INFORMACIÓN (HORIZONTAL EN PC, VERTICAL EN MÓVIL) === */
-        .detail-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-        .detail-item { padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); }
-
-        /* Móvil: Distribución Vertical */
-        @media (max-width: 768px) {
-            .modal-overlay { padding: 10px; align-items: flex-end; }
-            .modal-card {
-                height: 90vh; width: 100%; border-radius: 20px 20px 0 0; animation: modalSlideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            @keyframes modalSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-            
-            .modal-content-wrapper { flex-direction: column; overflow-y: auto; }
-            .modal-col {
-                flex: none; min-height: 240px; border-right: none; border-bottom: 2px solid rgba(0,0,0,0.08); padding: 20px 18px; overflow-y: visible;
-            }
-            .modal-col:last-child { border-bottom: none; min-height: 350px; }
-
-            /* Información colapsa a lista vertical en teléfono */
-            .detail-grid { grid-template-columns: 1fr; } 
-        }
-
-        .selection-label { font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 16px; display: block; }
-        .checklist-container { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; }
-        .check-item {
-            background: white; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 20px; font-size: 0.78rem;
-            cursor: pointer; transition: all 0.2s; font-weight: 600; color: var(--text); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .check-item:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.05); }
-        .check-item.selected { background: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 4px 10px rgba(59,130,246,0.25); }
-        .check-item-alt { border-color: rgba(139, 92, 246, 0.3); background: white; color: var(--purple); }
-        .check-item-alt:hover { border-color: var(--purple); background: rgba(139, 92, 246, 0.05); }
-        .check-item-alt.selected { background: var(--purple); color: white; border-color: var(--purple); box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25); }
-        
-        .flatpickr-calendar { box-shadow: 0 12px 40px rgba(30,58,138,0.18) !important; border-radius: 14px !important; overflow: hidden; }
-    </style>
-</head>
-<body>
-<div class="blob-extra"></div>
-
-<div id="auth-overlay">
-    <div class="auth-card">
-        <img src="https://i.ibb.co/v4pPWh2s/sundde.png" alt="Logo Sundde" class="auth-logo">
-        <h2>Programación y Monitoreo</h2>
-        <span class="auth-subtitle">Sala de Mando Operativa</span>
-        <div class="cyber-input-wrapper">
-            <input type="password" id="pin-input" class="pin-input" placeholder="CÓDIGO" maxlength="6">
-        </div>
-        <button onclick="checkAuth()" class="auth-btn">INGRESAR</button>
-    </div>
-</div>
-
-<div id="verify-overlay">
-    <div class="verify-card state-pending" id="verify-card">
-        <div class="verify-icon-wrap" id="verify-icon"><i class="fas fa-sync-alt" id="verify-icon-i"></i></div>
-        <div class="verify-title" id="verify-title">Verificando código</div>
-        <div class="verify-sub" id="verify-sub">Por favor espere...</div>
-    </div>
-</div>
-
-<!-- ===== MODAL MULTINIVEL ===== -->
-<div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <h3 id="modal-title">ESTATUS: CERRADA</h3>
-            <i class="fas fa-times close-modal" onclick="closeModal()"></i>
-        </div>
-        
-        <div class="modal-content-wrapper">
-            <!-- Columna 1 -->
-            <div class="modal-col" style="background: #ffffff;" id="col-sujetos">
-                <span class="selection-label">1. SELECCIONE EL SUJETO</span>
-                <div id="modal-checklist-sujetos" class="checklist-container"></div>
-            </div>
-
-            <!-- Columna 2 -->
-            <div class="modal-col" style="background: #f8fafc;" id="col-denuncias">
-                <span class="selection-label" style="color:var(--purple);">2. SELECCIONE EL CASO</span>
-                <div id="modal-checklist-denuncias" class="checklist-container"></div>
-            </div>
-
-            <!-- Columna 3 -->
-            <div class="modal-col" id="col-detalles">
-                <div id="modal-body" style="height: 100%;"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="app-container" id="app">
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header"><i class="fas fa-bars" onclick="toggleSidebar()"></i><span>ESTADOS</span></div>
-        <div class="sidebar-content" id="sidebar-list">
-            <!-- Renderizado desde JS -->
-        </div>
-    </aside>
-
-    <button class="floating-toggle" id="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-
-    <main class="main-view" id="main-scroll">
-        <div class="banner">
-            <h1 id="view-title">VENEZUELA</h1>
-            <div id="date-info" class="banner-sub">CONECTANDO...</div>
-            <div class="calendar-box" id="cal-box">
-                <span><i class="fas fa-calendar-day"></i> Fecha:</span>
-                <input type="text" id="global-date-filter" placeholder="Seleccione...">
-            </div>
-        </div>
-
-        <div id="dynamic-content">
-            <div class="section-title" id="sec-indicadores">Indicadores a destacar</div>
-            <div id="grid-criticos" class="grid"></div>
-
-            <div id="full-nacional-content">
-                <div class="section-title">Estatus del Flujo</div>
-                <div id="grid-estatus" class="grid"></div>
-                <div class="section-title">Procesos de Campo e Inspeccion</div>
-                <div id="grid-procesos" class="grid"></div>
-                <div class="section-title">Asignacion de Fiscales y Dependencias</div>
-                <div id="grid-fiscales" class="grid"></div>
-                <div class="section-title">Analisis Visual de Gestion</div>
-                <div class="charts-row">
-                    <div class="chart-container"><h3>Atencion vs Pendientes</h3><div class="chart-box"><canvas id="chartAtencion"></canvas></div></div>
-                    <div class="chart-container"><h3>Asignacion de Fiscales</h3><div class="chart-box"><canvas id="chartFiscales"></canvas></div></div>
-                </div>
-                <div class="section-title">Tipologia</div>
-                <div id="tipology-container" class="ranking-card"></div>
-                 <div id="ranking-section">
-                    <div class="section-title">Eficiencia por Estados (Top 10)</div>
-                    <div id="ranking-container" class="ranking-card"></div>
-                </div>
-            </div>
-
-            <div id="sede-extra-content" style="display:none;">
-                <div class="section-title">Tipologia Sede Central</div>
-                <div id="tipology-container-sede" class="ranking-card"></div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbypsSbSP194UABFRsVsrF0XN8OaeZK7WUj-3triDEUem6gOO2QTqVl8r4-OFGv0bNHm/exec";
-
-    let allFetched = [];
-    let sedeData = [];
-    let currentModalData = [];
-    let chartA, chartF;
-    let selectedDateGlobal = "";
-    let lastNacionalDate = "";
-    let fp;
-
-    document.getElementById('pin-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkAuth(); });
-
-    function toggleSidebar() {
-        const sb = document.getElementById('sidebar');
-        sb.classList.toggle('collapsed');
-        document.getElementById('menu-btn').style.display = sb.classList.contains('collapsed') ? 'flex' : (window.innerWidth > 768 ? 'none' : 'flex');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartelera Fiscal</title>
+  <style>
+    :root {
+      --primary-color: #F8D51B;
+      --bg-gradient: url('https://i.ibb.co/fzVxRKM2/canguro.jpg') repeat;
     }
-
-    function toggleMobileStates() {
-        document.getElementById('states-wrapper').classList.toggle('show');
+    body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg-gradient); color: var(--primary-color); min-height: 100vh; padding: 20px; box-sizing: border-box; }
+    
+    /* Tarjeta para el encabezado */
+    .header-card {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 25px 20px;
+      max-width: 650px;
+      margin: 20px auto 40px auto;
+      text-align: center;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
     }
-
-    function logout() {
-        document.getElementById('pin-input').value = '';
-        document.getElementById('app').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('auth-overlay').style.display = 'flex';
-        }, 600);
-        
-        if (window.innerWidth <= 768) {
-            document.getElementById('states-wrapper').classList.remove('show');
-        }
+    .header-card h1 {
+      margin: 0 0 10px 0;
+      font-size: 2.3rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
-
-    function showVerify(state, title, sub) {
-        const overlay = document.getElementById('verify-overlay');
-        const card = document.getElementById('verify-card');
-        const iconI = document.getElementById('verify-icon-i');
-        card.className = 'verify-card state-' + state;
-        const icons = { pending: 'fa-sync-alt', success: 'fa-check', error: 'fa-times' };
-        iconI.className = 'fas ' + icons[state];
-        document.getElementById('verify-title').textContent = title;
-        document.getElementById('verify-sub').innerHTML = sub;
-        overlay.classList.add('active');
+    .header-card .header-info {
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.5;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     }
     
-    function hideVerify() { document.getElementById('verify-overlay').classList.remove('active'); }
+    /* Botón flotante para subir archivos */
+    .upload-icon-btn {
+      position: absolute; top: 25px; right: 30px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; width: 50px; height: 50px;
+      display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100;
+    }
+    .upload-icon-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+    .upload-icon-btn svg { width: 28px; height: 28px; color: #fff; }
 
-    async function checkAuth() {
-        const pinInput = document.getElementById('pin-input').value;
-        if (!pinInput) { alert("Código requerido"); return; }
-        showVerify('pending', 'Verificando credenciales', 'Por favor espere...');
-        try {
-            await init(pinInput);
-            showVerify('success', 'Acceso concedido', 'Bienvenido al sistema');
-            setTimeout(() => { hideVerify(); document.getElementById('auth-overlay').style.display = 'none'; document.getElementById('app').style.opacity = '1'; }, 900);
-        } catch (error) {
-            showVerify('error', 'Acceso denegado', 'Credenciales invalidas');
-            setTimeout(() => { hideVerify(); }, 2000);
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; transition: all 0.3s ease; }
+    .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 30px; text-align: center; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3); }
+    .card:hover { transform: translateY(-10px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.5); background: rgba(255, 255, 255, 0.15); }
+    .card img { max-width: 120px; height: 100px; object-fit: contain; margin-bottom: 20px; border-radius: 10px; }
+    .card h2 { margin: 0; font-size: 1.5rem; }
+
+    /* Modales */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+    .modal-content { background: rgba(255, 255, 255, 0.95); color: #333; padding: 30px; border-radius: 20px; max-width: 800px; width: 100%; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: modalFadeIn 0.3s ease; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto;}
+    @keyframes modalFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #666; transition: color 0.2s; z-index: 10; }
+    .close-btn:hover { color: #e74c3c; }
+
+    /* Estilos del Modal de Subida */
+    #upload-modal .modal-content { max-width: 500px; }
+    .upload-form-group { margin-bottom: 20px; display: flex; flex-direction: column; text-align: left;}
+    .upload-form-group label { font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
+    .upload-form-group select, .upload-form-group input { padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; }
+    .btn-submit { background: #2980b9; color: white; border: none; padding: 12px 20px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; margin-top: 10px; }
+    .btn-submit:hover:not(:disabled) { background: #1f6391; }
+    .btn-submit:disabled { cursor: not-allowed; opacity: 0.6; }
+
+    /* Último Documento y Botón Histórico Abajo a la Derecha */
+    #latest-doc-img { max-width: 100%; max-height: 55vh; object-fit: contain; border-radius: 10px; cursor: zoom-in; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s; margin: 0 auto;}
+    #latest-doc-img:hover { transform: scale(1.02); }
+    #btn-history { position: absolute; bottom: 20px; right: 30px; background: #2980b9; color: white; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 10; }
+    #btn-history:hover { background: #1f6391; }
+
+    /* Nuevo Loader Dinámico (Spinner, Check y Cross) */
+    #custom-loader-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(180, 190, 205, 0.6); backdrop-filter: blur(4px); z-index: 5000; justify-content: center; align-items: center; }
+    .loader-card { background: #ffffff; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.15); min-width: 280px; animation: zoomIn 0.3s ease; }
+    
+    .spinner-anim { animation: spin 1s linear infinite; }
+    .status-icon { width: 55px; height: 55px; margin: 0 auto 15px auto; display: block; }
+    .loader-icon-blue { color: #2962ff; }
+    
+    .loader-title { font-weight: 700; font-size: 1.3rem; color: #1a1a1a; margin: 0 0 8px 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+    .loader-subtitle { color: #666; margin: 0; font-size: 1rem; font-family: 'Segoe UI', Roboto, sans-serif; }
+    .btn-alert { background: #2980b9; color: white; border: none; padding: 10px 25px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; transition: background 0.3s; font-weight: bold; margin-top: 20px;}
+    .btn-alert:hover { background: #1f6391; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Alerta Personalizada (Card normal) */
+    #custom-alert-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 6000; justify-content: center; align-items: center; padding: 20px; }
+    #custom-alert-modal .modal-content { max-width: 400px; text-align: center; background: #fff; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: zoomIn 0.2s ease; }
+    #custom-alert-modal h3 { margin-top: 0; color: #e74c3c; font-size: 1.5rem; margin-bottom: 15px;}
+
+    /* Galería */
+    .doc-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; overflow-y: auto; padding: 10px 0; margin-top: 20px; }
+    .doc-gallery img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: zoom-in; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s; }
+    .doc-gallery img:hover { transform: scale(1.05); }
+
+    /* Lightbox (Zoom Optimizado) */
+    .lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 2000; justify-content: center; align-items: center; cursor: zoom-out; overflow: hidden; }
+    .close-lightbox-btn { position: absolute; top: 25px; right: 35px; font-size: 3.5rem; color: #ffffff; cursor: pointer; z-index: 2010; text-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: color 0.3s; }
+    .close-lightbox-btn:hover { color: #e74c3c; }
+
+    /* Nuevo Botón Enviar Email */
+    .send-email-btn { position: absolute; top: 25px; left: 35px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 2010; }
+    .send-email-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); color: #2980b9; }
+    .send-email-btn svg { width: 24px; height: 24px; color: #fff; transition: color 0.2s;}
+    .send-email-btn:hover svg { color: #2980b9; }
+
+    .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.8); animation: zoomIn 0.3s ease; transition: transform 0.1s ease-out; transform-origin: center center; will-change: transform; transform: translateZ(0); }
+    @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    #loading { text-align: center; font-size: 1.5rem; margin-top: 50px; }
+
+    /* Modal de Correo Electrónico */
+    #email-modal { z-index: 3000; }
+    #email-modal .modal-content { max-width: 400px; text-align: center; }
+
+    /* Media Queries */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body { padding: 10px; } .header-card { padding: 15px; margin-bottom: 20px; } .header-card h1 { font-size: 1.8rem; } .header-card .header-info { font-size: 0.95rem; }
+      .upload-icon-btn { top: 10px; right: 15px; width: 40px; height: 40px; }
+      .grid-container { gap: 15px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .card { padding: 15px; border-radius: 15px; } .card img { max-width: 80px; height: 60px; margin-bottom: 10px; } .card h2 { font-size: 1.1rem; }
+      .modal-content { padding: 20px; max-height: 90vh; } .doc-gallery { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; } .doc-gallery img { height: 120px; }
+      .close-lightbox-btn { top: 15px; right: 25px; font-size: 2.5rem; }
+      .send-email-btn { top: 15px; left: 25px; width: 40px; height: 40px; }
+      #btn-history { bottom: 10px; right: 15px; padding: 8px 15px; font-size: 0.9rem; }
+    }
+    @media (min-width: 1500px) {
+      .grid-container { max-width: 95%; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; }
+      .header-card { max-width: 850px; padding: 35px 30px; } .header-card h1 { font-size: 3.5rem; } .header-card .header-info { font-size: 1.5rem; }
+      .card { padding: 45px 30px; border-radius: 25px; } .card img { max-width: 180px; height: 140px; margin-bottom: 25px; } .card h2 { font-size: 1.9rem; }
+      .modal-content { max-width: 1200px; padding: 40px; } .modal-content h2 { font-size: 2.2rem; } .doc-gallery { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; } .doc-gallery img { height: 280px; }
+      .close-lightbox-btn { top: 35px; right: 45px; font-size: 4.5rem; }
+      .send-email-btn { top: 35px; left: 45px; width: 60px; height: 60px; }
+      .send-email-btn svg { width: 32px; height: 32px; }
+      #btn-history { bottom: 30px; right: 40px; padding: 15px 30px; font-size: 1.2rem; }
+    }
+
+    /* Cintillo Flotante (Ticker) */
+    #ticker-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      color: var(--primary-color);
+      padding: 8px 0;
+      z-index: 9999;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 30s linear infinite;
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: 0.5px;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="ticker-container">
+    <div class="ticker-text" id="ticker-text">Cargando tasas...</div>
+  </div>
+
+  <div class="upload-icon-btn" onclick="openUploadModal()" title="Subir Documentos">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+    </svg>
+  </div>
+
+  <div class="header-card">
+    <h1>Cartelera Fiscal Actualizada</h1>
+    <div class="header-info">
+      © 2026 Districueros El Canguro C.A.<br>
+      J-30856520-2
+    </div>
+  </div>
+
+  <div id="loading">Cargando información...</div>
+  <div class="grid-container" id="card-container"></div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2 id="modal-title" style="margin-top:0;">Documentos</h2>
+      
+      <div id="latest-doc-container" style="text-align: center; margin-top: 15px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <p id="no-doc-msg" style="display:none; color:#666;">No hay documentos cargados.</p>
+        <img id="latest-doc-img" src="" alt="Último documento cargado" title="Haz clic para ampliar" style="display: none;">
+      </div>
+
+      <div class="doc-gallery" id="doc-gallery" style="display: none;"></div>
+      
+      <button id="btn-history" style="display: none;">Histórico</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="upload-modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeUploadModal()">&times;</span>
+      <h2 style="margin-top:0; text-align:center;">Cargar Documento(s)</h2>
+      
+      <div class="upload-form-group" style="flex-direction: row; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="checkbox" id="is-new-item" onchange="toggleNewItem()" style="width: 20px; height: 20px; cursor: pointer;">
+        <label for="is-new-item" style="margin-bottom: 0; cursor: pointer;">Crear nueva institución</label>
+      </div>
+
+      <div class="upload-form-group" id="group-select">
+        <label>Selecciona la Institución:</label>
+        <select id="upload-select"></select>
+      </div>
+      
+      <div class="upload-form-group" id="group-new" style="display: none;">
+        <label>ID de la Institución (Ej: seniat):</label>
+        <input type="text" id="new-id" placeholder="Sin espacios y en minúsculas preferiblemente">
+        
+        <label style="margin-top: 15px;">Título de la Institución:</label>
+        <input type="text" id="new-title" placeholder="Ej: SENIAT">
+        
+        <label style="margin-top: 15px; color:#e67e22;">Sube el Logo (Solo Imágenes):</label>
+        <input type="file" id="new-logo" accept="image/*"> 
+      </div>
+
+      <div class="upload-form-group">
+        <label id="label-upload-file">Selecciona el(los) archivo(s):</label>
+        <input type="file" id="upload-file" multiple accept="image/*, application/pdf"> 
+      </div>
+
+      <div class="upload-form-group" style="display: flex; flex-direction: row; gap: 15px;">
+        <div style="flex: 1;">
+          <label>Fecha de Creación:</label>
+          <input type="date" id="fecha-creacion" style="width: 100%; box-sizing: border-box;">
+        </div>
+        <div style="flex: 1;">
+          <label>Fecha de Vencimiento:</label>
+          <input type="date" id="fecha-vencimiento" style="width: 100%; box-sizing: border-box;">
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="handleUpload()" id="btn-upload">Subir Archivos</button>
+    </div>
+  </div>
+
+  <div id="custom-loader-modal">
+    <div class="loader-card" id="loader-card-content">
+      </div>
+  </div>
+
+  <div id="custom-alert-modal">
+    <div class="modal-content">
+      <h3>Atención</h3>
+      <p id="custom-alert-msg" style="font-size: 1.1rem; color: #333; margin-bottom: 25px;"></p>
+      <button class="btn-alert" style="margin-top:0;" onclick="closeCustomAlert()">Aceptar</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="email-modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeEmailModal()">&times;</span>
+      <h3 style="margin-top:0;">Enviar Documento</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">El documento actualmente visualizado será enviado al correo ingresado.</p>
+      
+      <div class="upload-form-group">
+        <label>Correo Electrónico:</label>
+        <input type="email" id="target-email" placeholder="ejemplo@correo.com">
+      </div>
+      <button class="btn-submit" id="btn-send-email" onclick="sendEmail()">Enviar Correo</button>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="close-lightbox-btn" onclick="closeLightbox()">&times;</span>
+    <div class="send-email-btn" onclick="event.stopPropagation(); openEmailModal()" title="Enviar por correo">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+      </svg>
+    </div>
+    <img id="lightbox-img" src="" alt="Documento ampliado" onclick="event.stopPropagation()">
+  </div>
+
+  <script>
+    let carteleraData = [];
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbxSlrs9zHDC9dDDlilhyH1s4LL4w2K9H0oTAW2pbAoUQLjiGmMVuCs3nmgKh2EAhb2Y/exec';
+
+    let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, touchStartDist = 0, lastScale = 1;
+
+    window.onload = function() {
+      fetchTickerData();
+      fetchData(false);
+      initTouchZoom();
+      setInterval(function() { fetchData(true); }, 20000);
+    };
+
+    function fetchTickerData() {
+      fetch('https://ve.dolarapi.com/v1/dolares/oficial')
+        .then(response => response.json())
+        .then(data => {
+          const fecha = new Date(data.fechaActualizacion);
+          const dia = String(fecha.getDate()).padStart(2, '0');
+          const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+          const anio = fecha.getFullYear();
+          const fechaFormateada = `${dia}/${mes}/${anio}`;
+          
+          const baseText = `Actualización BCV: ${data.promedio}Bs - Fecha: ${fechaFormateada}`;
+          const separator = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+          
+          // Repetimos el mensaje en la cadena para llenar toda la pantalla y que el movimiento sea continuo
+          document.getElementById('ticker-text').innerHTML = Array(4).fill(baseText).join(separator);
+        })
+        .catch(error => console.error('Error obteniendo datos del BCV:', error));
+        
+      scheduleNextTickerUpdate();
+    }
+
+    function scheduleNextTickerUpdate() {
+      const now = new Date();
+      const nextUpdate = new Date(now);
+      nextUpdate.setHours(3, 0, 0, 0);
+      
+      // Si ya pasaron las 3 AM hoy, programamos la ejecución para las 3 AM de mañana
+      if (now.getTime() >= nextUpdate.getTime()) {
+        nextUpdate.setDate(nextUpdate.getDate() + 1);
+      }
+      
+      const timeToNextUpdate = nextUpdate.getTime() - now.getTime();
+      setTimeout(fetchTickerData, timeToNextUpdate);
+    }
+
+    function fetchData(isSilent) {
+      if (!isSilent) {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('card-container').innerHTML = '';
+      }
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(renderCards).withFailureHandler(showError).getCarteleraData();
+      } else {
+        fetch(webAppUrl + '?json=true')
+          .then(res => { if (!res.ok) throw new Error('Error de red'); return res.json(); })
+          .then(data => renderCards(data))
+          .catch(err => showError(err));
+      }
+    }
+
+    function renderCards(data) {
+      document.getElementById('loading').style.display = 'none';
+      const container = document.getElementById('card-container');
+      container.innerHTML = ''; 
+      carteleraData = data;
+
+      data.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => openModal(index);
+        const logo = item.logo_url ? item.logo_url : 'https://via.placeholder.com/120?text=' + item.titulo;
+        card.innerHTML = `<img src="${logo}" alt="Logo de ${item.titulo}"><h2>${item.titulo}</h2>`;
+        container.appendChild(card);
+      });
+    }
+
+    function showError(err) { document.getElementById('loading').innerText = "Error: " + err.message; }
+
+    /* =================================
+       LÓGICA DEL MODAL VER DOCUMENTOS
+       ================================= */
+    function openModal(index) {
+      const item = carteleraData[index];
+      document.getElementById('modal-title').innerText = item.titulo;
+      
+      const latestImg = document.getElementById('latest-doc-img');
+      const noDocMsg = document.getElementById('no-doc-msg');
+      const gallery = document.getElementById('doc-gallery');
+      const btnHistory = document.getElementById('btn-history');
+      
+      document.body.style.overflow = 'hidden'; 
+      gallery.style.display = 'none';
+      gallery.innerHTML = '';
+      
+      if (item.documentos && item.documentos.length > 0) {
+        noDocMsg.style.display = 'none';
+        latestImg.style.display = 'block';
+        
+        // Muestra la imagen principal (el más nuevo)
+        const latestDocUrl = item.documentos[item.documentos.length - 1];
+        latestImg.src = latestDocUrl;
+        latestImg.onclick = function() { openLightbox(latestDocUrl); };
+        
+        // Muestra el botón de historial (ubicado abajo a la derecha por CSS)
+        btnHistory.style.display = 'block';
+        btnHistory.onclick = function() { showHistory(index); };
+      } else {
+        latestImg.style.display = 'none';
+        btnHistory.style.display = 'none';
+        noDocMsg.style.display = 'block';
+      }
+      
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function showHistory(index) {
+      const item = carteleraData[index];
+      const latestImg = document.getElementById('latest-doc-img');
+      const btnHistory = document.getElementById('btn-history');
+      const gallery = document.getElementById('doc-gallery');
+
+      latestImg.style.display = 'none';
+      btnHistory.style.display = 'none';
+      
+      gallery.style.display = 'grid';
+      gallery.innerHTML = ''; 
+      
+      // Muestra el histórico invirtiendo el orden (más nuevos primero)
+      const reversedDocs = [...item.documentos].reverse();
+      
+      reversedDocs.forEach(docUrl => {
+        const img = document.createElement('img');
+        img.src = docUrl; img.title = "Haz clic para ampliar";
+        img.onclick = function() { openLightbox(docUrl); };
+        gallery.appendChild(img);
+      });
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; document.body.style.overflow = ''; }
+    
+    function openLightbox(imgUrl) { 
+      document.getElementById('lightbox-img').src = imgUrl; 
+      document.getElementById('lightbox').style.display = 'flex'; 
+      document.body.style.overflow = 'hidden'; 
+    }
+    
+    function closeLightbox() { 
+      document.getElementById('lightbox').style.display = 'none'; 
+      const img = document.getElementById('lightbox-img');
+      img.src = ''; img.style.transform = '';
+      scale = 1; pointX = 0; pointY = 0;
+      if (document.getElementById('modal').style.display !== 'flex') document.body.style.overflow = '';
+    }
+
+    /* =================================
+       LÓGICA DE CONTROL TÁCTIL (ZOOM LIBRE)
+       ================================= */
+    function initTouchZoom() {
+      const img = document.getElementById('lightbox-img');
+      const lightbox = document.getElementById('lightbox');
+      if (!img) return;
+      lightbox.addEventListener('click', function(e) { if (e.target === lightbox) { closeLightbox(); } });
+      img.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 1) {
+          startX = e.touches[0].clientX - pointX; startY = e.touches[0].clientY - pointY;
+        } else if (e.touches.length === 2) {
+          touchStartDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          lastScale = scale;
         }
-    }
-
-    function cleanNum(val) {
-        if (!val) return 0;
-        let n = parseFloat(String(val).replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, ''));
-        return isNaN(n) ? 0 : n;
-    }
-
-    function getUltimaFecha(dataArr, campoFecha) {
-        const fechas = [...new Set(dataArr.map(d => d[campoFecha]))].filter(f => f);
-        return fechas.sort((a, b) => {
-            const da = a.split('/'); const db = b.split('/');
-            return new Date(db[2], db[1]-1, db[0]) - new Date(da[2], da[1]-1, da[0]);
-        })[0] || "";
-    }
-
-    async function init(pin) {
-        const res = await fetch(`${webAppUrl}?pass=${pin}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-
-        allFetched = data.nacional.filter(d => d['ESTADO'] && !['TOTAL', 'TOTALES'].includes(String(d['ESTADO']).toUpperCase().trim()));
-        sedeData = data.sede;
-        const fechasDisponibles = [...new Set(allFetched.map(d => d['FECHA']))].filter(f => f).map(f => { const [d, m, y] = f.split('/'); return new Date(y, m - 1, d); });
-
-        fp = flatpickr("#global-date-filter", {
-            locale: "es", dateFormat: "d/m/Y", maxDate: new Date(), enable: fechasDisponibles,
-            onChange: function(selectedDates, dateStr) { if (dateStr) handleDateChange(dateStr); }
-        });
-
-        lastNacionalDate = getUltimaFecha(allFetched, 'FECHA');
-        selectedDateGlobal = lastNacionalDate;
-        if (selectedDateGlobal) fp.setDate(selectedDateGlobal);
-
-        renderSidebar();
-        resetFilter(document.getElementById('btn-nacional'));
-    }
-
-    function renderSidebar() {
-        const list = document.getElementById('sidebar-list');
-        
-        let html = `
-            <div class="nav-main-items">
-                <div class="state-item" id="btn-sede" onclick="renderSedeCentral(this)"><span><i class="fas fa-building"></i> SEDE</span></div>
-                <div class="state-item active" id="btn-nacional" onclick="resetFilter(this)"><span><i class="fas fa-globe-americas"></i> NACIONAL</span></div>
-                <div class="state-item mobile-states-btn" onclick="toggleMobileStates()"><span><i class="fas fa-list-ul"></i> ESTADOS</span></div>
-                <div class="state-item text-danger mobile-logout-btn" onclick="logout()"><span><i class="fas fa-sign-out-alt"></i> SALIR</span></div>
-            </div>
-            
-            <div class="states-wrapper" id="states-wrapper"></div>
-            
-            <div class="sidebar-footer-btn desktop-logout-btn">
-                <div class="state-item text-danger" onclick="logout()"><span><i class="fas fa-sign-out-alt"></i> SALIR</span></div>
-            </div>
-        `;
-        list.innerHTML = html;
-
-        const statesWrapper = document.getElementById('states-wrapper');
-        [...new Set(allFetched.map(d => d['ESTADO']))].sort().forEach(s => {
-            const btn = document.createElement('div');
-            btn.className = 'state-item sub-state';
-            btn.dataset.stateName = s; 
-            btn.innerHTML = `<span><i class="fas fa-map-marker-alt"></i> ${s}</span>`;
-            btn.onclick = () => {
-                document.querySelectorAll('.state-item').forEach(i => i.classList.remove('active'));
-                btn.classList.add('active');
-                restoreNacionalDate();
-                updateDashboard(allFetched.filter(r => r['ESTADO'] === s), s, false);
-                
-                if (window.innerWidth <= 768) {
-                    statesWrapper.classList.remove('show');
-                }
-            };
-            statesWrapper.appendChild(btn);
-        });
-    }
-
-    function restoreNacionalDate() {
-        if (lastNacionalDate && selectedDateGlobal !== lastNacionalDate) {
-            selectedDateGlobal = lastNacionalDate;
-            if (fp) fp.setDate(selectedDateGlobal, false);
+      }, { passive: true });
+      img.addEventListener('touchmove', function(e) {
+        if (e.touches.length === 1 && scale > 1) {
+          e.preventDefault(); pointX = e.touches[0].clientX - startX; pointY = e.touches[0].clientY - startY;
+          img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        } else if (e.touches.length === 2) {
+          e.preventDefault();
+          let dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          scale = Math.min(Math.max(1, (dist / touchStartDist) * lastScale), 6);
+          if (scale === 1) { pointX = 0; pointY = 0; }
+          img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
         }
+      }, { passive: false });
     }
 
-    function renderSedeCentral(el) {
-        document.querySelectorAll('.state-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        
-        if (window.innerWidth <= 768) document.getElementById('states-wrapper').classList.remove('show');
+    /* =================================
+       MODAL DE SUBIDA Y ALERTAS
+       ================================= */
+    function showCustomAlert(msg) {
+      document.getElementById('custom-alert-msg').innerText = msg;
+      document.getElementById('custom-alert-modal').style.display = 'flex';
+    }
+    function closeCustomAlert() { document.getElementById('custom-alert-modal').style.display = 'none'; }
 
-        document.getElementById('view-title').innerText = "SEDE CENTRAL";
-        document.getElementById('full-nacional-content').style.display = "none";
-        document.getElementById('sede-extra-content').style.display = "block";
-        document.getElementById('sec-indicadores').innerText = "Resumen de Gestion Sede";
-        document.getElementById('cal-box').style.display = 'none';
-
-        const ultimaSede = getUltimaFecha(sedeData, 'FECHA');
-        if (ultimaSede) { selectedDateGlobal = ultimaSede; document.getElementById('date-info').innerText = "CORTE AL: " + selectedDateGlobal; }
-
-        const filteredSede = sedeData.filter(r => r['FECHA'] === selectedDateGlobal);
-        const conteoSujetos = {}, conteoTipologia = {};
-        filteredSede.forEach(r => {
-            const keys = Object.keys(r);
-            const s = r[keys[5]]; if (s && s.trim() !== "") conteoSujetos[s] = (conteoSujetos[s] || 0) + 1;
-            const t = r[keys[4]]; if (t && t.trim() !== "") conteoTipologia[t] = (conteoTipologia[t] || 0) + 1;
-        });
-
-        const tipologySedeCont = document.getElementById('tipology-container-sede');
-        tipologySedeCont.innerHTML = "";
-        const maxTipos = Math.max(...Object.values(conteoTipologia), 1);
-        Object.entries(conteoTipologia).sort((a, b) => b[1] - a[1]).forEach(([nombre, valor]) => {
-            tipologySedeCont.innerHTML += `<div class="ranking-item"><div class="ranking-header"><span>${nombre}</span><span>${valor}</span></div><div class="bar-container"><div class="bar-fill" style="width:${(valor / maxTipos) * 100}%"></div></div></div>`;
-        });
-
-        let topSujeto = "N/A", maxD = 0;
-        for (let s in conteoSujetos) if (conteoSujetos[s] > maxD) { maxD = conteoSujetos[s]; topSujeto = s; }
-
-        const topData = filteredSede.filter(r => r[Object.keys(r)[5]] === topSujeto);
-        const countEst = (est) => topData.filter(r => String(r['ESTATUS']).toUpperCase().trim() === est).length;
-        const countAll = (est) => filteredSede.filter(r => r['ESTATUS'] && r['ESTATUS'].toUpperCase().trim() === est).length;
-
-        const createCard = (l, v, i, c, status) => `
-            <div class="card" onclick="showSedeDetail('${status}')" style="cursor:pointer">
-                <div style="display:flex;justify-content:space-between;align-items:center"><span class="card-label">${l}</span><i class="fas ${i}" style="color:${c}; font-size:1rem;"></i></div>
-                <div class="card-val" style="color:${c}">${v.toLocaleString()}</div>
-                <div style="font-size:0.6rem; color:var(--muted); text-align:right; margin-top:2px;">Ver detalle casos <i class="fas fa-chevron-right"></i></div>
-            </div>`;
-
-        document.getElementById('grid-criticos').innerHTML =
-            createCard("Cerrada",    countAll("CERRADA"),    "fa-folder-check", "var(--success)", "CERRADA") +
-            createCard("En Proceso", countAll("EN PROCESO"), "fa-spinner",      "var(--accent)",  "EN PROCESO") +
-            createCard("Sin Atender",countAll("SIN ATENDER"),"fa-clock",        "var(--danger)",  "SIN ATENDER") +
-            createCard("Desestimada",countAll("DESESTIMADA"),"fa-ban",          "var(--muted)",   "DESESTIMADA") +
-            `<div class="card" style="grid-column:1/-1; border-left:4px solid var(--purple);">
-                <span class="card-label">Sujeto con mayor incidencia</span>
-                <div style="font-size:1.05rem; font-weight:800; color:var(--primary); margin:4px 0;">${topSujeto}</div>
-                <div style="display:flex; gap:14px; margin-top:4px; flex-wrap:wrap;">
-                    <div><span class="card-label">Sin Atender</span><div style="font-size:1.15rem;font-weight:800;color:var(--danger)">${countEst('SIN ATENDER')}</div></div>
-                    <div><span class="card-label">En Proceso</span><div style="font-size:1.15rem;font-weight:800;color:var(--accent)">${countEst('EN PROCESO')}</div></div>
-                    <div><span class="card-label">Desestimada</span><div style="font-size:1.15rem;font-weight:800;color:var(--muted)">${countEst('DESESTIMADA')}</div></div>
-                    <div><span class="card-label">Cerrada</span><div style="font-size:1.15rem;font-weight:800;color:var(--success)">${countEst('CERRADA')}</div></div>
-                    <div style="margin-left:auto;text-align:right;"><span class="card-label">Total</span><div style="font-size:1.15rem;font-weight:800;">${maxD}</div></div>
-                </div>
-            </div>`;
+    function toggleNewItem() {
+      const isNew = document.getElementById('is-new-item').checked;
+      document.getElementById('group-select').style.display = isNew ? 'none' : 'flex';
+      document.getElementById('group-new').style.display = isNew ? 'flex' : 'none';
+      document.getElementById('label-upload-file').innerText = isNew ? 'Selecciona el(los) archivo(s) (Opcional si es nueva):' : 'Selecciona el(los) archivo(s):';
     }
 
-    function updateDashboard(data, title, isNational = false) {
-        document.getElementById('full-nacional-content').style.display = "block";
-        document.getElementById('sede-extra-content').style.display = "none";
-        document.getElementById('sec-indicadores').innerText = "Indicadores a destacar";
-        document.getElementById('cal-box').style.display = 'flex';
-
-        if (!selectedDateGlobal || ![...new Set(data.map(d => d['FECHA']))].includes(selectedDateGlobal)) {
-            selectedDateGlobal = getUltimaFecha(data, 'FECHA');
-            if (fp) fp.setDate(selectedDateGlobal, false);
-        }
-        if (isNational) lastNacionalDate = selectedDateGlobal;
-
-        const fData = data.filter(d => d['FECHA'] === selectedDateGlobal);
-        let s = {};
-        ["REGISTROS RECIBIDOS","ATENDIDAS","POR ATENDER","NUEVO","DENUNCIAS ADMITIDAS","PROCESO CULMINADO","CERRADO","INSPECCIONADO","PROCESO CONCILIATORIO","POR APROBAR FISCALIZACIÓN","POR ASIGNAR FISCAL","CON FISCAL ASIGNADO","ARRENDAMIENTO COMERCIAL","BIENES","CONDOMINIOS COMERCIALES","MATRICULA ESCOLAR","SERVICIOS"]
-            .forEach(c => s[c] = fData.reduce((acc, curr) => acc + cleanNum(curr[c]), 0));
-
-        document.getElementById('view-title').innerText = title;
-        document.getElementById('date-info').innerText = "CORTE AL: " + selectedDateGlobal;
-
-        const config = (l, d, c) => ({ type: 'doughnut', data: { labels: l, datasets: [{ data: d, backgroundColor: c, borderWidth: 0 }] }, options: { cutout: '72%', plugins: { legend: { position: 'bottom' } } } });
-        if (chartA) chartA.destroy(); if (chartF) chartF.destroy();
-        chartA = new Chart(document.getElementById('chartAtencion'), config(['Atendidas','Pendientes'], [s["ATENDIDAS"], s["POR ATENDER"]], ['#22c55e','#ef4444']));
-        chartF = new Chart(document.getElementById('chartFiscales'), config(['Por Asignar','Asignado'], [s["POR ASIGNAR FISCAL"], s["CON FISCAL ASIGNADO"]], ['#f97316','#059669']));
-
-        document.getElementById('tipology-container').innerHTML = "";
-        const rTotal = ["ARRENDAMIENTO COMERCIAL","BIENES","CONDOMINIOS COMERCIALES","MATRICULA ESCOLAR","SERVICIOS"].reduce((acc, r) => acc + (s[r] || 0), 0);
-        ["ARRENDAMIENTO COMERCIAL","BIENES","CONDOMINIOS COMERCIALES","MATRICULA ESCOLAR","SERVICIOS"].forEach(r => {
-            document.getElementById('tipology-container').innerHTML += `<div class="ranking-item"><div class="ranking-header"><span>${r}</span><span>${(s[r]||0).toLocaleString()}</span></div><div class="bar-container"><div class="bar-fill" style="width:${rTotal>0?((s[r]||0)/rTotal*100):0}%"></div></div></div>`;
-        });
-
-        const cC = (l, v, i, c) => `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="card-label">${l}</span><i class="fas ${i}" style="color:${c};"></i></div><div class="card-val" style="color:${c}">${Math.floor(v).toLocaleString()}</div></div>`;
-        
-        document.getElementById('grid-criticos').innerHTML = cC("Recibidos", s["REGISTROS RECIBIDOS"], "fa-inbox", "var(--primary)") + cC("Admitidas", s["DENUNCIAS ADMITIDAS"], "fa-file-signature", "var(--purple)") + cC("Atendidas", s["ATENDIDAS"], "fa-check-circle", "var(--success)") + cC("Por Atender", s["POR ATENDER"], "fa-clock", "var(--warning)");
-        document.getElementById('grid-estatus').innerHTML = cC("Nuevas", s["NUEVO"], "fa-certificate", "#3b82f6") + cC("Culminadas", s["PROCESO CULMINADO"], "fa-flag-checkered", "#22c55e") + cC("Cerrado", s["CERRADO"], "fa-archive", "#1e293b");
-        document.getElementById('grid-procesos').innerHTML = cC("Inspeccionado", s["INSPECCIONADO"], "fa-search", "#06b6d4") + cC("Conciliacion", s["PROCESO CONCILIATORIO"], "fa-handshake", "#f59e0b") + cC("Por Aprobar", s["POR APROBAR FISCALIZACIÓN"], "fa-clipboard-check", "#ec4899");
-        document.getElementById('grid-fiscales').innerHTML = cC("Por Asignar", s["POR ASIGNAR FISCAL"], "fa-user-plus", "#f97316") + cC("Fiscal Asignado", s["CON FISCAL ASIGNADO"], "fa-user-tie", "#059669");
-
-        document.getElementById('ranking-section').style.display = isNational ? "block" : "none";
-        if (isNational) {
-            document.getElementById('ranking-container').innerHTML = [...new Set(fData.map(d => d['ESTADO']))].map(st => { const row = fData.find(r => r['ESTADO'] === st); let p = row && row['ATENCIÓN %'] ? cleanNum(row['ATENCIÓN %']) : 0; if(p > 0 && p < 1) p *= 100; return { st, p }; }).sort((a,b) => b.p - a.p).slice(0,10).map(item => `<div class="ranking-item"><div class="ranking-header"><span>${item.st}</span><span>${item.p.toFixed(1)}%</span></div><div class="bar-container"><div class="bar-fill" style="width:${item.p}%; background: linear-gradient(90deg, #1e3a8a, #8b5cf6);"></div></div></div>`).join('');
-        }
+    function openUploadModal() {
+      const select = document.getElementById('upload-select');
+      select.innerHTML = '<option value="">-- Selecciona una opción --</option>';
+      carteleraData.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.titulo; opt.textContent = item.titulo; select.appendChild(opt);
+      });
+      document.getElementById('is-new-item').checked = false;
+      toggleNewItem();
+      document.getElementById('new-id').value = '';
+      document.getElementById('new-title').value = '';
+      document.getElementById('new-logo').value = '';
+      document.getElementById('upload-file').value = '';
+      document.getElementById('fecha-creacion').value = '';
+      document.getElementById('fecha-vencimiento').value = '';
+      document.getElementById('btn-upload').disabled = false;
+      document.getElementById('upload-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
     }
 
-    function resetFilter(el) {
-        document.querySelectorAll('.state-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active'); restoreNacionalDate(); updateDashboard(allFetched, "VENEZUELA", true);
-        
-        if (window.innerWidth <= 768) document.getElementById('states-wrapper').classList.remove('show');
+    function closeUploadModal() { document.getElementById('upload-modal').style.display = 'none'; document.body.style.overflow = ''; }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error);
+      });
     }
 
-    function handleDateChange(nuevaFecha) {
-        selectedDateGlobal = nuevaFecha; const active = document.querySelector('.state-item.active'); if (!active) return;
-        if (active.id !== 'btn-sede') lastNacionalDate = nuevaFecha;
-        if (active.id === 'btn-nacional') updateDashboard(allFetched, "VENEZUELA", true);
-        else if (active.id === 'btn-sede') renderSedeCentral(active);
-        else updateDashboard(allFetched.filter(r => r['ESTADO'] === active.dataset.stateName), active.dataset.stateName, false);
+    /* =================================
+       LÓGICA PARA ENVIAR POR CORREO
+       ================================= */
+    function openEmailModal() {
+      document.getElementById('target-email').value = '';
+      document.getElementById('email-modal').style.display = 'flex';
+    }
+    
+    function closeEmailModal() { 
+      document.getElementById('email-modal').style.display = 'none'; 
     }
 
-    /* ---- LÓGICA DEL MODAL RESPONSIVO ---- */
-    function showSedeDetail(estatus) {
-        currentModalData = sedeData.filter(r => r['FECHA'] === selectedDateGlobal && r['ESTATUS'] && r['ESTATUS'].toUpperCase().trim() === estatus.toUpperCase());
-        document.getElementById('modal-title').innerText = "ESTATUS: " + estatus;
-        
-        const checklistSujetos = document.getElementById('modal-checklist-sujetos');
-        const checklistDenuncias = document.getElementById('modal-checklist-denuncias');
-        const body = document.getElementById('modal-body');
-        
-        checklistSujetos.innerHTML = ""; checklistDenuncias.innerHTML = "";
-        body.innerHTML = "<p style='text-align:center;padding:40px 20px;color:var(--muted);font-size:0.85rem;'>Seleccione un sujeto y posteriormente un caso.</p>";
-
-        if (currentModalData.length === 0) {
-            body.innerHTML = "<p style='text-align:center;padding:40px 20px;color:var(--muted);font-size:0.85rem;'>No hay registros disponibles para este estatus.</p>";
-        } else {
-            const sujetosMap = {};
-            currentModalData.forEach(item => {
-                const sujetoName = item[Object.keys(item)[5]] || "SIN SUJETO DEFINIDO";
-                if (!sujetosMap[sujetoName]) sujetosMap[sujetoName] = [];
-                sujetosMap[sujetoName].push(item);
-            });
-
-            Object.keys(sujetosMap).forEach(sujetoName => {
-                const btn = document.createElement('div');
-                btn.className = 'check-item';
-                btn.innerText = `${sujetoName} (${sujetosMap[sujetoName].length})`;
-                btn.onclick = () => {
-                    document.querySelectorAll('#modal-checklist-sujetos .check-item').forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    showDenunciasForSujeto(sujetosMap[sujetoName]);
-
-                    if(window.innerWidth <= 768) {
-                        setTimeout(() => document.getElementById('col-denuncias').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                    }
-                };
-                checklistSujetos.appendChild(btn);
-            });
-        }
-        document.getElementById('modal-overlay').style.display = 'flex';
-    }
-
-    function showDenunciasForSujeto(denunciasArray) {
-        const checklistDenuncias = document.getElementById('modal-checklist-denuncias');
-        const body = document.getElementById('modal-body');
-        checklistDenuncias.innerHTML = "";
-        body.innerHTML = "<p style='text-align:center;padding:40px 20px;color:var(--muted);font-size:0.85rem;'>Seleccione un caso para ver su detalle en la siguiente sección.</p>";
-
-        denunciasArray.forEach((item, index) => {
-            const keys = Object.keys(item);
-            let buttonLabel = `Caso #${index + 1}`;
-            const posibleColumnaID = keys.find(k => k.toUpperCase().includes('NRO') || k.toUpperCase().includes('CÓDIGO') || k.toUpperCase().includes('DENUNCIA') || k.toUpperCase().includes('RECLAMO') || k.toUpperCase().includes('ID'));
-            if (posibleColumnaID && item[posibleColumnaID]) buttonLabel = `${posibleColumnaID}: ${item[posibleColumnaID]}`;
-
-            const btn = document.createElement('div');
-            btn.className = 'check-item check-item-alt';
-            btn.innerText = buttonLabel;
-            btn.onclick = () => {
-                document.querySelectorAll('#modal-checklist-denuncias .check-item').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                renderModalRowByVal(item);
-
-                if(window.innerWidth <= 768) {
-                    setTimeout(() => document.getElementById('col-detalles').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                }
-            };
-            checklistDenuncias.appendChild(btn);
-        });
-    }
-
-    function renderModalRowByVal(item) {
-        // Implementación de grid horizontal para computadora / vertical para móvil
-        let html = '<div style="background:#fff; border-radius:12px; padding:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05);"><div class="detail-grid">';
-        
-        for (let key in item) {
-            const uKey = key.toUpperCase().trim();
-            if (item[key] && uKey !== 'ITEM' && uKey !== 'FECHA') {
-                html += `<div class="detail-item">
-                            <div style="font-size:0.62rem; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">${key}</div>
-                            <div style="font-size:0.85rem; font-weight:600; color:var(--text);">${item[key]}</div>
-                         </div>`;
+    function sendEmail() {
+      const email = document.getElementById('target-email').value.trim();
+      const imgUrl = document.getElementById('lightbox-img').src;
+      
+      if (!email || !email.includes('@')) {
+        showCustomAlert("Por favor ingresa un correo electrónico válido.");
+        return;
+      }
+      
+      setLoaderState('loading');
+      document.getElementById('btn-send-email').disabled = true;
+      
+      let payload = { action: 'sendEmail', email: email, url: imgUrl };
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => {
+            if(res.success) {
+              setLoaderState('success', 'Documento enviado con éxito.');
+              setTimeout(closeEmailModal, 2000);
+            } else {
+              setLoaderState('error', res.error);
             }
-        }
-        
-        document.getElementById('modal-body').innerHTML = html + '</div></div>';
+            document.getElementById('btn-send-email').disabled = false;
+          })
+          .withFailureHandler(err => {
+            setLoaderState('error', err.message);
+            document.getElementById('btn-send-email').disabled = false;
+          })
+          .enviarDocumentoPorCorreo(payload);
+      } else {
+        fetch(webAppUrl, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            setLoaderState('success', 'Documento enviado con éxito.');
+            setTimeout(closeEmailModal, 2000);
+          } else {
+            setLoaderState('error', res.error);
+          }
+          document.getElementById('btn-send-email').disabled = false;
+        })
+        .catch(err => {
+          setLoaderState('error', err.message);
+          document.getElementById('btn-send-email').disabled = false;
+        });
+      }
     }
 
-    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-</script>
+    // MANEJO DEL LOADER DINÁMICO
+    function setLoaderState(state, msg) {
+      const container = document.getElementById('loader-card-content');
+      
+      if (state === 'loading') {
+        container.innerHTML = `
+          <svg class="status-icon loader-icon-blue spinner-anim" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <p class="loader-title">Procesando</p>
+          <p class="loader-subtitle">Por favor espere...</p>
+        `;
+        document.getElementById('custom-loader-modal').style.display = 'flex';
+        
+      } else if (state === 'success') {
+        container.innerHTML = `
+          <svg class="status-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="12" fill="#7ac142"/>
+            <path d="M10.2 16.2l-3.6-3.6 1.4-1.4 2.2 2.2 5.8-5.8 1.4 1.4-7.2 7.2z" fill="#fff"/>
+          </svg>
+          <p class="loader-title" style="color: #7ac142;">¡Éxito!</p>
+          <p class="loader-subtitle">${msg || 'Archivos subidos exitosamente.'}</p>
+        `;
+        setTimeout(() => {
+          document.getElementById('custom-loader-modal').style.display = 'none';
+          if(!msg || msg.includes('subidos')) {
+            closeUploadModal();
+            fetchData(true);
+          }
+        }, 2000);
+        
+      } else if (state === 'error') {
+        container.innerHTML = `
+          <svg class="status-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="12" fill="#e74c3c"/>
+            <path d="M15.4 7.2l1.4 1.4-3.4 3.4 3.4 3.4-1.4 1.4-3.4-3.4-3.4 3.4-1.4-1.4 3.4-3.4-3.4-3.4 1.4-1.4 3.4 3.4 3.4-3.4z" fill="#fff"/>
+          </svg>
+          <p class="loader-title" style="color: #e74c3c;">Error</p>
+          <p class="loader-subtitle">${msg}</p>
+          <button class="btn-alert" onclick="document.getElementById('custom-loader-modal').style.display='none'">Cerrar</button>
+        `;
+      }
+    }
+
+    async function handleUpload() {
+      const isNew = document.getElementById('is-new-item').checked;
+      let titulo = ''; let idItem = ''; let logoData = null;
+      const fileInput = document.getElementById('upload-file');
+      const fechaCreacion = document.getElementById('fecha-creacion').value;
+      const fechaVencimiento = document.getElementById('fecha-vencimiento').value;
+
+      if (isNew) {
+        idItem = document.getElementById('new-id').value.trim();
+        titulo = document.getElementById('new-title').value.trim();
+        const logoInput = document.getElementById('new-logo');
+        
+        if (!idItem || !titulo) { showCustomAlert("Por favor, ingresa el ID y el Título de la nueva institución."); return; }
+        if (logoInput.files.length === 0) { showCustomAlert("Por favor, selecciona un logo para la nueva institución."); return; }
+        
+        let logoFile = logoInput.files[0];
+        let base64Logo = await toBase64(logoFile);
+        logoData = { name: logoFile.name, mimeType: logoFile.type, base64: base64Logo.split(',')[1] };
+      } else {
+        titulo = document.getElementById('upload-select').value;
+        if (!titulo) { showCustomAlert("Por favor, selecciona una institución."); return; }
+        if (fileInput.files.length === 0) { showCustomAlert("Por favor, selecciona al menos un archivo."); return; }
+      }
+
+      if (fileInput.files.length > 0 && (!fechaCreacion || !fechaVencimiento)) {
+         showCustomAlert("Por favor, ingresa la fecha de creación y de vencimiento del documento.");
+         return;
+      }
+
+      // 1. Mostrar estado Loading
+      setLoaderState('loading');
+      document.getElementById('btn-upload').disabled = true;
+
+      let filesData = [];
+      if (fileInput.files.length > 0) {
+        for (let i = 0; i < fileInput.files.length; i++) {
+          let file = fileInput.files[i];
+          let base64Full = await toBase64(file);
+          filesData.push({ name: file.name, mimeType: file.type, base64: base64Full.split(',')[1] });
+        }
+      }
+
+      let payload = { 
+        titulo: titulo, 
+        files: filesData, 
+        isNew: isNew, 
+        id: idItem, 
+        logo: logoData, 
+        fechaCreacion: fechaCreacion, 
+        fechaVencimiento: fechaVencimiento 
+      };
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => { 
+            setLoaderState('success'); 
+            document.getElementById('btn-upload').disabled = false; 
+          })
+          .withFailureHandler(err => { 
+            setLoaderState('error', err.message); 
+            document.getElementById('btn-upload').disabled = false; 
+          })
+          .procesarSubida(payload);
+      } else {
+        fetch(webAppUrl, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) setLoaderState('success');
+          else setLoaderState('error', res.error);
+          document.getElementById('btn-upload').disabled = false;
+        })
+        .catch(err => {
+          setLoaderState('error', err.message);
+          document.getElementById('btn-upload').disabled = false;
+        });
+      }
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      const uploadModal = document.getElementById('upload-modal');
+      const emailModal = document.getElementById('email-modal');
+      const lightbox = document.getElementById('lightbox');
+      const customAlert = document.getElementById('custom-alert-modal');
+
+      if (event.target === modal && lightbox.style.display !== 'flex') closeModal();
+      if (event.target === uploadModal) closeUploadModal();
+      if (event.target === emailModal) closeEmailModal();
+      if (event.target === customAlert) closeCustomAlert();
+    }
+  </script>
 </body>
 </html>
