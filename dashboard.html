@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Denuncias - SUNDDE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="custom-alert" class="modal" style="z-index: 3000;">
+        <div class="glass-panel modal-content" style="max-width: 400px; text-align: center;">
+            <div id="alert-icon" style="font-size: 3rem; margin-bottom: 15px;"></div>
+            <h3 id="alert-title" style="margin-bottom: 10px; color: var(--primary);"></h3>
+            <p id="alert-message" style="color: #475569; margin-bottom: 20px;"></p>
+            <button class="btn-action" onclick="closeCustomAlert()">Entendido</button>
+        </div>
+    </div>
+
+    <div class="modal" id="internal-chat-modal" style="z-index: 2500;">
+        <div class="glass-panel modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-comments"></i> Canal de Soporte Interno</h3>
+                <i class="fas fa-xmark close-modal" onclick="closeInternalChat()"></i>
+            </div>
+            
+            <div id="chat-admin-selectors" style="display: none; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <select id="chat-target-role" onchange="updateChatEmpresaSelector(); loadGlobalChatMessages();" style="padding: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); font-size: 0.85rem; flex: 1;">
+                    <option value="sundde">Analistas SUNDDE</option>
+                    <option value="fiscal">Fiscales Nacionales</option>
+                    <option value="asistente">Asistentes de Seguimiento</option>
+                    <option value="empresa">Empresas / Denunciados</option>
+                </select>
+                <select id="chat-target-empresa" onchange="loadGlobalChatMessages()" style="display:none; padding: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); font-size: 0.85rem; flex: 1;">
+                    <option value="GENERAL">Seleccione Empresa...</option>
+                </select>
+            </div>
+
+            <div id="global-chat-box" style="height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.4); border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05);"></div>
+            
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="global-chat-input" placeholder="Escribe un mensaje directo..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7);" onkeypress="if(event.key === 'Enter') sendGlobalChatMessage()">
+                <button class="btn-action" id="btn-send-global-chat" onclick="sendGlobalChatMessage()" style="width: auto; padding: 0 18px; border-radius: 8px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="super-card-modal">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Gestión de Expediente</h3>
+                <i class="fas fa-xmark close-modal" onclick="closeSuperCard()"></i>
+            </div>
+            
+            <div class="info-card-section" id="modal-info-denunciante">
+                <h4><i class="fas fa-user-circle"></i> Información de la Denuncia</h4>
+                <div class="detail-grid">
+                    <div class="full-width"><strong>Sujeto de Aplicación / Empresa:</strong><span id="md-empresa"></span></div>
+                    <div><strong>Denunciante:</strong><span id="md-denunciante"></span></div>
+                    <div><strong>Cédula / RIF:</strong><span id="md-cedula"></span></div>
+                    <div><strong>Teléfonos de Contacto:</strong><span id="md-telefono"></span></div>
+                    <div><strong>Fecha de Registro:</strong><span id="md-fecha"></span></div>
+                    <div class="full-width"><strong>Dirección:</strong><span id="md-direccion"></span></div>
+                    <div class="full-width"><strong>Bien / Servicio:</strong><span id="md-producto"></span></div>
+                    <div class="full-width"><strong>Observaciones:</strong><span id="md-motivo"></span></div>
+                    <div class="full-width"><strong>Estatus Actual:</strong><br><span id="md-estatus" class="badge"></span></div>
+                </div>
+            </div>
+
+            <div class="info-card-section" id="modal-historico">
+                <h4><i class="fas fa-folder-open"></i> Soportes e Histórico</h4>
+                <div id="historico-content"></div>
+            </div>
+
+            <div class="action-zone" id="modal-action-form"></div>
+        </div>
+    </div>
+
+    <div id="app-view" class="show-app">
+        <div class="sidebar">
+            <div class="brand">
+                <img src="https://i.ibb.co/fVcfVRFq/denuncias.png" alt="SUNDDE Logo" style="width: 120px;">
+            </div>
+
+            <div class="user-profile-card">
+                <h4 id="user-display-name">Cargando...</h4>
+                <p id="user-display-email">...</p>
+                <span class="tag-role" id="user-display-role">...</span>
+                <p id="user-display-empresa" style="font-style: italic; font-size: 0.8rem; color: var(--secondary); margin-top:5px; display:none; font-weight: 600;"></p>
+            </div>
+
+            <div class="menu-items">
+                <div class="menu-link active" onclick="switchView('view-bandeja')">
+                    <i class="fas fa-home"></i> <span>Bandeja</span>
+                </div>
+                
+                <div class="menu-link mobile-nav-item" onclick="openInternalChat()">
+                    <i class="fas fa-comment-dots"></i> <span>Chat</span>
+                </div>
+                <div class="menu-link mobile-nav-item" onclick="toggleAlertsDropdown(event)">
+                    <i class="fas fa-bell"></i> <span>Notificaciones</span>
+                </div>
+
+                <div class="menu-link" id="link-stats" onclick="switchView('view-analytics')" style="display: none;">
+                    <i class="fas fa-chart-pie"></i> <span>Estadísticas</span>
+                </div>
+                <div class="menu-link logout-link" onclick="triggerLogout()">
+                    <i class="fas fa-power-off"></i> <span>Salir</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="top-bar">
+                <h1 id="current-view-title">Bandeja Unificada de Expedientes</h1>
+                
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="chat-notification-icon desktop-nav-item" onclick="openInternalChat()" style="cursor: pointer; position: relative; display: inline-block; margin-right: 15px;">
+                        <i class="fas fa-comment-dots" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    </div>
+
+                    <div id="notification-bell-wrapper" class="desktop-nav-item" style="position: relative; cursor: pointer; display: none;" onclick="toggleAlertsDropdown(event)">
+                        <i class="fas fa-bell" style="font-size: 1.4rem; color: var(--primary);"></i>
+                        <span id="alert-badge" style="position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; font-weight: bold; display: none;">0</span>
+                        
+                        <div id="alerts-dropdown" class="glass-panel" style="display: none; position: absolute; right: 0; top: 30px; width: 300px; max-height: 350px; overflow-y: auto; z-index: 2000; padding: 12px; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.98); border-radius: 12px; box-shadow: var(--glass-shadow);">
+                            <p style="font-size: 0.85rem; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 6px; color: var(--dark);">Alertas Emitidas</p>
+                            <div id="alerts-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="date-pill" id="live-date"></div>
+                </div>
+            </div>
+
+            <div class="filter-container" id="admin-filter" style="display: none;">
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%;">
+                    <div>
+                        <label><i class="fas fa-filter"></i> Filtrar por Estatus:</label>
+                        <select id="select-filtro-estatus" onchange="renderDataGrid()">
+                            <option value="TODOS">Ver Todos Permitidos</option>
+                            <option value="Nuevo">Nuevo / Pendiente</option>
+                            <option value="Admitido">Admitido</option>
+                            <option value="Atendido">Atendido</option>
+                            <option value="En Revisión">En Revisión</option>
+                            <option value="Cerrado">Cerrado</option>
+                            <option value="Archivado">Archivado</option>
+                        </select>
+                    </div>
+
+                    <div id="subfilter-empresa-container" style="display: none;">
+                        <label><i class="fas fa-building"></i> Filtrar Empresa:</label>
+                        <select id="select-filtro-empresa" onchange="renderDataGrid()">
+                            <option value="TODAS">Todas las Empresas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-bandeja" class="workspace-view active">
+                <div id="grid-denuncias" class="denuncias-grid">
+                    <div style="grid-column: 1 / -1; text-align:center; padding: 20px; color:#64748B;">
+                        <i class="fas fa-spinner fa-spin"></i> Sincronizando expedientes...
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-analytics" class="workspace-view">
+                <div class="stats-grid">
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: var(--primary);"><i class="fas fa-file-invoice"></i></div>
+                        <div><h5>Total Recibidas</h5><p id="stat-recibidas">0</p></div>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: var(--warning);"><i class="fas fa-clock"></i></div>
+                        <div><h5>Casos Atendidos</h5><p id="stat-atendidas">0</p></div>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <div class="icon-box" style="background: var(--success);"><i class="fas fa-circle-check"></i></div>
+                        <div><h5>Casos Cerrados</h5><p id="stat-cerradas">0</p></div>
+                    </div>
+                    <div class="glass-panel stat-card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                        <div class="icon-box" style="background: rgba(255,255,255,0.2);"><i class="fas fa-star"></i></div>
+                        <div><h5>Satisfacción</h5><p id="stat-satisfaccion" style="color:white;">0.0 / 5</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
