@@ -82,7 +82,7 @@ function buildAppWorkspace() {
 
 async function loadDataGrid() {
     const grid = document.getElementById('grid-denuncias');
-    grid.innerHTML = "<div style='grid-column: 1 / -1; text-align:center; padding: 20px; color:#64748B;'><i class='fas fa-spinner fa-spin'></i> Sincronizando con Google Sheets...</div>";
+    grid.innerHTML = "<div style='grid-column: 1 / -1; text-align:center; padding: 20px; color:#64748B;'><i class='fas fa-spinner fa-spin'></i> Sincronizando con el servidor...</div>";
     
     const responseData = await sendToBackend("getDenuncias", { user: currentUser.email });
     if (!responseData || !Array.isArray(responseData)) {
@@ -453,7 +453,7 @@ async function deleteAlertFromServer(rowIndex, e) {
     if (res && res.success) {
         await loadDataGridSilently();
     } else {
-        showCustomAlert("Error", "No se pudo limpiar el registro en Sheets.", "error");
+        showCustomAlert("Error", "No se pudo limpiar el registro en el servidor", "error");
     }
 }
 
