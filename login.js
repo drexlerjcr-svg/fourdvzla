@@ -1,10 +1,9 @@
-// URL ACTUALIZADA
 const webappurl = "https://script.google.com/macros/s/AKfycbx3WevFFa8gvlllgxm4zDqCQo7q3cso0ci9S2L3ZYnQXB2agBpFfRgRnA0PdaQLIbE-/exec";
 const SECURITY_TOKEN = "SUNDDE_SECURE_2026_TOKEN";
 
 document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("sundde_session")) {
-        window.location.href = "dashboard.html";
+        window.location.href = "Portal.html";
     }
 });
 
@@ -19,20 +18,21 @@ function showCustomAlert(title, message, type="info") {
     else icon.innerHTML = '<i class="fas fa-circle-info" style="color: var(--secondary);"></i>';
     
     alertModal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
 }
-function closeCustomAlert() { document.getElementById('custom-alert').style.display = 'none'; }
+function closeCustomAlert() { 
+    document.getElementById('custom-alert').style.display = 'none'; 
+    document.body.classList.remove('no-scroll');
+}
 
-// FIX: LÓGICA DE TECLA ENTER AISLADA DE LA ALERTA
 function handleEnter(event) {
     if (event.key === 'Enter') {
-        event.preventDefault(); // Evitamos comportamientos por defecto del formulario
+        event.preventDefault(); 
         const alertModal = document.getElementById('custom-alert');
         
         if (alertModal.style.display === 'flex') {
-            // Si la alerta está en pantalla, solo cerramos la alerta
-            closeCustomAlert();
+          closeCustomAlert();
         } else {
-            // Si no hay alerta, procedemos a iniciar sesión
             attemptLogin();
         }
     }
@@ -45,7 +45,7 @@ async function attemptLogin() {
 
     if (!email || !pass) { showCustomAlert("Vacío", "Complete los campos requeridos.", "error"); return; }
     
-    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Validando..."; btn.disabled = true;
+    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Ingresando..."; btn.disabled = true;
     
     try {
         const response = await fetch(webappurl, {
@@ -58,7 +58,7 @@ async function attemptLogin() {
         if (dataResponse && dataResponse.success) {
             const currentUser = { email: dataResponse.email, role: dataResponse.role, empresa: dataResponse.empresa, nombre: dataResponse.nombre };
             localStorage.setItem("sundde_session", JSON.stringify(currentUser));
-            window.location.href = "dashboard.html";
+            window.location.href = "Portal.html";
         } else {
             showCustomAlert("Denegado", dataResponse.message, "error");
             btn.innerHTML = "<i class='fas fa-right-to-bracket'></i> Autenticar Ingreso"; btn.disabled = false;
