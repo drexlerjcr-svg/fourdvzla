@@ -638,7 +638,7 @@ async function executeWorkflowTransition(subAction, btnElement) {
 
     if (subAction === "SUNDDE_ADMITIR") {
         if (!attachedFileBase64) {
-            showCustomAlert("Archivo Requerido", "No puede ser admitida sin el archivo PDF[span_2](start_span)[span_2](end_span).", "error");
+            showCustomAlert("Archivo Requerido", "No puede ser admitida sin el archivo PDF.", "error");
             return;
         }
     }
