@@ -19,7 +19,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Rediseño Corporativo: Adiós Glassmorphism, Hola Sólido/Limpio */
 .corporate-panel {
     background: #FFFFFF;
     border: 1px solid var(--border-color); 
@@ -29,7 +28,6 @@ body {
 
 .mobile-nav-item { display: none !important; }
 
-/* ================= LOGIN ================= */
 #login-view { 
     position: fixed !important; 
     top: 50% !important;
@@ -56,7 +54,6 @@ input, select, textarea {
 }
 select { padding-left: 12px; cursor: pointer; } 
 .input-wrapper select { padding-left: 40px; }
-/* Corrección de ancho total y caja para textareas */
 textarea { 
     padding-left: 12px; 
     width: 100% !important; 
@@ -65,7 +62,6 @@ textarea {
 }
 input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 
-/* ================= BOTONES ================= */
 .btn-action {
     width: 100%; padding: 12px; border-radius: 4px; border: none;
     background: var(--primary);
@@ -75,7 +71,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 .btn-action:hover { background: #1E293B; }
 .btn-action:disabled { background: #94A3B8; cursor: not-allowed; }
 
-/* Botón estilo Imagen 2 (Carga de Documentos) con ajustes de padding y tipografía */
 .btn-upload-pill {
     background: linear-gradient(90deg, var(--secondary) 0%, #3B82F6 100%);
     color: white;
@@ -121,7 +116,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 .denuncia-card .btn-sm-success { background: var(--success); color: white; border: none; }
 .denuncia-card .btn-sm-success:hover { background: #047857; }
 
-/* ================= APP LAYOUT ================= */
 #app-view { width: 100vw; height: 100vh; max-width: 100%; overflow: hidden; display: none; }
 #app-view.show-app { display: grid; grid-template-columns: 260px 1fr; }
 
@@ -163,7 +157,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 .workspace-view { display: none; }
 .workspace-view.active { display: block; animation: fadeInUp 0.3s ease-out; }
 
-/* ================= GRID DENUNCIAS ================= */
 .denuncias-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding-bottom: 20px; width: 100%; }
 .denuncia-card { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 18px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s ease; cursor: pointer; }
 .denuncia-card:hover { transform: translateY(-2px); border-color: #94A3B8; }
@@ -180,9 +173,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 .status-cerradofisc { background: #DBEAFE; color: #1E40AF; }
 .status-final { background: #F1F5F9; color: #334155; }
 
-/* ================= MODALES Y JERARQUÍA Z-INDEX ================= */
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 9999 !important; align-items: center; justify-content: center; padding: 15px;}
-/* Z-index superior garantizado para alertas y loaders para evitar que la card los tape */
+
 #custom-alert, #global-loader { z-index: 10500 !important; }
 
 .modal-content { width: 100%; max-width: 750px; padding: 25px; animation: zoomIn 0.2s ease-out; max-height: 90vh; overflow-y: auto; background: #FFFFFF; border-radius: 6px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
@@ -200,13 +192,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 .detail-grid div { font-size: 0.85rem; color: #475569; }
 .detail-grid strong { color: var(--primary); font-weight: 700; display: block; margin-bottom: 2px; font-size: 0.75rem; text-transform: uppercase; }
 
-/* === HISTORIAL DE SOPORTES Y ARCHIVOS === */
 #historico-content { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 #historico-content > * { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 12px; border-radius: 4px; font-size: 0.85rem; color: #475569; border-left: 4px solid var(--secondary); display: block; width: 100%; }
 #historico-content hr { display: none !important; }
 #historico-content strong { color: var(--primary); display: block; margin-bottom: 4px; font-size: 0.85rem; }
 
-/* === BOTONES DE ACCIÓN === */
 .action-zone { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #E2E8F0; }
 .action-zone button, .action-zone input[type="button"] {
     flex: 1; min-width: 140px; padding: 12px; border-radius: 4px; border: none;
@@ -220,7 +210,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 .action-zone .btn-danger { background: var(--danger); }
 .action-zone .btn-danger:hover { background: #B91C1C; }
 
-/* ================= RESPONSIVO (MÓVILES) ================= */
 @media (max-width: 768px) {
     #app-view.show-app { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
     .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); padding: 15px; }
@@ -260,3 +249,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes zoomIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+body.no-scroll {
+    overflow: hidden !important;
+}
