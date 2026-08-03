@@ -308,9 +308,9 @@ function openSuperCard(rowIndex) {
         formC.innerHTML = `
             <h4 style="color:var(--primary); margin-bottom:15px;">Admitir Caso a la Empresa</h4>
             <div class="form-group">
-                <label>Documentación Adicional (Opcional)</label>
+                <label>Documentación Adicional (PDF Obligatorio)[span_0](start_span)[span_0](end_span)</label>
                 <div class="btn-upload-pill" style="border-radius: 25px;" onclick="document.getElementById('modal-file').click()">
-                    <span class="file-selected-text">ADJUNTAR DOCUMENTACIÓN (PDF)</span>
+                    <span class="file-selected-text">ADJUNTAR DOCUMENTACIÓN (PDF)[span_1](start_span)[span_1](end_span)</span>
                     <i class="fas fa-upload"></i>
                     <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
                 </div>
@@ -636,6 +636,12 @@ function parsePhotoToBase64(event) {
 async function executeWorkflowTransition(subAction, btnElement) {
     let dataPayload = { rowIndex: selectedRowData.rowIndex, fileBase64: attachedFileBase64, fileName: attachedFileName, photoBase64: attachedPhotoBase64, photoName: attachedPhotoName };
 
+    if (subAction === "SUNDDE_ADMITIR") {
+        if (!attachedFileBase64) {
+            showCustomAlert("Archivo Requerido", "No puede ser admitida sin el archivo PDF[span_2](start_span)[span_2](end_span).", "error");
+            return;
+        }
+    }
     if (subAction === "EMPRESA_ATENDER") {
         const com = document.getElementById('empresa-comentario').value.trim();
         if (!com || !attachedFileBase64 || !attachedPhotoBase64) { 
