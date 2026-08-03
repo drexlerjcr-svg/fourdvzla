@@ -16,6 +16,19 @@ function formatDateToDDMMYYYY(dateStr) {
     return d.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+// NUEVA FUNCIÓN: Administra el bloqueo de scroll
+function updateBodyScroll() {
+    const isAlertOpen = document.getElementById('custom-alert')?.style.display === 'flex';
+    const isSuperCardOpen = document.getElementById('super-card-modal')?.style.display === 'flex';
+    const isChatOpen = document.getElementById('internal-chat-modal')?.style.display === 'flex';
+    
+    if (isAlertOpen || isSuperCardOpen || isChatOpen) {
+        document.body.classList.add('no-scroll');
+    } else {
+        document.body.classList.remove('no-scroll');
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const savedSession = localStorage.getItem("sundde_session");
     if (!savedSession) {
@@ -65,8 +78,12 @@ function showCustomAlert(title, message, type="info") {
     else icon.innerHTML = '<i class="fas fa-circle-info" style="color: var(--secondary);"></i>';
     
     alertModal.style.display = 'flex';
+    updateBodyScroll();
 }
-function closeCustomAlert() { document.getElementById('custom-alert').style.display = 'none'; }
+function closeCustomAlert() { 
+    document.getElementById('custom-alert').style.display = 'none'; 
+    updateBodyScroll();
+}
 
 async function sendToBackend(action, payload) {
     try {
@@ -437,9 +454,14 @@ function openSuperCard(rowIndex) {
     }
 
     modal.style.display = "flex";
+    updateBodyScroll();
 }
 
-function closeSuperCard() { document.getElementById('super-card-modal').style.display = "none"; selectedRowData = null; }
+function closeSuperCard() { 
+    document.getElementById('super-card-modal').style.display = "none"; 
+    selectedRowData = null; 
+    updateBodyScroll();
+}
 
 function getInternalChatChannel() {
     const role = currentUser.role.toLowerCase();
@@ -472,6 +494,7 @@ function updateChatEmpresaSelector() {
 
 function openInternalChat() {
     document.getElementById('internal-chat-modal').style.display = 'flex';
+    updateBodyScroll();
     
     let warningMsg = document.getElementById('chat-warning-msg');
     if(!warningMsg) {
@@ -495,6 +518,7 @@ function openInternalChat() {
 
 function closeInternalChat() {
     document.getElementById('internal-chat-modal').style.display = 'none';
+    updateBodyScroll();
 }
 
 async function loadGlobalChatMessages() {
@@ -558,6 +582,7 @@ function toggleAlertsDropdown(e) {
 function updateAlertsNotification() {
     const listC = document.getElementById('alerts-list');
     const badge = document.getElementById('alert-badge');
+    const mobileBadge = document.getElementById('mobile-alert-badge'); // Agregado: Referencia al badge móvil
     const bellWrapper = document.getElementById('notification-bell-wrapper');
     if (!listC) return;
     
@@ -576,6 +601,11 @@ function updateAlertsNotification() {
             badge.innerText = activeAlerts.length;
             badge.style.display = "block";
             
+            if(mobileBadge) {
+                mobileBadge.innerText = activeAlerts.length;
+                mobileBadge.style.display = "flex";
+            }
+            
             activeAlerts.forEach(item => {
                 const div = document.createElement('div');
                 div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#FEF2F2; border-left:4px solid var(--danger); padding:10px; border-radius:4px; font-size:0.8rem; gap:10px;";
@@ -590,10 +620,13 @@ function updateAlertsNotification() {
             });
         } else {
             badge.style.display = "none";
+            if(mobileBadge) mobileBadge.style.display = "none";
+            
             listC.innerHTML = '<p style="font-size:0.8rem; color:#64748B; text-align:center; padding:10px;">No tienes alertas pendientes.</p>';
         }
     } else {
         bellWrapper.style.display = "none";
+        if(mobileBadge) mobileBadge.style.display = "none";
     }
 }
 
@@ -603,7 +636,7 @@ async function deleteAlertFromServer(rowIndex, e) {
     if (res && res.success) {
         await loadDataGridSilently();
     } else {
-        showCustomAlert("Error", "No se pudo limpiar el registro en Sheets.", "error");
+        showCustomAlert("Error", "No se pudo eliminar la alerta.", "error");
     }
 }
 
