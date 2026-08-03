@@ -1,4 +1,3 @@
-// URL ACTUALIZADA
 const webappurl = "https://script.google.com/macros/s/AKfycbx3WevFFa8gvlllgxm4zDqCQo7q3cso0ci9S2L3ZYnQXB2agBpFfRgRnA0PdaQLIbE-/exec";
 const SECURITY_TOKEN = "SUNDDE_SECURE_2026_TOKEN";
 
@@ -10,7 +9,6 @@ let attachedPhotoBase64 = "", attachedPhotoName = "";
 
 document.getElementById('live-date').innerText = new Date().toLocaleDateString('es-VE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-// FUNCIÓN DE FORMATO DE FECHA DÍA/MES/AÑO
 function formatDateToDDMMYYYY(dateStr) {
     if(!dateStr) return 'N/A';
     const d = new Date(dateStr);
@@ -32,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if(drop) drop.style.display = "none";
     });
 
-    // INTERACCIÓN DE CIERRE: Tecla Escape y Clicks en Overlay
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSuperCard();
@@ -273,7 +270,6 @@ function openSuperCard(rowIndex) {
     document.getElementById('md-producto').innerText = selectedRowData['BIEN/SERVICIO'] || 'N/A';
     document.getElementById('md-motivo').innerText = selectedRowData.OBSERVACIONES || selectedRowData.RESULTADO || 'N/A';
     
-    // APLICACIÓN DEL FORMATO DÍA/MES/AÑO
     document.getElementById('md-fecha').innerText = formatDateToDDMMYYYY(selectedRowData['FECHA DENUNCIA']);
     
     const estOriginal = selectedRowData.STATUS ? selectedRowData.STATUS.toString().trim() : "Nuevo";
@@ -427,7 +423,7 @@ function openSuperCard(rowIndex) {
     else if ((role.includes("admin") || role.includes("administrador general")) && (estOriginal === "Admitido" || estOriginal === "En Revisión")) {
         formC.innerHTML = `
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; width: 100%;">
-                <h4 style="color:var(--warning); margin:0; white-space: nowrap;"><i class="fas fa-bell"></i> Emitir Notificación de Alerta</h4>
+                <h4 style="color:var(--warning); margin:0; white-space: nowrap;"><i class="fas fa-bell"></i> - </h4>
                 <div style="flex-grow: 1; display: flex; flex-direction: column;">
                     <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase;">Mensaje de Alerta Urgente</label>
                     <input type="text" id="admin-alerta-texto" placeholder="Escriba la advertencia por retraso..." style="height:45px; width:100%; box-sizing:border-box; padding:10px;">
@@ -445,7 +441,6 @@ function openSuperCard(rowIndex) {
 
 function closeSuperCard() { document.getElementById('super-card-modal').style.display = "none"; selectedRowData = null; }
 
-// ================= LOGICA DE CANALES DE CHAT (CONCORDANCIA EXACTA) =================
 function getInternalChatChannel() {
     const role = currentUser.role.toLowerCase();
     const isAdmin = role.includes("admin") || role.includes("administrador general");
@@ -478,7 +473,6 @@ function updateChatEmpresaSelector() {
 function openInternalChat() {
     document.getElementById('internal-chat-modal').style.display = 'flex';
     
-    // Inyección dinámica del mensaje de advertencia bajo el encabezado del chat
     let warningMsg = document.getElementById('chat-warning-msg');
     if(!warningMsg) {
         const chatModal = document.getElementById('internal-chat-modal');
@@ -642,7 +636,6 @@ function parsePhotoToBase64(event) {
 async function executeWorkflowTransition(subAction, btnElement) {
     let dataPayload = { rowIndex: selectedRowData.rowIndex, fileBase64: attachedFileBase64, fileName: attachedFileName, photoBase64: attachedPhotoBase64, photoName: attachedPhotoName };
 
-    // VALIDACIÓN ESTRICTA BLOQUEANDO EL ENVÍO SI FALTA INFORMACIÓN O ARCHIVOS OBLIGATORIOS
     if (subAction === "EMPRESA_ATENDER") {
         const com = document.getElementById('empresa-comentario').value.trim();
         if (!com || !attachedFileBase64 || !attachedPhotoBase64) { 
@@ -690,7 +683,6 @@ async function executeWorkflowTransition(subAction, btnElement) {
         dataPayload.mensajeAlerta = textA;
     }
 
-    // ACTIVACIÓN DEL OVERLAY SUPERIOR DE CARGA
     document.getElementById('global-loader').style.display = 'flex';
 
     const res = await sendToBackend("procesarDenuncia", { subAction: subAction, data: dataPayload });
@@ -707,7 +699,6 @@ async function executeWorkflowTransition(subAction, btnElement) {
     await loadDataGrid();
 }
 
-// ================= LOGICA ESTADISTICAS LOCALES PARA ADMINISTRADORES =================
 function loadAnalyticsData() {
     const stats = { Nuevo: 0, Admitido: 0, Atendido: 0, "En Revisión": 0, Cerrado: 0, Archivado: 0 };
     const empStats = {};
@@ -777,3 +768,28 @@ function switchView(viewId) {
         }
     }
 }
+
+history.pushState(null, null, window.location.href);
+
+window.addEventListener('popstate', function(event) {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        document.activeElement.blur();
+    }
+
+    const superCard = document.getElementById('super-card-modal'); 
+    if (superCard && superCard.style.display !== 'none') {
+        closeSuperCard();
+    }
+    
+    const internalChat = document.getElementById('internal-chat-modal');
+    if (internalChat && internalChat.style.display !== 'none') {
+        closeInternalChat();
+    }
+    
+    const customAlert = document.getElementById('custom-alert');
+    if (customAlert && customAlert.style.display !== 'none') {
+        closeCustomAlert();
+    }
+
+    history.pushState(null, null, window.location.href);
+});
