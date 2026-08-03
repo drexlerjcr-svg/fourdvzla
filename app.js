@@ -308,9 +308,9 @@ function openSuperCard(rowIndex) {
         formC.innerHTML = `
             <h4 style="color:var(--primary); margin-bottom:15px;">Admitir Caso a la Empresa</h4>
             <div class="form-group">
-                <label>Documentación Adicional (PDF Obligatorio)[span_0](start_span)[span_0](end_span)</label>
+                <label>(PDF Obligatorio)</label>
                 <div class="btn-upload-pill" style="border-radius: 25px;" onclick="document.getElementById('modal-file').click()">
-                    <span class="file-selected-text">ADJUNTAR DOCUMENTACIÓN (PDF)[span_1](start_span)[span_1](end_span)</span>
+                    <span class="file-selected-text">ADJUNTAR DOCUMENTACIÓN (PDF)</span>
                     <i class="fas fa-upload"></i>
                     <input type="file" id="modal-file" accept="application/pdf" style="display:none;" onchange="parseFileToBase64(event)">
                 </div>
